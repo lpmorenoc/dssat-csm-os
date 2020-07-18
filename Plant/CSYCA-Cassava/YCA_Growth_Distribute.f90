@@ -39,21 +39,22 @@
 
         ! Reserves to STORAGE ROOT if conc too great (overflow!)
         SRWTGRS = 0.0
+        !LPM 14SEP2020 initialize temporary variable
+        TVR1 = 0.0 
         ! Determine potential new concentration
         IF (LFWT+GROLFADJ+woodyWeight()+GROSTADJ+GROCRADJ > 0.0) THEN
-            TVR1 = (RSWT+GRORS)/((LFWT+GROLFADJ-leafTotalSenescedWeight()) + (STWT+GROSTADJ+CRWT+GROCRADJ)+(RSWT+GRORS))  !EQN 310
+            TVR1 = GRORS/((LFWT+GROLFADJ-leafTotalSenescedWeight()) + (STWT+GROSTADJ+CRWT+GROCRADJ)+GRORS)  !EQN 310
         ENDIF
         IF(TVR1 < 0.0.AND.TVR1 > -1.0E-07) THEN
             TVR1 = 0.0
         END IF
-        IF (TVR1 > RSPCO/100.0) THEN   ! If potential>standard 
-            TVR2 = RSWT+GRORS             ! What rswt could be                                                         !EQN 311
-            TVR3 =   ((RSPCO/100.0)*(LFWT+GROLFADJ-leafTotalSenescedWeight()+woodyWeight()+GROSTADJ+GROCRADJ))/(1.0-(RSPCO/100.0))! What rswt should be     !EQN 312
-            SRWTGRS = (TVR2 - TVR3)                                                                                    !EQN 313
-            ! Determine FINAL new concentration
-            IF (LFWT+GROLFADJ+woodyWeight()+GROSTADJ+GROCRADJ > 0.0) TVR5 = (RSWT+GRORS-SRWTGRS)/((LFWT+GROLFADJ-leafTotalSenescedWeight())+ &             !EQN 314
-                (STWT+GROSTADJ+CRWT+GROCRADJ)+(RSWT+GRORS-SRWTGRS))
-        ENDIF
+        !LPM 15DEC2020 Keep SRWTGRS instead of SRWTGRSADJ to consider additional CHO going to the roots when N is the most 
+        !restrictive factor (diluted N in storage roots)
+        SRWTGRS = GRORS
+        ! Determine FINAL new concentration
+        IF (LFWT+GROLFADJ+woodyWeight()+GROSTADJ+GROCRADJ > 0.0) TVR5 = (GRORS-SRWTGRS)/((LFWT+GROLFADJ-leafTotalSenescedWeight())+ &             !EQN 314
+            (STWT+GROSTADJ+CRWT+GROCRADJ)+(GRORS-SRWTGRS))
+
         
                 
         !-----------------------------------------------------------------------
