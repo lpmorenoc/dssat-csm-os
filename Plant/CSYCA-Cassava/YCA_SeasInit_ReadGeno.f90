@@ -15,7 +15,6 @@
         )
 
         USE ModuleDefs
-        USE ModuleData
         USE YCA_First_Trans_m
         
         IMPLICIT NONE
@@ -129,9 +128,13 @@
         
         INQUIRE (FILE = CUDIRFLE,EXIST = FFLAG)
         IF (.NOT.(FFLAG)) THEN
-            
+            WRITE(fnumwrk,*) ' '
+            WRITE(fnumwrk,*) 'Cultivar file not found!     '
+            WRITE(fnumwrk,*) 'File sought was:          '  
+            WRITE(fnumwrk,*) Cudirfle(1:78)
+            WRITE(fnumwrk,*) 'Will search in the working directory for:'
             CUDIRFLE = CUFILE
-                        
+            WRITE(fnumwrk,*)  Cudirfle(1:78)
             INQUIRE (FILE = CUDIRFLE,EXIST = FFLAG)
             IF (.NOT.(FFLAG)) THEN
                 OPEN (UNIT = FNUMERR,FILE = 'ERROR.OUT')
@@ -151,13 +154,16 @@
         
         INQUIRE (FILE = ECDIRFLE,EXIST = FFLAGEC)
         IF (.NOT.(FFLAGEC)) THEN
+            WRITE(fnumwrk,*) ' '
+            WRITE(fnumwrk,*) 'Ecotype file not found!     '
+            WRITE(fnumwrk,*) 'File sought was: ',Ecdirfle(1:60)  
             ECDIRFLE = ECFILE
-            
+            WRITE(fnumwrk,*) 'Will search in the working directory for:',Ecdirfle(1:60)
             INQUIRE (FILE = ECDIRFLE,EXIST = FFLAGEC)
             IF (.NOT.(FFLAGEC)) THEN
                 OPEN (UNIT = FNUMERR,FILE = 'ERROR.OUT')
-                WRITE(fnumerr,*) 'File not found in working directory!'
-                WRITE(fnumerr,*) 'Please check'
+                WRITE(fnumwrk,*) 'File not found in working directory!'
+                WRITE(fnumwrk,*) 'Please check'
                 WRITE(*,*) ' Ecotype file not found!     '
                 WRITE(*,*) ' File sought was: ',Ecdirfle(1:60)
                 WRITE(*,*) ' Program will have to stop'
@@ -189,7 +195,7 @@
         pdl = 0.0
         
         ! Ecotype coefficients re-set
-        !rspco = -99
+        rspco = -99
         dayls = -99
         srnpcs = -99
         srprs = -99
@@ -224,8 +230,8 @@
         kcan = -99 
         !lawcf = -99 !LPM 12DEC2016 Delete temperature, water and leaf position factors in SLA
         !lawmnfr = -99 !LPM 12DEC2016 Delete temperature, water and leaf position factors in SLA
-        slatr = -99
-        slats = -99
+        lawtr = -99
+        lawts = -99
         !lawmnfr = -99 !LPM 12DEC2016 Delete temperature, water and leaf position factors in SLA
         dfpe = -99 
         ppexp = -99 
@@ -343,10 +349,6 @@
         CALL ECREADR (ECDIRFLE,ECONO,'PPS1',dayls(1))
         CALL ECREADR (ECDIRFLE,ECONO,'PPS2',dayls(2))
         CALL ECREADR (ECDIRFLE,ECONO,'PPS3',dayls(3))
-        CALL ECREADR (ECDIRFLE,ECONO,'PHTV',PHTV)
-        CALL ECREADR (ECDIRFLE,ECONO,'PHSV',PHSV)
-        CALL ECREADR (ECDIRFLE,ECONO,'WFSU',WFSU)
-        CALL ECREADR (ECDIRFLE,ECONO,'RSUSE',rsuse)
         ! Following may have been (temporarily) in the CUL file
         ! Radiation use efficiency
         IF (PARUE <= 0.0) CALL ECREADR (ECDIRFLE,ECONO,'PARUE',parue)
@@ -357,7 +359,6 @@
         IF (LAWS <= 0.0) CALL ECREADR (ECDIRFLE,ECONO,'SLAS',laws)
         ! Roots
         IF (RDGS <= 0.0) CALL ECREADR (ECDIRFLE,ECONO,'RDGS',rdgs)
-        IF (RLWR <= 0.0) CALL ECREADR (ECDIRFLE,ECONO,'RLWR',rlwr)
         ! Reduction factors
         IF (NFGU < 0.0) CALL ECREADR (ECDIRFLE,ECONO,'NFGU',nfgu)
         IF (NFGL < 0.0) CALL ECREADR (ECDIRFLE,ECONO,'NFGL',nfgl)
@@ -374,39 +375,41 @@
         !-----------------------------------------------------------------------------------------------------------------------
         
         CALL FVCHECK(SPDIRFLE,GENFLCHK)
-        !CALL SPREADR (SPDIRFLE,'CO2CC',co2compc) 
-        !CALL SPREADR (SPDIRFLE,'CO2EX',co2ex) 
+        CALL SPREADR (SPDIRFLE,'CO2CC',co2compc) 
+        CALL SPREADR (SPDIRFLE,'CO2EX',co2ex) 
         CALL SPREADR (SPDIRFLE,'HDUR' ,hdur)
         !CALL SPREADR (SPDIRFLE,'SLAFF',lawff) !LPM 12DEC2016 Delete temperature, water and leaf position factors in SLA
-        CALL SPREADR (SPDIRFLE,'SLATR',slatr)
-        CALL SPREADR (SPDIRFLE,'SLATS',slats)
+        CALL SPREADR (SPDIRFLE,'SLATR',lawtr)
+        CALL SPREADR (SPDIRFLE,'SLATS',lawts)
         CALL SPREADR (SPDIRFLE,'LLIFG',llifg)
         CALL SPREADR (SPDIRFLE,'LLIFS',llifs)
-        !CALL SPREADR (SPDIRFLE,'LLIFX',llifx) !LPM 14SEP2020 No longer used
+        CALL SPREADR (SPDIRFLE,'LLIFX',llifx)
         CALL SPREADR (SPDIRFLE,'LLIG%',lligp)
-        CALL SPREADR (SPDIRFLE,'LN%SC',lnsc)
-        !CALL SPREADR (SPDIRFLE,'LLOSA',llosa)
+        CALL SPREADR (SPDIRFLE,'LLOSA',llosa)
         CALL SPREADR (SPDIRFLE,'LWLOS',lwlos)
-        !CALL SPREADR (SPDIRFLE,'NFSU' ,nfsu)
+        CALL SPREADR (SPDIRFLE,'NFSU' ,nfsu)
         CALL SPREADR (SPDIRFLE,'LPEAW',lpeaw)
         CALL SPREADR (SPDIRFLE,'NCRG',ncrg)
-        !CALL SPREADR (SPDIRFLE,'NTUPF',ntupf)
+        CALL SPREADR (SPDIRFLE,'NTUPF',ntupf)
         CALL SPREADR (SPDIRFLE,'PARIX',parix)
         CALL SPREADR (SPDIRFLE,'LAIXX',laixx)
-        !CALL SPREADR (SPDIRFLE,'PARFC',parfc)
+        CALL SPREADR (SPDIRFLE,'PARFC',parfc)
         CALL SPREADR (SPDIRFLE,'PEMRG',pemrg) !LPM 22MAR2016 To use the same name than in the SPE file (no PECM)  
-        CALL SPREADR (SPDIRFLE,'PDSV' ,pdsv)
-        CALL SPREADR (SPDIRFLE,'PDTV' ,pdtv)
+        CALL SPREADR (SPDIRFLE,'PHSV' ,phsv)
+        CALL SPREADR (SPDIRFLE,'PHTV' ,phtv)
         CALL SPREADR (SPDIRFLE,'PPTHR',ppthr)
         CALL SPREADR (SPDIRFLE,'PTFA' ,ptfa)
+        CALL SPREADR (SPDIRFLE,'RATM' ,ratm)
+        CALL SPREADR (SPDIRFLE,'RCROP',rcrop)
+        CALL SPREADR (SPDIRFLE,'RWULF',rlfwu)
         CALL SPREADR (SPDIRFLE,'RLIG%',rligp)
         CALL SPREADR (SPDIRFLE,'RRESP',rresp)
+        CALL SPREADR (SPDIRFLE,'RS%O' ,rspco)
         CALL SPREADR (SPDIRFLE,'RSEN' ,rsen)
         IF (RSEN < 0.0) CALL SPREADR (SPDIRFLE,'RSEN%' ,rsen)
         CALL SPREADR (SPDIRFLE,'RSFPL',rsfpl)
         CALL SPREADR (SPDIRFLE,'RSFPU',rsfpu)
-        !LPM 17MAR2021 Move RSUSE to the ecotype file
-        !CALL SPREADR (SPDIRFLE,'RSUSE',rsuse)
+        CALL SPREADR (SPDIRFLE,'RSUSE',rsuse)
         CALL SPREADR (SPDIRFLE,'RTUFR',rtufr)
         CALL SPREADR (SPDIRFLE,'RWUMX',rwumx)
         CALL SPREADR (SPDIRFLE,'RWUPM',rwupm)
@@ -420,20 +423,21 @@
         CALL SPREADR (SPDIRFLE,'SGRO2',shgr(2))
         CALL SPREADR (SPDIRFLE,'TPAR' ,tpar)
         CALL SPREADR (SPDIRFLE,'TSRAD',tsrad)
+        CALL SPREADR (SPDIRFLE,'WFEU' ,wfeu)
         CALL SPREADR (SPDIRFLE,'WFGEM',wfgem)!LPM 25MAR2016 To keep value in the code and SPE file
         CALL SPREADR (SPDIRFLE,'WFGU' ,wfgu)
         CALL SPREADR (SPDIRFLE,'WFGL' ,wfgl)
         CALL SPREADR (SPDIRFLE,'WFPU' ,wfpu)
         CALL SPREADR (SPDIRFLE,'WFPL' ,wfpl)
         CALL SPREADR (SPDIRFLE,'WFRGU',wfrtg)
-        !CALL SPREADR (SPDIRFLE,'WFSU' ,wfsu)
+        CALL SPREADR (SPDIRFLE,'WFSU' ,wfsu)
         CALL SPREADR (SPDIRFLE,'NLAB%',nlabpc)
         ! Following may be temporarily in ECO or CUL file
         IF (PD(9) <= 0.0) CALL SPREADR (SPDIRFLE,'P9',pd(9))
         IF (LLIFA <= 0.0) CALL SPREADR (SPDIRFLE,'LLIFA',llifa)
-        !IF (RDGS <= 0.0) CALL SPREADR (SPDIRFLE,'RDGS',rdgs)
+        IF (RDGS <= 0.0) CALL SPREADR (SPDIRFLE,'RDGS',rdgs)
         IF (LAXS <= 0.0) CALL SPREADR (SPDIRFLE,'LAXS',laxs)
-        !IF (RLWR <= 0.0) CALL SPREADR (SPDIRFLE,'RLWR',rlwr)
+        IF (RLWR <= 0.0) CALL SPREADR (SPDIRFLE,'RLWR',rlwr)
         IF (NFGL < 0.0) CALL SPREADR (SPDIRFLE,'NFGL',nfgl)
         IF (NLLG <= 0.0) CALL SPREADR (SPDIRFLE,'NLLG',nllg)
         IF (NFGU <= 0.0) CALL SPREADR (SPDIRFLE,'NFGU',nfgu)
@@ -495,7 +499,4 @@
         CALL SPREADCA (SPDIRFLE,'PSTYP','20',pstyp)
         LNUMSIMTOSTG = 0.0 !LPM 12SEP2017 defining again LNUMSIMTOSTG to avoid strange values in Linux
         
-        !Put VPD parameters in SPAM
-        CALL PUT('SPAM', 'PHSV' ,phsv)
-        CALL PUT('SPAM', 'PHTV' ,phtv)
     END SUBROUTINE YCA_SeasInit_ReadGeno

@@ -40,11 +40,6 @@ C  06/11/2002 GH  Modified for Y2K
 !  01/10/2019 CHP Remove KRT changes introduced with pull request #201
 !                 These cause major differences in some CROPGRO experiments
 !                 Roll back for now, need to investigate!
-!  11/14/2020 FO  ETPHOT - First part of code protections for divisions by zero
-!                 and negative values.
-!                 These changes were supervised by GH, KJB, SC and NBP.
-!  01/15/2021 FO  ETPHOT - Second part of code protections for divisions by zero
-!                 and negative values. Removed XLAI, CANHT, CANWH initializations.
 C-----------------------------------------------------------------------
 C  Called from: SPAM
 C  Calls:       ETIND,ETINP,PGINP,PGIND,RADABS,ETPHR,ROOTWU,SOIL05,SWFACS
@@ -339,6 +334,9 @@ C     Initialize DAILY parameters.
         NHOUR = 0
         TCANAV = 0.0
         TCANDY = 0.0
+        IF (XLAI.GT.0.0 .AND. XLAI.LT.0.002) XLAI = 0.002
+        IF (CANHT.GT.0.0 .AND. CANHT.LT.0.01) CANHT = 0.01
+        IF (CANWH.GT.0.0 .AND. CANWH.LT.0.01) CANWH = 0.01
 
         IF (MEEVP .EQ. 'Z') THEN
           CALL ETIND(
@@ -457,7 +455,7 @@ C            added by BAK on 10DEC2015
      &      CCNEFF, CICAD, CMXSF, CQESF, PGPATH,          !Input
      &      AGEQESL, CO2QESL, QEFFSL)                     !Output
 
-C         Integrate instantaneous canopy photoynthesis (Âµmol CO2/m2/s)
+C         Integrate instantaneous canopy photoynthesis (µmol CO2/m2/s)
 C         and evapotranspiration (mm/h) to get daily values (g CO2/m2/d
 C         and mm/d).
 
@@ -605,7 +603,7 @@ C       Assign daily values.
         CANWH = HOLDWH
 
         IF (MEEVP .EQ. 'Z') THEN
-          IF (XLAI .GT. 0.0) THEN
+          IF (XLAI .GT. 1.E-4) THEN
             DAYKR = -LOG((DAYRAD-DYINTR)/DAYRAD) / XLAI
           ELSE
             DAYKR = 0.0
@@ -650,7 +648,7 @@ C          ES = MAX(MIN(EDAY,AWEV1),0.0)
         ENDIF
 
         IF (MEPHO .EQ. 'L') THEN
-          IF (XLAI .GT. 0.0) THEN
+          IF (XLAI .GT. 1.E-4) THEN
             DAYKP = -LOG((DAYPAR-DYINTP)/DAYPAR) / XLAI
           ELSE
             DAYKP = 0.0
@@ -1402,7 +1400,7 @@ C     Initialize.
       RABS(2) = 0.0
       RABS(3) = 0.0
 
-      IF (XLAI .GT. 0.0) THEN
+      IF (XLAI .GT. 1.E-4) THEN
 
 C       Calculate fraction shaded and LAI's for vertical sun position.
 
@@ -1533,7 +1531,7 @@ C=======================================================================
 
 C     Set fraction shaded to 0.0 for zero width or height.
 
-      IF (CANWH .LE. 0.0 .OR. CANHT .LE. 0.0) THEN
+      IF (CANWH .LE. ZERO .OR. CANHT .LE. ZERO) THEN
         FRACSH = 0.0
 
 C     Set fraction shaded to 1.0 for full cover.
@@ -1598,22 +1596,14 @@ C         Individual plants.
           ELSE
 
 C           Limit shadow length to within one ROWSPC.
-C FO/GH 11/14/2020 Code protections for divisions by zero.
-            IF (SHPERP .GT. 0.0 .AND. SHPERP .GT. ROWSPC) THEN
-              SHLEN = SHLEN * ROWSPC/SHPERP
-            ELSE
-              SHLEN = 0.0
-            ENDIF
-            
+
+            IF (SHPERP .GT. ROWSPC) SHLEN = SHLEN * ROWSPC/SHPERP
             SHADE = 0.25 * PI * SHLEN * CANWH
 
           ENDIF
         ENDIF
 
-C FO/GH 11/14/2020 Code protections for divisions by zero.
-        IF(ROWSPC .GT. 0.0 .AND. BETN .GT. 0.0) THEN
-          FRACSH = MIN(SHADE/(ROWSPC*BETN),1.0)
-        ENDIF
+        FRACSH = MIN(SHADE/(ROWSPC*BETN),1.0)
 
       ENDIF
 
@@ -1649,10 +1639,7 @@ C=======================================================================
 C     Initialization.  F15, F45, and F75 are the proportion of leaves
 C     in the three leaf classes: 0-30, 30-60 and 60-90 degrees.
 
-C FO/GH 11/14/2020 Code protections for divisions by zero.
-      !SINB = MAX(0.00001,SIN(BETA*RAD))
-      SINB = SIN(BETA*RAD)
-      
+      SINB = MAX(0.00001,SIN(BETA*RAD))
       F15 = LFANGD(1)
       F45 = LFANGD(2)
       F75 = LFANGD(3)
@@ -1664,14 +1651,7 @@ C     the range of sine of incidence (used in Gaussian integration).
       O45 = MAX(0.47,0.68*SINB)
       O75 = 1.0 - 0.268*O15 - 0.732*O45
       OAV = F15*O15 + F45*O45 + F75*O75
-      
-C FO/GH 11/14/2020 Code protections for divisions by zero.
-      IF(SINB .GT. 0.0) THEN
-        KDIRBL = OAV / SINB
-      ELSE
-        KDIRBL = 0.0
-      ENDIF
-      
+      KDIRBL = OAV / SINB
       VARSIN = 0.06*F15+0.25*F45+0.467*F75 +
      +  (0.81*F15 + 0.25*F45 - 0.4*F75)*SINB**2 - OAV**2
       VARSIN = MAX(VARSIN,0.0)
@@ -1682,32 +1662,25 @@ C     Calculate diffuse light extinction coefficient for black leaves.
       K15 = 1.00*F15 + 1.82*F45 + 2.26*F75
       K45 = 0.93*F15 + 0.68*F45 + 0.67*F75
       K75 = 0.93*F15 + 0.68*F45 + 0.29*F75
-      
-      IF(XLAI .GT. 0.0) THEN
-        KDIFBL = -ALOG(0.25*EXP(-K15*XLAI)+0.5*EXP(-K45*XLAI)
-     &           +0.25*EXP(-K75*XLAI)) / XLAI
-      ELSE
-        KDIFBL = 0.0
-      ENDIF
+      KDIFBL = -ALOG(0.25*EXP(-K15*XLAI)+0.5*EXP(-K45*XLAI)
+     &  +0.25*EXP(-K75*XLAI)) / XLAI
 
 C     Calculate sunlit and shaded leaf area indices.
 !CHP added check to prevent underflow 1/16/03
-C FO/GH 11/14/2020 Code protections for divisions by zero.
-      IF (KDIRBL .GT. 0.0 .AND. FRACSH .GT. 0.0) THEN    
+      IF (KDIRBL .GT. 0.0 .AND. FRACSH .GT. 0.0 .AND. 
+     &        (KDIRBL*XLAI/FRACSH) .LT. 20.) THEN    
         LAISL = (FRACSH/KDIRBL) * (1.0-EXP(-KDIRBL*XLAI/FRACSH))
+        LAISL = MAX(LAISL,0.02)
       ELSE
-        LAISL = 0.0
+        LAISL = 0.02
       ENDIF
 C-KRT*******************************
 C-KRT  LAISH = XLAI - LAISL
 !-CHP  LAISH = MAX(0.02,XLAI - LAISL)
-C FO/GH 11/14/2020 Code protections for divisions by zero.
-      IF(XLAI .GT. LAISL) THEN
-         LAISH = XLAI - LAISL
-      ELSE
-          LAISH = 0.0
-      ENDIF
-      
+       LAISH = XLAI - LAISL
+!       IF (LAISH < 1.E-6) THEN
+!         LAISH = 1.E-6
+!       ENDIF 
 C-KRT*******************************
       RETURN
       END SUBROUTINE LFEXTN
@@ -1765,19 +1738,19 @@ C     (ADDR) and diffuse/scattered (ADDF) components of the direct beam.
 
 !     CHP - Added checks to prevent underflows 1/16/03
       IF (FRACSH .GT. 0.0) THEN
-!        IF ((KDIRBL*SQV*XLAI/FRACSH) .LT. 20.) THEN
+        IF ((KDIRBL*SQV*XLAI/FRACSH) .LT. 20.) THEN
           ADIR = FRACSH * (1.0-REFDR) * RADDIR *
      &    (1.0-EXP(-KDIRBL*SQV*XLAI/FRACSH))
-!        ELSE
-!          ADIR = 0.0
-!        ENDIF
+        ELSE
+          ADIR = 0.0
+        ENDIF
 
-!        IF ((KDIRBL*XLAI/FRACSH) .LT. 20.) THEN
+        IF ((KDIRBL*XLAI/FRACSH) .LT. 20.) THEN
           ADDR = FRACSH * (1.0-SCVR) * RADDIR *
      &    (1.0-EXP(-KDIRBL*XLAI/FRACSH))
-!        ELSE
-!          ADDR = 0.0
-!        ENDIF
+        ELSE
+          ADDR = 0.0
+        ENDIF
 C-KRT****************************
 C-KRT   ADDF = ADIR - ADDR
 !-CHP   ADDF = MAX(0.0,ADIR-ADDR)
@@ -1786,19 +1759,19 @@ C-KRT   ADDF = ADIR - ADDR
 !          ADDF = 0.0
 !        ENDIF
 C-KRT****************************
-!        IF ((KDIRBL*SQV*LAISL/FRACSH) .LT. 20.) THEN
+        IF ((KDIRBL*SQV*LAISL/FRACSH) .LT. 20.) THEN
           ADIRSL = FRACSH * (1.0-REFDR) * RADDIR *
      &    (1.0-EXP(-KDIRBL*SQV*LAISL/FRACSH))
-!        ELSE
-!          ADIRSL = 0.0
-!        ENDIF
+        ELSE
+          ADIRSL = 0.0
+        ENDIF
 
-!        IF ((KDIRBL*LAISL/FRACSH) .LT. 20.) THEN
+        IF ((KDIRBL*LAISL/FRACSH) .LT. 20.) THEN
           ADDRSL = FRACSH * (1.0-SCVR) * RADDIR *
      &    (1.0-EXP(-KDIRBL*LAISL/FRACSH))
-!        ELSE
-!          ADDRSL = 0.0
-!        ENDIF
+        ELSE
+          ADDRSL = 0.0
+        ENDIF
 C-KRT************************************
 C-KRT   ADDFSL = ADIRSL - ADDRSL
 C-KRT   ADDFSH = ADDF - ADDFSL
@@ -1884,32 +1857,16 @@ C     shaded leaves and soil.  The average sunlit radiation =RABS(2).
 
       RADSS = INCSOI * (1.0-ALBEDO)
 C     RADSH = (ADDF+ADIF+AREF) / XLAI
-C FO/GH 11/14/2020 Code protections for divisions by zero.
-      IF(LAISH .GT. 0.0) THEN
-          RADSH = (ADDFSH+ADIFSH+AREFSH) / LAISH
-      ELSE
-          RADSH = 0.0
-      ENDIF
-      
-C FO/GH 11/14/2020 Code protections for divisions by zero.
-      IF(LAISL .GT. 0.0) THEN
-          RDIFSL = (ADDFSL+ADIFSL+AREFSL) / LAISL
-      ELSE
-          RDIFSL = 0.0
-      ENDIF
+      RADSH = (ADDFSH+ADIFSH+AREFSH) / LAISH
+      RDIFSL = (ADDFSL+ADIFSL+AREFSL) / LAISL
 
       OAV = KDIRBL * SINB
-C FO/GH 11/14/2020 Code protections for divisions by zero.
-      IF(SINB .GT. 0.0) THEN
-        DO I=1,3
-          O = OAV + SQRT(0.15)*RNG*(2-I)
+      DO I=1,3
+        O = OAV + SQRT(0.15)*RNG*(2-I)
 C       RADSUN(I) = RADSH + (1.-SCVR)*RADDIR*O/SINB
-          RADSUN(I) = RDIFSL + (1.-SCVR)*RADDIR*O/SINB
-        ENDDO
-      ELSE
-          RADSUN = 0.0
-      ENDIF
-      
+        RADSUN(I) = RDIFSL + (1.-SCVR)*RADDIR*O/SINB
+      ENDDO
+
 C     Set radiation array and calculate ratios of components.
 
       IF (RADHR .GT. 0.0) THEN
@@ -1926,13 +1883,8 @@ C     Energy balance check (RADTOT=RADHR).
 
       RADTOT = ATOT + REFTOT + RADSS
       RADTOT = RADSH*LAISH + RADSUN(2)*LAISL + REFTOT + RADSS
-      
-C FO/GH 11/14/2020 Code protections for divisions by zero.
-      IF(SINB .GT. 0.0) THEN
-        RADTOT = RADSH*LAISH + RDIFSL*LAISL + REFTOT + RADSS +
+      RADTOT = RADSH*LAISH + RDIFSL*LAISL + REFTOT + RADSS +
      &  (1.0-SCVR)*RADDIR*OAV/SINB*LAISL
-      ENDIF
-     
 
       RETURN
       END SUBROUTINE CANABS

@@ -16,8 +16,7 @@
 
       IMPLICIT NONE
 
-      CHARACTER(LEN=1) ISWDIS
-      CHARACTER(LEN=6),PARAMETER::ERRKEY = 'CSYCA '
+      CHARACTER(LEN=1) ISWDIS      
       
       INTEGER CN          , ON          , RN          , SN          , TN  
       INTEGER CSYEARDOY   , TVILENT                                                           ! Integer function calls.        
@@ -43,8 +42,7 @@
 
         ! Planting date information
         CALL XREADC(FILEIO,TN,RN,SN,ON,CN,'PLANT',iplti)
-!       IF(IPLTI.EQ.'A'.OR.IPLTI.EQ.'a')THEN
-        IF(IPLTI.EQ.'A'.OR.IPLTI.EQ.'a'.OR.IPLTI.EQ.'F'.OR.IPLTI.EQ.'f')THEN
+        IF(IPLTI == 'A'.OR.IPLTI == 'a')THEN
           CALL XREADI(FILEIO,TN,RN,SN,ON,CN,'PFRST',pwdinf)
           CALL XREADI(FILEIO,TN,RN,SN,ON,CN,'PLAST',pwdinl)
           CALL XREADR(FILEIO,TN,RN,SN,ON,CN,'PH2OL',swpltl)
@@ -91,10 +89,7 @@
             hnumber = i - 1
             EXIT  
           ENDIF
-!  FO - 05/07/2020 Add new Y4K subroutine call to convert YRDOY          
-          !hyeardoy(i) = CSYEARDOY(hyrdoy(i))
-          CALL Y4K_DOY(hyrdoy(i),FILEX,0,ERRKEY,3)
-          hyeardoy(i) = hyrdoy(i)
+          hyeardoy(i) = CSYEARDOY(hyrdoy(i))
         ENDDO 
         IF (hnumber <= 1) HOP(1) = 'F' 
         yeardoyharf = -99
@@ -214,34 +209,22 @@
         CALL CSUCASE (CROP)
         CALL CSUCASE (EXCODE)
 
-!  FO - 05/07/2020 Add new Y4K subroutine call to convert YRDOY
-        !HLAST = CSYEARDOY(hlast)
-        CALL Y4K_DOY(hlast,FILEX,0,ERRKEY,3)
-        !HFIRST = CSYEARDOY(hfirst)
-        CALL Y4K_DOY(hfirst,FILEX,0,ERRKEY,3)
-        !PWDINF = CSYEARDOY(pwdinf)
-        CALL Y4K_DOY(pwdinf,FILEX,0,ERRKEY,3)
-        !PWDINL = CSYEARDOY(pwdinl)
-        CALL Y4K_DOY(pwdinl,FILEX,0,ERRKEY,3)
+        HLAST = CSYEARDOY(hlast)
+        HFIRST = CSYEARDOY(hfirst)
+        PWDINF = CSYEARDOY(pwdinf)
+        PWDINL = CSYEARDOY(pwdinl)
         DO L = 1,DINX
-          !DIDAT(L) = CSYEARDOY(DIDAT(L))
-          CALL Y4K_DOY(DIDAT(L),FILEX,0,ERRKEY,3)
+          DIDAT(L) = CSYEARDOY(DIDAT(L))
         ENDDO
         DO L = 1,DCNX
-          !DCDAT(L) = CSYEARDOY(DCDAT(L))
-          CALL Y4K_DOY(DCDAT(L),FILEX,0,ERRKEY,3)
+          DCDAT(L) = CSYEARDOY(DCDAT(L))
         ENDDO
 
-!        CALL CSYR_DOY(PWDINF,PWYEARF,PWDOYF)
-!        CALL CSYR_DOY(PWDINL,PWYEARL,PWDOYL)
-!        CALL CSYR_DOY(HFIRST,HYEARF,HDOYF)
-!        CALL CSYR_DOY(HLAST,HYEARL,HDOYL)
-!        CALL CSYR_DOY(PDATE,PLYEARTMP,PLDAY)
-        CALL YR_DOY(PWDINF,PWYEARF,PWDOYF)
-        CALL YR_DOY(PWDINL,PWYEARL,PWDOYL)
-        CALL YR_DOY(HFIRST,HYEARF,HDOYF)
-        CALL YR_DOY(HLAST,HYEARL,HDOYL)
-        CALL YR_DOY(PDATE,PLYEARTMP,PLDAY)
+        CALL CSYR_DOY(PWDINF,PWYEARF,PWDOYF)
+        CALL CSYR_DOY(PWDINL,PWYEARL,PWDOYL)
+        CALL CSYR_DOY(HFIRST,HYEARF,HDOYF)
+        CALL CSYR_DOY(HLAST,HYEARL,HDOYL)
+        CALL CSYR_DOY(PDATE,PLYEARTMP,PLDAY)
         PLYEARREAD = PLYEARTMP
 
 !-----------------------------------------------------------------------

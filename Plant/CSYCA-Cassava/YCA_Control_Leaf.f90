@@ -142,12 +142,7 @@
     real function dailyGrowth()
         implicit none
         
-        IF (WFG < 1.0) THEN
-            dailyGrowth = (TTLFLife*EMRGFR)*(1.0 + (WFSU * (1.0 - WFG)))
-        ELSE 
-            dailyGrowth = (TTLFLife*EMRGFR)
-        ENDIF
-        
+        dailyGrowth = TTLFLife*EMRGFR
     end function dailyGrowth
     
     ! real value of leaf total senesced weight

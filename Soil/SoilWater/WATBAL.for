@@ -1,8 +1,10 @@
 C=======================================================================
-C  COPYRIGHT 1998-2020 DSSAT Foundation
+C  COPYRIGHT 1998-2010 The University of Georgia, Griffin, Georgia
 C                      University of Florida, Gainesville, Florida
-C                      International Fertilizer Development Center
-C                    
+C                      Iowa State University, Ames, Iowa
+C                      International Center for Soil Fertility and 
+C                       Agricultural Development, Muscle Shoals, Alabama
+C                      University of Guelph, Guelph, Ontario
 C  ALL RIGHTS RESERVED
 C=======================================================================
 C=======================================================================
@@ -176,8 +178,8 @@ C=======================================================================
       MEEVP  = ISWITCH % MEEVP
 
       IF (ISWWAT .EQ. 'Y') THEN
-        IF (CONTROL%MULTI .GT. 1 .OR. CONTROL%RNMODE .EQ. 'Y') THEN
-        !Re-read initial conditions if multi-season or forecast run
+        IF (CONTROL%MULTI .GT. 1) THEN
+        !Re-read initial conditions if multi-season run
           CALL IPWBAL (CONTROL, DLAYR, LL, NLAYR, SAT,    !Input
      &    SW, WTDEP)                                      !Output
         ENDIF

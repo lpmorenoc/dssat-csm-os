@@ -182,7 +182,6 @@
       PARAMETER     (LNUMX = 100) ! Maximum number of leaves       #
       INTEGER       SUMNUM        ! Number of variables passed     #
       PARAMETER     (SUMNUM = 37) ! Number of variables passed     #
-      CHARACTER*6   ERRKEY
 
       INTEGER       A1DATM        ! Apex 1cm date,measured         #
       INTEGER       ADAP          ! Anthesis,days after planting   d
@@ -210,7 +209,7 @@
       REAL          AMDAYM        ! Anthesis-maturity period,meas  d
       REAL          AMDAYS        ! Anthesis-maturity period,sim   d
       REAL          ANDEM         ! Crop N demand                  kg/ha
-      CHARACTER*250 ARG           ! Argument component             text
+      CHARACTER*128 ARG           ! Argument component             text
       INTEGER       ARGLEN        ! Argument component length      #
       REAL          ASTAGE        ! Stage,start of anthesis/silk   #
       REAL          ASTAGEND      ! Stage at end of anthesis       #
@@ -236,7 +235,7 @@
       REAL          CARBOAT       ! Carbohydrate available,tops    g/p
       REAL          CARBOC        ! Carbohydrate assimilated,cum   g/p
       INTEGER       CCOUNTV       ! Counter for days after max lf# #
-      CHARACTER*250 CFGDFILE      ! Configuration directory+file   text
+      CHARACTER*120 CFGDFILE      ! Configuration directory+file   text
       CHARACTER*1   CFLFAIL       ! Control flag for failure       text
       CHARACTER*1   CFLHEAD       ! Control flag to write headers  code
       CHARACTER*1   CFLINIT       ! Control flag for initiation    text
@@ -280,8 +279,8 @@
       CHARACTER*1   CSWDIS        ! Control switch,disease         code
       INTEGER       CSYDOY        ! Yr+Doy output from function    #
       INTEGER       CSYEARDOY     ! Cropsim function ouptut        #
-      CHARACTER*250 CUDIRFLE      ! Cultivar directory+file        text
-      CHARACTER*250 CUDIRFLP      ! Cultivar directory+file,prev   text
+      CHARACTER*93  CUDIRFLE      ! Cultivar directory+file        text
+      CHARACTER*93  CUDIRFLP      ! Cultivar directory+file,prev   text
       CHARACTER*12  CUFILE        ! Cultivar file                  text
       REAL          CUMDEP        ! Cumulative depth               cm
       REAL          CUMDU         ! Cumulative development units   #
@@ -352,8 +351,8 @@
       REAL          DUL(20)       ! Drained upper limit for soil   #
       INTEGER       DYNAMIC       ! Program control variable       text
       INTEGER       DYNAMICI      ! Module control,internal        code
-      CHARACTER*250 ECDIRFLE      ! Ecotype directory+file         text
-      CHARACTER*250 ECDIRFLP      ! Ecotype directory+file,prev    text
+      CHARACTER*64  ECDIRFLE      ! Ecotype directory+file         text
+      CHARACTER*64  ECDIRFLP      ! Ecotype directory+file,prev    text
       CHARACTER*12  ECFILE        ! Ecotype filename               text
       CHARACTER*6   ECONO         ! Ecotype code                   text
       CHARACTER*6   ECONOP        ! Ecotype code,previous          text
@@ -391,14 +390,14 @@
       LOGICAL       FEXISTA       ! File A existence indicator     code
       LOGICAL       FEXISTT       ! File T existence indicator     code
       LOGICAL       FFLAG         ! Temp file existance indicator  code
-      CHARACTER*250 FILEA         ! Name of A-file                 text
-      CHARACTER*250 FILEADIR      ! Name of A-file directory       text
-      CHARACTER*250 FILEIO        ! Name of input file,after check text
-      CHARACTER*250 FILEIOIN      ! Name of input file             text
+      CHARACTER*120 FILEA         ! Name of A-file                 text
+      CHARACTER*107 FILEADIR      ! Name of A-file directory       text
+      CHARACTER*120 FILEIO        ! Name of input file,after check text
+      CHARACTER*120 FILEIOIN      ! Name of input file             text
       CHARACTER*3   FILEIOT       ! Type of input file             text
       INTEGER       FILELEN       ! Length of file name            #
-      CHARACTER*250 FILENEW       ! Temporary name of file         text
-      CHARACTER*250 FILET         ! Name of T-file                 text
+      CHARACTER*120 FILENEW       ! Temporary name of file         text
+      CHARACTER*120 FILET         ! Name of T-file                 text
       REAL          FLN           ! Final leaf number,Aitken calc. #
       REAL          FLNMODEL      ! Final leaf number              #
       CHARACTER*1   FNAME         ! File name switch (N->standard) code
@@ -406,7 +405,7 @@
       REAL          FNH4          ! Unitless ammonium supply index #
       REAL          FNO3          ! Unitless nitrate supply index  #
       INTEGER       FNUMLVS       ! File number,leaves             #
-!      INTEGER       FNUMREA       ! File number,reads.out file     #
+      INTEGER       FNUMREA       ! File number,reads.out file     #
       INTEGER       FNUMT         ! Number used for T-file         #
       INTEGER       FNUMTMP       ! File number,temporary file     #
       INTEGER       FNUMWRK       ! File number,work file          #
@@ -813,7 +812,7 @@
       REAL          PARIUEM       ! PARUE,actual,at maturity       g/MJ
       REAL          PARUR         ! PAR utilization effic,reprod   g/MJ
       REAL          PARUV         ! PAR utilization effic,veg      g/MJ
-      CHARACTER*250 PATHCR        ! Path to genotype files         text
+      CHARACTER*80  PATHCR        ! Path to genotype files         text
       INTEGER       PATHL         ! Path length                    #
       REAL          PCARB         ! Potential carbon fixation      g/p
       REAL          PD(0:10)      ! Phase durations                deg.d
@@ -1049,8 +1048,8 @@
       REAL          SNPCMN(0:9)    ! Stem minimum N conc,stage     %
       REAL          SNPCS(0:9)    ! Stem standard N conc,stage     %
       INTEGER       SPDATM        ! Spike emergence date,measured  #
-      CHARACTER*250 SPDIRFLE      ! Species directory+file         text
-      CHARACTER*250 SPDIRFLP      ! Species directory+file,last    text
+      CHARACTER*64  SPDIRFLE      ! Species directory+file         text
+      CHARACTER*64  SPDIRFLP      ! Species directory+file,last    text
       CHARACTER*12  SPFILE        ! Species filename               text
       REAL          SRAD          ! Solar radiation                MJ/m2
       REAL          SRAD20        ! Solar radiation av,20 days     MJ/m2
@@ -1384,10 +1383,6 @@
       REAL          VWAD          ! Vegetative canopy weight       kg/ha
       REAL          VRNSTAGE      ! Vernalization stage            #
 
-!!     2021-02-14 chp
-!      REAL          Nuptake_daily !Daily N uptake (kg [N]/ha)
-!      REAL          NUAD_Y        !Yesterday's cumulative N uptake
-
       PARAMETER     (BLANK = ' ')
       PARAMETER     (RUNINIT = 1)
       PARAMETER     (SEASINIT = 2)
@@ -1395,7 +1390,6 @@
       PARAMETER     (INTEGR = 4)
       PARAMETER     (OUTPUT = 5)
       PARAMETER     (SEASEND = 6)
-      PARAMETER     (ERRKEY = 'CSCER ')
 
       ! Condition at end of phase
       DATA BASTGNAM/'Max Prim  ','End Veg   ','End Ear Gr',
@@ -1453,11 +1447,10 @@
             WRITE(fnumwrk,*) 'CSCER  Cropsim-Ceres Crop Module '
           ENDIF
         ENDIF
-
-! FO/LPM/GH/CHP - 12-04-2020 - READS.out file removed from CSM output.          
-!        ! Set Reads file #
-!        IF (FNUMREA.LE.0.OR.FNUMREA.GT.1000) 
-!     &      CALL Getlun('READS.OUT',fnumrea)
+          
+        ! Set Reads file #
+        IF (FNUMREA.LE.0.OR.FNUMREA.GT.1000) 
+     &      CALL Getlun('READS.OUT',fnumrea)
         ! Set temporary file #
         IF (FNUMTMP.LE.0.OR.FNUMTMP.GT.1000) 
      &      CALL Getlun ('FNAMETMP',fnumtmp)
@@ -1761,34 +1754,24 @@
 
         ! Planting information
         CALL XREADC(FILEIO,TN,RN,SN,ON,CN,'PLANT',iplti)
-!       IF(IPLTI.EQ.'A')THEN
-        IF(IPLTI.EQ.'A' .OR. IPLTI.EQ.'F')THEN
+        IF(IPLTI.EQ.'A')THEN
           CALL XREADI(FILEIO,TN,RN,SN,ON,CN,'PFRST',pwdinf)
-C  FO - 05/07/2020 Add new Y4K subroutine call to convert YRDOY          
-          !PWDINF = CSYEARDOY(pwdinf)
-          CALL Y4K_DOY(pwdinf,FILEIO,0,ERRKEY,3)
-!          CALL CSYR_DOY(PWDINF,PWYEARF,PWDOYF)
-          CALL YR_DOY(PWDINF,PWYEARF,PWDOYF)
+          PWDINF = CSYEARDOY(pwdinf)
+          CALL CSYR_DOY(PWDINF,PWYEARF,PWDOYF)
           CALL XREADI(FILEIO,TN,RN,SN,ON,CN,'PLAST',pwdinl)
-          !PWDINL = CSYEARDOY(pwdinl)
-          CALL Y4K_DOY(pwdinl,FILEIO,0,ERRKEY,3)
-!          CALL CSYR_DOY(PWDINL,PWYEARL,PWDOYL)
-          CALL YR_DOY(PWDINL,PWYEARL,PWDOYL)
+          PWDINL = CSYEARDOY(pwdinl)
+          CALL CSYR_DOY(PWDINL,PWYEARL,PWDOYL)
           CALL XREADR(FILEIO,TN,RN,SN,ON,CN,'PH2OL',swpltl)
           CALL XREADR(FILEIO,TN,RN,SN,ON,CN,'PH2OU',swplth)
           CALL XREADR(FILEIO,TN,RN,SN,ON,CN,'PH2OD',swpltd)
           CALL XREADR(FILEIO,TN,RN,SN,ON,CN,'PSTMX',ptx)
           CALL XREADR(FILEIO,TN,RN,SN,ON,CN,'PSTMN',pttn)
           CALL XREADI(FILEIO,TN,RN,SN,ON,CN,'HFRST',hfirst)
-          !HFIRST = CSYEARDOY(hfirst)
-          CALL Y4K_DOY(hfirst,FILEIO,0,ERRKEY,3)
-!          CALL CSYR_DOY(HFIRST,HYEARF,HDOYF)
-          CALL YR_DOY(HFIRST,HYEARF,HDOYF)
+          HFIRST = CSYEARDOY(hfirst)
+          CALL CSYR_DOY(HFIRST,HYEARF,HDOYF)
           CALL XREADI(FILEIO,TN,RN,SN,ON,CN,'HLAST',hlast)
-          !HLAST = CSYEARDOY(hlast)
-          CALL Y4K_DOY(hlast,FILEIO,0,ERRKEY,3)
-!          CALL CSYR_DOY(HLAST,HYEARL,HDOYL)
-          CALL YR_DOY(HLAST,HYEARL,HDOYL)
+          HLAST = CSYEARDOY(hlast)
+          CALL CSYR_DOY(HLAST,HYEARL,HDOYL)
           !IF (DYNAMIC.EQ.SEASINIT) THEN
           ! IF (PWDINF.GT.0 .AND. PWDINF.LT.YEARDOY) THEN
           !   WRITE (fnumwrk,*) ' '
@@ -1807,8 +1790,7 @@ C  FO - 05/07/2020 Add new Y4K subroutine call to convert YRDOY
         ELSE
           CALL XREADI(FILEIO,TN,RN,SN,ON,CN,'PDATE',pdate)
           CALL XREADI(FILEIO,TN,RN,SN,ON,CN,'EDATE',emdatm)
-!          CALL CSYR_DOY(PDATE,PLYEAR,PLDAY)
-          CALL YR_DOY(PDATE,PLYEAR,PLDAY)
+          CALL CSYR_DOY(PDATE,PLYEAR,PLDAY)
           PLYEARREAD = PLYEAR
           
           ! CHP 2/13/2009 - increment yr for seasonal and sequence runs
@@ -1818,14 +1800,9 @@ C  FO - 05/07/2020 Add new Y4K subroutine call to convert YRDOY
           ! CHP 5/4/09 - for DSSAT runs, always set PLYEAR = YEAR
           ! 09/28/2009 CHP need to account for planting date >> simulation date.
           !  IF (FILEIOT(1:2).EQ.'DS') THEN
-          !LPM 07/17/20 - account for simulation date when is a year before planting date
-          !Avoid wrong value of yeardoyharf
-          IF (FILEIOT(1:2) == 'DS' .AND. YEAR > PLYEAR) THEN
-              IF (YEAR < PLYEARREAD) THEN
-                  PLYEAR = PLYEARREAD
-              ELSE
-                  PLYEAR = YEAR
-              ENDIF
+        
+          IF (FILEIOT(1:2).EQ.'DS' .AND. YEAR > PLYEAR) THEN
+            PLYEAR = YEAR
           ENDIF
 
           IF (PLDAY.GE.DOY) THEN
@@ -1861,13 +1838,12 @@ C  FO - 05/07/2020 Add new Y4K subroutine call to convert YRDOY
           OPEN (UNIT = FNUMWRK,FILE = 'WORK.OUT', STATUS = 'NEW',
      &      ACTION = 'READWRITE')
           WRITE(FNUMWRK,*) 'CSCER  Cropsim-Ceres Crop Module '
-! FO/LPM/GH/CHP - 12-04-2020 - READS.out file removed from CSM output.          
-!          CLOSE (FNUMREA, STATUS = 'DELETE')
-!          OPEN (UNIT = FNUMREA,FILE = 'READS.OUT', STATUS = 'NEW',
-!     &      ACTION = 'READWRITE')
-!          WRITE(FNUMREA,*)' '
-!          WRITE(FNUMREA,*)
-!     &      ' File closed and re-opened to avoid generating huge file'
+          CLOSE (FNUMREA, STATUS = 'DELETE')
+          OPEN (UNIT = FNUMREA,FILE = 'READS.OUT', STATUS = 'NEW',
+     &      ACTION = 'READWRITE')
+          WRITE(FNUMREA,*)' '
+          WRITE(FNUMREA,*)
+     &      ' File closed and re-opened to avoid generating huge file'
         ENDIF
 
         ! Create composite run variable
@@ -1942,11 +1918,8 @@ C  FO - 05/07/2020 Add new Y4K subroutine call to convert YRDOY
         CALL UCASE (EXCODE)
 
         CALL XREADI (FILEIO,TN,RN,SN,ON,CN,'HDATE',yrharf)
-        !YEARHARF = CSYEARDOY(yrharf)
-C  FO - 05/07/2020 Add new Y4K subroutine call to convert YRDOY        
-        CALL Y4K_DOY(yrharf,FILEIO,0,ERRKEY,3)
-!        CALL CSYR_DOY(YRHARF,HYEAR,HDAY)
-        CALL YR_DOY(YRHARF,HYEAR,HDAY)
+        YEARHARF = CSYEARDOY(yrharf)
+        CALL CSYR_DOY(YRHARF,HYEAR,HDAY)
         PLTOHARYR = HYEAR - PLYEARREAD
         ! Upgrade harvest date for seasonal and sequential runs
         yearharf = (plyear+pltoharyr)*1000 +hday
@@ -1969,9 +1942,7 @@ C  FO - 05/07/2020 Add new Y4K subroutine call to convert YRDOY
         NFERT = 0
         DO I = 1, 200
           IF (anfer(I).LE.0.0) EXIT
-C  FO - 05/07/2020 Add new Y4K subroutine call to convert YRDOY          
-          !FDAY(I) = CSYEARDOY(fday(i))
-          CALL Y4K_DOY(fday(i),FILEIO,0,ERRKEY,3)
+          FDAY(I) = CSYEARDOY(fday(i))
           NFERT = NFERT + 1
         ENDDO
 
@@ -2514,17 +2485,14 @@ C  FO - 05/07/2020 Add new Y4K subroutine call to convert YRDOY
         WRITE(fnumwrk,'(A23,A10)')'  EXPERIMENT           ',excode
         WRITE(fnumwrk,'(A21, I3)')'  TREATMENT          ',tn
         WRITE(fnumwrk,'(A23,I1)') '  CROP COMPONENT       ',CN
-!       IF (IPLTI.NE.'A') THEN
-        IF (IPLTI.NE.'A' .AND. IPLTI.NE.'F') THEN
+        IF (IPLTI.NE.'A') THEN
           WRITE(fnumwrk,'(A23,I7)') '  PLANTING DATE TARGET ',YEARPLTP
         ELSE  
           WRITE(fnumwrk,'(A40)')
      &      '  AUTOMATIC PLANTING.  THRESHOLD DAYS:  '
-!          CALL CSYR_DOY(PWDINF,TVI1,TVI2)
-          CALL YR_DOY(PWDINF,TVI1,TVI2)
+          CALL CSYR_DOY(PWDINF,TVI1,TVI2)
           WRITE(fnumwrk,'(A14,I7)') '   EARLIEST   ',TVI2
-!          CALL CSYR_DOY(PWDINL,TVI1,TVI2)
-          CALL YR_DOY(PWDINL,TVI1,TVI2)
+          CALL CSYR_DOY(PWDINL,TVI1,TVI2)
           WRITE(fnumwrk,'(A14,I7)') '   LATEST     ',TVI2
         ENDIF
         
@@ -3533,9 +3501,7 @@ C  FO - 05/07/2020 Add new Y4K subroutine call to convert YRDOY
         ! YEARPLTCSM established by CSM;brought across in argument list.
         ! LAH 29/06/11 Added automatic as well
         IF (FILEIOT.EQ.'DS4') THEN
-!         IF (IPLTI.EQ.'A' .OR. (INDEX('FQN',RNMODE) > 0)) THEN
-          IF (IPLTI.EQ.'A' .OR. IPLTI.EQ.'F' .OR. 
-     &       (INDEX('FQNY',RNMODE) > 0)) THEN
+          IF (IPLTI.EQ.'A' .OR. (INDEX('FQN',RNMODE) > 0)) THEN
             YEARPLTP = YEARPLTCSM
           ENDIF  
         ENDIF
@@ -3556,10 +3522,7 @@ C  FO - 05/07/2020 Add new Y4K subroutine call to convert YRDOY
           AVGSW = 0.0
           IF(YEARPLTP.GT.0 .AND. YEARPLTP.LT.9000000)THEN
             IF(YEARDOY.EQ.YEARPLTP)THEN
-C  FO - 05/07/2020 Add new Y4K subroutine call to convert YRDOY              
-              !YEARPLT = CSYEARDOY(YEARPLTP)
-              CALL Y4K_DOY(YEARPLTP,FILEIO,0,ERRKEY,3)
-              YEARPLT = YEARPLTP
+              YEARPLT = CSYEARDOY(YEARPLTP)
               PLTPOP = PLTPOPP
               TNUM = 1.0
             ENDIF
@@ -4211,25 +4174,10 @@ C  FO - 05/07/2020 Add new Y4K subroutine call to convert YRDOY
               RTWTGRS = 0.0
               ! Determine potential new concentration
               ! NB. Chaff is simply a part of stem;hence not separate here
-
-!----------------------------------------------------------------
-! palderman commit of 2019-07-29 in private repo e5c680514bce4af85d9f463c11a3e5ad522252f8
-!              IF (LFWT+GROLF+STWT+GROST.GT.0.0) TVR1 = ! Conc
-!     &          (RSWT+GRORS-SENRS)/
-!     &          ((LFWT+GROLF-SENLFG-SENLFGRS)
-!     &          +(STWT+GROST)+(RSWT+GRORS))
-
-              IF (((LFWT+GROLF-SENLFG-SENLFGRS) ! Prevent divide by zero
-     &              +(STWT+GROST)+(RSWT+GRORS)) .GT. 0.0)THEN
-                  TVR1 = ! Conc
-     &              (RSWT+GRORS-SENRS)/
-     &              ((LFWT+GROLF-SENLFG-SENLFGRS)
-     &              +(STWT+GROST)+(RSWT+GRORS))
-              ELSE
-                  TVR1 = 0.0
-              END IF
-!----------------------------------------------------------------
-
+              IF (LFWT+GROLF+STWT+GROST.GT.0.0) TVR1 = ! Conc
+     &          (RSWT+GRORS-SENRS)/
+     &          ((LFWT+GROLF-SENLFG-SENLFGRS)
+     &          +(STWT+GROST)+(RSWT+GRORS))
               IF(TVR1.LT.0.0.AND.TVR1.GT.-1.0E-07) TVR1 = 0.0
               IF (TVR1.GT.RSPCX/100.0) THEN   ! If potential>max        
                 TVR2 = RSWT+GRORS-SENRS       ! What rswt could be
@@ -5035,8 +4983,7 @@ C  FO - 05/07/2020 Add new Y4K subroutine call to convert YRDOY
      &       LFWT*(1.0-LSHFR)*RSCLX*CUMDU/(Pd(1)+pd(2)+pd(3)+pd(4)))
             LSHRSWT = AMIN1(RSWT-LLRSWT,
      &       LFWT*LSHFR*RSCLX*CUMDU/(Pd(1)+pd(2)+pd(3)+pd(4)))
-            IF (STWT.GT.0.0) THEN
-!-GH        IF (STWT+CHWT.GT.0.0) THEN
+            IF (STWT+CHWT.GT.0.0) THEN
               STRSWT = (RSWT-LLRSWT-LSHRSWT)*(STWT-CHWT)/STWT
               CHRSWT = (RSWT-LLRSWT-LSHRSWT)*CHWT/STWT
             ELSE
@@ -6074,12 +6021,7 @@ C  FO - 05/07/2020 Add new Y4K subroutine call to convert YRDOY
           IF (ISTAGE.EQ.5.AND.ISTAGEP.EQ.4) THEN
             WRITE(fnumwrk,*)'Start of linear kernel growth    '
             WRITE(fnumwrk,*)' Original kernel growth rate (G2) ',g2
-!           chp handle zero divide
-            IF (GRNUM .GT. 1.E-6) THEN
-              G2 = (G2KWT-(GRWT/GRNUM)*1000.0) / (PD(5)*(6.0-XSTAGE))
-            ELSE
-              G2 = (G2KWT) / (PD(5)*(6.0-XSTAGE))
-            ENDIF
+            G2 = (G2KWT-(GRWT/GRNUM)*1000.0) / (PD(5)*(6.0-XSTAGE))
             WRITE(fnumwrk,*)' Adjusted kernel growth rate (G2) ',g2
             WRITE(fnumwrk,*)' (Adjustment because growing at lag rate',
      &      ' for overlap into linear filling period)'
@@ -6248,7 +6190,7 @@ C  FO - 05/07/2020 Add new Y4K subroutine call to convert YRDOY
      &        ' VRNFD DYLFD')
      
               WRITE (NOUTPN,2251)
- 2251         FORMAT ('@YEAR DOY   DAS   DAP TMEAN  GSTD  NUAC',
+ 2251         FORMAT ('@YEAR DOY   DAS   DAP TMEAN  GSTD  NUAD',
      &        '  TNAD SDNAD  RNAD  CNAD  LNAD  SNAD  HNAD  HIND',
      &        ' RSNAD SNNPD SNN0D SNN1D',
      B        '  RN%D  LN%D  SN%D  HN%D SDN%D  VN%D',
@@ -6473,11 +6415,6 @@ C  FO - 05/07/2020 Add new Y4K subroutine call to convert YRDOY
          CALL LinklstPlGrf(vCsvlinePlGrf)
       END IF
  
-!!             2021-02-14 chp 
-!!             NUAD should be a daily variable, but here it's cumulative. 
-!!             Introduce a new variable that is daily.
-!              Nuptake_daily = NUAD - NUAD_Y
-
               ! Plant N outputs
               IF (ISWNIT.EQ.'Y') THEN
                 CALL Csopline(senn0c,sennal(0))
@@ -6494,8 +6431,6 @@ C  FO - 05/07/2020 Add new Y4K subroutine call to convert YRDOY
      &           F6.1,F6.2,
      &           2F6.2)')
      &           YEAR,DOY,DAS,DAP,TMEAN,ZSTAGE,NUAD,
-!    &           YEAR,DOY,DAS,DAP,TMEAN,ZSTAGE,
-!    &           Nuptake_daily,
      &           TNAD,SDNAD,
      &           RNAD,
      &           CNAD,LLNAD,SNAD,
@@ -6518,11 +6453,6 @@ C  FO - 05/07/2020 Add new Y4K subroutine call to convert YRDOY
       END IF 
 
               ENDIF  ! ISWNIT = Y
-
-!!             2021-02-14 chp 
-!!             Keep cumulative value for use tomorrow.
-!              NUAD_Y = NUAD
-
             ENDIF    ! IDETG.NE.'N'
             ENDIF    ! IDETG.NE.'N'.OR.IDETL.EQ.'0'
           ENDIF      ! MOD(FROPADJ)
@@ -6822,24 +6752,20 @@ C  FO - 05/07/2020 Add new Y4K subroutine call to convert YRDOY
               CNCHAR2(1:1) = CNCHAR(1:1)
             ENDIF
             
-!            CALL CSYR_DOY (STGDOY(7),PLYEAR,PLDAY)
-            CALL YR_DOY (STGDOY(7),PLYEAR,PLDAY)
+            CALL CSYR_DOY (STGDOY(7),PLYEAR,PLDAY)
             IF (ADAT.GT.0) THEN
-!              CALL CSYR_DOY (ADAT,AYEAR,ADAY)
-              CALL YR_DOY (ADAT,AYEAR,ADAY)
+              CALL CSYR_DOY (ADAT,AYEAR,ADAY)
             ELSE
               AYEAR = -99
               ADAY = -99
             ENDIF
             IF (STGDOY(5).GT.0) THEN
-!              CALL CSYR_DOY (STGDOY(5),MYEAR,MDAY)
-              CALL YR_DOY (STGDOY(5),MYEAR,MDAY)
+              CALL CSYR_DOY (STGDOY(5),MYEAR,MDAY)
             ELSE
               MYEAR = -99
               MDAY = -99
             ENDIF
-!            CALL CSYR_DOY (STGDOY(11),HAYEAR,HADAY)
-            CALL YR_DOY (STGDOY(11),HAYEAR,HADAY)
+            CALL CSYR_DOY (STGDOY(11),HAYEAR,HADAY)
             
 !-----------------------------------------------------------------------
             
@@ -7669,8 +7595,7 @@ C  FO - 05/07/2020 Add new Y4K subroutine call to convert YRDOY
               WRITE(*,9588)
               WRITE(*,9600)
               DO L = 7, 9
-!                CALL CSYR_DOY(STGDOY(L),YEAR,DOY)
-                CALL YR_DOY(STGDOY(L),YEAR,DOY)
+                CALL CSYR_DOY(STGDOY(L),YEAR,DOY)
                 CALL Calendar(year,doy,dom,month)
                 CNCTMP = 0.0
                 IF (CWADSTG(L).GT..0) CNCTMP = CNADSTG(L)/CWADSTG(L)*100
@@ -7682,8 +7607,7 @@ C  FO - 05/07/2020 Add new Y4K subroutine call to convert YRDOY
      &           NINT(CNADSTG(L)),CNCTMP,1.0-WFPAV(L),1.0-NFPAV(L)
               ENDDO
               DO L = 1, 6
-!                CALL CSYR_DOY(STGDOY(L),YEAR,DOY)
-                CALL YR_DOY(STGDOY(L),YEAR,DOY)
+                CALL CSYR_DOY(STGDOY(L),YEAR,DOY)
                 CALL Calendar(year,doy,dom,month)
                 CNCTMP = 0.0
                 IF (CWADSTG(L).GT..0) CNCTMP = CNADSTG(L)/CWADSTG(L)*100
@@ -8018,8 +7942,7 @@ C  FO - 05/07/2020 Add new Y4K subroutine call to convert YRDOY
               WRITE(fnumtmp,9588)
               WRITE(fnumtmp,9600)
               DO L = 7, 9
-!                 CALL CSYR_DOY(STGDOY(L),YEAR,DOY)
-                 CALL YR_DOY(STGDOY(L),YEAR,DOY)
+                 CALL CSYR_DOY(STGDOY(L),YEAR,DOY)
                  CALL Calendar(year,doy,dom,month)
                  CNCTMP = 0.0
                  IF (CWADSTG(L).GT.0.0) 
@@ -8032,8 +7955,7 @@ C  FO - 05/07/2020 Add new Y4K subroutine call to convert YRDOY
      &            NINT(CNADSTG(L)),CNCTMP,1.0-WFPAV(L),1.0-NFPAV(L)
               ENDDO
               DO L = 1, 6
-!                CALL CSYR_DOY(STGDOY(L),YEAR,DOY)
-                CALL YR_DOY(STGDOY(L),YEAR,DOY)
+                CALL CSYR_DOY(STGDOY(L),YEAR,DOY)
                 CALL Calendar(year,doy,dom,month)
                 CNCTMP = 0.0
                 IF (CWADSTG(L).GT.0.0)CNCTMP = CNADSTG(L)/CWADSTG(L)*100
@@ -9091,8 +9013,8 @@ C  FO - 05/07/2020 Add new Y4K subroutine call to convert YRDOY
      &'-Nitrogen--|--Phosphorus-|',/,
      &25X,'Span   Max   Min   Rad  [day]   Rain  Trans  Photo',9X,'Pho',
      &'to         Photo',/,
-     &25X,'days    Ã¸C    Ã¸C MJ/m2     hr     mm     mm  synth Growth ',
-     &' synth Growth  synth Growth',/,110('-'))
+     &25X,'days    øC    øC MJ/m2     hr     mm     mm  synth Growth  ',
+     &'synth Growth  synth Growth',/,110('-'))
 
  9588       FORMAT(
      &      /,' ...... DATE ......  GROWTH STAGE BIOMASS   LEAF  

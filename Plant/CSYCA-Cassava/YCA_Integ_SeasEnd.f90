@@ -94,7 +94,6 @@
         ! LAH Note that no reserves included in sancout
         ! SANCOUT = SNAD/(STWAD+STRSWAD + LPEWAD+LPERSWAD)  ! With rs
         IF (STWAD > ZERO) SANCOUT = SNAD/STWAD
-        IF (LLWAD > ZERO) LANCM = LLNAD/LLWAD
                 
         HWAD = SRWAD
         ! HWUD = SRWUD ! issue 50

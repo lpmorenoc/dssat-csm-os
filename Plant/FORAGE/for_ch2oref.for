@@ -87,23 +87,18 @@ C-----------------------------------------------------------------------
       READ(LUNIO,50) FILEC, PATHCR, FILEE, PATHEC
    50 FORMAT(/////,2(/,15X,A12,1X,A80))
 
-!!-----------------------------------------------------------------------
-!C    Read Soil Section - this caused an error for a crop rotation because
-!       there is no soil section after first rotation.
-!!-----------------------------------------------------------------------
-!      SECTION = '*SOIL'
-!      CALL FIND(LUNIO, SECTION, LNUM, FOUND)
-!      IF (FOUND .EQ. 0) THEN
-!        CALL ERROR(ERRKEY, 1, FILEIO, LINC)
-!       ENDIF
 !-----------------------------------------------------------------------
-C    Read Cultivars Section (need 2nd occurance!)
+C    Read Soil Section
 !-----------------------------------------------------------------------
-      SECTION = '*CULTI'
+      SECTION = '*SOIL'
       CALL FIND(LUNIO, SECTION, LNUM, FOUND)
       IF (FOUND .EQ. 0) THEN
         CALL ERROR(ERRKEY, 1, FILEIO, LINC)
-      ENDIF
+       ENDIF
+!-----------------------------------------------------------------------
+C    Read Cultivars Section
+!-----------------------------------------------------------------------
+      SECTION = '*CULTI'
       CALL FIND(LUNIO, SECTION, LNUM, FOUND)
       IF (FOUND .EQ. 0) THEN
         CALL ERROR(ERRKEY, 1, FILEIO, LINC)

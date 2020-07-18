@@ -1,5 +1,5 @@
 C=======================================================================
-C  COPYRIGHT 1998-2014 DSSAT Foundation      SUBROUTINE
+C  COPYRIGHT 1998-2014 DSSAT Foundation
 C                      University of Florida, Gainesville, Florida
 C                      International Fertilizer Development Center
 C                      Washington State University
@@ -20,7 +20,6 @@ C  04/01/2004 CHP/US Added Penman - Meyer routine for potential ET
 !  08/25/2006 CHP Add SALUS soil evaporation routine, triggered by new
 !                 FILEX parameter MESEV
 !  12/09/2008 CHP Remove METMP
-!  10/16/2020 CHP Cumulative "soil" evaporation includes mulch and flood evap
 C-----------------------------------------------------------------------
 C  Called by: Main
 C  Calls:     XTRACT, OPSPAM    (File SPSUBS.for)
@@ -57,9 +56,8 @@ C=======================================================================
 
       REAL CANHT, CO2, SRAD, TAVG, 
      &    TMAX, TMIN, WINDSP, XHLAI, XLAI
-      REAL CEF, CEM, CEO, CEP, CES, CET, CEVAP 
-      REAL EF, EM, EO, EP, ES, ET, EVAP 
-      REAL TRWU, TRWUP, U
+      REAL CEF, CEM, CEO, CEP, CES, CET, EF, EM, EO, EP, ES, ET, EVAP, 
+     &    TRWU, TRWUP, U
       REAL EOS, EOP, WINF, MSALB, ET_ALB
       REAL XLAT, TAV, TAMP, SRFTEMP
       REAL EORATIO, KSEVAP, KTRANS
@@ -82,8 +80,6 @@ C=======================================================================
       
 !     P Stress on photosynthesis
       REAL PSTRES1
-!     Hourly transpiration for MEEVP=H      
-      REAL, DIMENSION(TS)    :: ET0
 
 !-----------------------------------------------------------------------
 !     Define constructed variable types based on definitions in
@@ -152,13 +148,12 @@ C=======================================================================
 !***********************************************************************
       ELSEIF (DYNAMIC .EQ. SEASINIT) THEN
 !-----------------------------------------------------------------------
-      EF   = 0.0; CEF  = 0.0
-      EM   = 0.0; CEM  = 0.0
+      EF   = 0.0; CEF = 0.0
+      EM   = 0.0; CEM = 0.0
       EO   = 0.0; CEO  = 0.0
-      EP   = 0.0; EOP  = 0.0; CEP  = 0.0
-      ES   = 0.0; EOS  = 0.0; CES  = 0.0
+      EP   = 0.0; EOP = 0.0; CEP  = 0.0
+      ES   = 0.0; EOS = 0.0; CES  = 0.0
       ET   = 0.0; CET  = 0.0
-      EVAP = 0.0; CEVAP =0.0
       ES_LYR = 0.0
       SWDELTX = 0.0
       TRWU = 0.0
@@ -200,10 +195,9 @@ C=======================================================================
         END SELECT
 
 !       Initialize plant transpiration variables
-        CALL TRANS(DYNAMIC, MEEVP, 
-     &    CO2, CROP, EO, ET0, EVAP, KTRANS,               !Input
+        CALL TRANS(DYNAMIC, 
+     &    CO2, CROP, EO, EVAP, KTRANS, TAVG,              !Input
      &    WINDSP, XHLAI,                                  !Input
-     &    WEATHER,                                        !Input
      &    EOP)                                            !Output
       ENDIF
 
@@ -222,7 +216,7 @@ C=======================================================================
 !     Call OPSPAM to open and write headers to output file
       IF (IDETW .EQ. 'Y') THEN
         CALL OPSPAM(CONTROL, ISWITCH, FLOODWAT, TRWU,
-     &    CEF, CEM, CEO, CEP, CES, CET, CEVAP, EF, EM, 
+     &    CEF, CEM, CEO, CEP, CES, CET, EF, EM, 
      &    EO, EOP, EOS, EP, ES, ET, TMAX, TMIN, SRAD,
      &    ES_LYR, SOILPROP)
       ENDIF
@@ -234,7 +228,6 @@ C=======================================================================
       CALL PUT('SPAM', 'CEP', CEP)
       CALL PUT('SPAM', 'CES', CES)
       CALL PUT('SPAM', 'CET', CET)
-      CALL PUT('SPAM', 'CEVAP',CEVAP)
       CALL PUT('SPAM', 'EF',  EF)
       CALL PUT('SPAM', 'EM',  EM)
       CALL PUT('SPAM', 'EO',  EO)
@@ -297,13 +290,12 @@ C       and total potential water uptake rate.
           ELSE
             ET_ALB = MSALB
           ENDIF
-          
-           CALL PET(CONTROL, 
-     &       ET_ALB, XHLAI, MEEVP, WEATHER,  !Input for all
-     &       EORATIO, !Needed by Penman-Monteith
-     &       CANHT,   !Needed by dynamic Penman-Monteith
-     &       EO,      !Output
-     &       ET0)     !Output hourly Priestly-Taylor with VPD effect
+
+          CALL PET(CONTROL, 
+     &      ET_ALB, XHLAI, MEEVP, WEATHER,  !Input for all
+     &      EORATIO, !Needed by Penman-Monteith
+     &      CANHT,   !Needed by dynamic Penman-Monteith
+     &      EO)      !Output
 
 !-----------------------------------------------------------------------
 !         POTENTIAL SOIL EVAPORATION
@@ -393,10 +385,9 @@ C       and total potential water uptake rate.
 
 !            CASE DEFAULT
 !             For all models except ORYZA
-              CALL TRANS(RATE, MEEVP, 
-     &        CO2, CROP, EO, ET0, EVAP, KTRANS,           !Input
+              CALL TRANS(RATE, 
+     &        CO2, CROP, EO, EVAP, KTRANS, TAVG,          !Input
      &        WINDSP, XHLAI,                              !Input
-     &        WEATHER,                                    !Input
      &        EOP)                                        !Output
 !            END SELECT
             
@@ -484,7 +475,6 @@ C       and total potential water uptake rate.
         CEO = CEO + EO
         CEP = CEP + EP
         CES = CES + ES
-        CEVAP=CEVAP + EVAP
 C JULY 11 2017, KB AND BK TO GET CUM ET OUT  
             !    IF (MEEVP .EQ. 'Z') THEN
             !      CET = CET + EP + ES
@@ -496,7 +486,7 @@ C KB
 
       IF (IDETW .EQ. 'Y') THEN
         CALL OPSPAM(CONTROL, ISWITCH, FLOODWAT, TRWU,
-     &    CEF, CEM, CEO, CEP, CES, CET, CEVAP, EF, EM, 
+     &    CEF, CEM, CEO, CEP, CES, CET, EF, EM, 
      &    EO, EOP, EOS, EP, ES, ET, TMAX, TMIN, SRAD,
      &    ES_LYR, SOILPROP)
       ENDIF
@@ -509,7 +499,6 @@ C KB
       CALL PUT('SPAM', 'CES', CES)
       CALL PUT('SPAM', 'CET', CET)
       CALL PUT('SPAM', 'ET',  ET)
-      CALL PUT('SPAM', 'CEVAP', CEVAP)
 
 !***********************************************************************
 !***********************************************************************
@@ -548,7 +537,7 @@ C-----------------------------------------------------------------------
 !      END SELECT
 !
       CALL OPSPAM(CONTROL, ISWITCH, FLOODWAT, TRWU,
-     &    CEF, CEM, CEO, CEP, CES, CET, CEVAP, EF, EM, 
+     &    CEF, CEM, CEO, CEP, CES, CET, EF, EM, 
      &    EO, EOP, EOS, EP, ES, ET, TMAX, TMIN, SRAD,
      &    ES_LYR, SOILPROP)
 
@@ -568,7 +557,7 @@ C-----------------------------------------------------------------------
       ELSEIF (DYNAMIC .EQ. SEASEND) THEN
 C-----------------------------------------------------------------------
       CALL OPSPAM(CONTROL, ISWITCH, FLOODWAT, TRWU,
-     &    CEF, CEM, CEO, CEP, CES, CET, CEVAP, EF, EM, 
+     &    CEF, CEM, CEO, CEP, CES, CET, EF, EM, 
      &    EO, EOP, EOS, EP, ES, ET, TMAX, TMIN, SRAD,
      &    ES_LYR, SOILPROP)
 
@@ -601,7 +590,6 @@ C-----------------------------------------------------------------------
       CALL PUT('SPAM', 'CES', CES)
       CALL PUT('SPAM', 'CET', CET)
       CALL PUT('SPAM', 'ET',  ET)
-      CALL PUT('SPAM', 'CEVAP', CEVAP)
 
 !      CALL OPSTRESS(CONTROL, ET=ET, EP=EP)
 
