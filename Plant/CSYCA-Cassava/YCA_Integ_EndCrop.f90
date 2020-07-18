@@ -9,7 +9,7 @@
     
     SUBROUTINE YCA_Integ_EndCrop ( &
         ALBEDOS     , DLAYR       , EOP         , FERNIT      , ISWWAT      , LL          , NLAYR       , STGYEARDOY  , &
-        SW          , LAI         & 
+        SW          & 
         )
         
         USE ModuleDefs
@@ -22,7 +22,7 @@
         
         INTEGER NLAYR       , STGYEARDOY(0:19)
         
-        REAL    ALBEDOS     , DLAYR(NL)   , EOP         , FERNIT      , LL(NL)      , SW(NL)     , LAI    
+        REAL    ALBEDOS     , DLAYR(NL)   , EOP         , FERNIT      , LL(NL)      , SW(NL)        
     
         !-----------------------------------------------------------------------
         !         Determine if nitrogen fertilizer applied
@@ -124,7 +124,7 @@
             !HNUMAM = FLOAT(SRNOPD)*PLTPOP !issue 50
             !HNUMGM = FLOAT(SRNOPD)        !issue 50
             !HNUMPM = FLOAT(SRNOPD)        !issue 50
-            !BRNUMSH = BRNUMST
+            BRNUMSH = BRNUMST
             IF (SRWT > 0.0) HNPCM = SROOTN/SRWT*100.0
                     
         ENDIF    

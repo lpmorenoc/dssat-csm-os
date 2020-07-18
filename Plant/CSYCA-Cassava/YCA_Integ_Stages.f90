@@ -59,10 +59,9 @@
             TMEANE = TMEANEC/GEDAYSE
         ENDIF
         ! STAGES:Overall development
-        !LPM 11DEC2020 Add delay on branching due to N
         IF (DAG>=0) THEN !LPM 10JUL2017 To avoid accumulation of developmental units for branching before germination
             CUMDU = CUMDU + DU
-            DABR = DABR + (DU*AMIN1(WFG,NFG))
+            DABR = DABR + (DU*WFG)
         ENDIF
         
         ! BRANCH NUMBER     !LPM 07MAR15 This section was moved from CS_Growth_Part (has to be before of the estimation of brstage)       
@@ -79,51 +78,30 @@
                 TVR1 = FLOAT(INT(BRSTAGE))
             ENDIF
         ELSE
-            IF (PD(INT(BRSTAGE)) >= 0.0 .AND.(INT(BRSTAGE)+1) < PSX) THEN                                                          ! MSTG = KEYPSNUM
+            IF (PD(INT(BRSTAGE)) >= 0.0) THEN                                                          ! MSTG = KEYPSNUM
                 TVR1 = FLOAT(INT(BRSTAGE)) + (DABR-PSTART(INT(BRSTAGE)))/PD(INT(BRSTAGE)+1)              ! EQN 004 !LPM 17JUL19 use DABR instead of CUMDU 
             ELSE
                 TVR1 = FLOAT(INT(BRSTAGE))
-            ENDIF         
+            ENDIF        
         ENDIF    
         
-        
-        IF (INT(BRSTAGE) == 0.0) THEN
-            BRNUMST(INT(BRSTAGE)) = 1
-            BRNUMSHM = BRNUMST(INT(BRSTAGE))
-            DO L = 2,INT(SHNUM+2) ! L is shoot cohort,main=cohort 1
-               IF (SHNUM-FLOAT(L-1) > 0.0) THEN
-                   BRNUMSH(L) = BRNUMST(INT(BRSTAGE))*SHGR(L) * AMAX1(0.,AMIN1(FLOAT(L),SHNUM)-FLOAT(L-1))
-                   BRNUMSHM = BRNUMSHM + BRNUMSH(L)                             
-               ENDIF
-            ENDDO
-        ENDIF
-
         IF (INT(TVR1) > INT(BRSTAGEPREV)) THEN
             !IF (BRSTAGE == 0.0) THEN
             !    BRNUMST = 1                                                                         ! BRNUMST          ! Branch number/shoot (>forking) # (Actually the total number of apices)! to have the apex number by branch level
             !ELSEIF (BRSTAGE > 0.0) THEN
             !    BRNUMST = BRNUMST*BRFX(INT(BRSTAGE))                                                ! BRFX(PSX)        ! EQN 005 ! # of branches at each fork # (This is where new branch is initiated)
             !ENDIF
-            BRDAE(INT(TVR1)) = DAG !LPM 10JUL2017 To consider root and stem development after germination and before emergence (planting stick below-ground)
-            IF (BRSTAGE > 0.0) THEN
+            BRDAE(TVR1) = DAG !LPM 10JUL2017 To consider root and stem development after germination and before emergence (planting stick below-ground)
+            IF (BRSTAGE == 0.0) THEN
+            IF (BRSTAGE == 0.0) THEN
+                BRNUMST(TVR1) = 1                                                                                    ! BRNUMST          ! Branch number/shoot (>forking) # (Actually the total number of apices)
+            ELSEIF (BRSTAGE > 0.0) THEN
                 IF (BRFX(INT(TVR1)) <= 0.0) then 
                     BRFX(INT(TVR1)) = BRFX(INT(TVR1-1))                 !LPM 09JUN2015 To avoid number of branches 0 for BRSTAGE>6
-                ENDIF                                
-            !LPM 11DEC2020 to reduce # of branches due to water or N stress
-            !LPM 16FEB2021 avoid reduction in the number of branches of no more than 50% of the maximum branching
-                BRNUMST(INT(TVR1)) = BRNUMST(BRSTAGE)*BRFX(INT(TVR1))                    ! BRFX(PSX)        ! EQN 005 ! # of branches at each fork # (This is where new branch is initiated)
-                BRNUMSHM = BRNUMST(INT(TVR1))
+                endif                                
+                BRNUMST(TVR1) = BRNUMST(BRSTAGE)*BRFX(INT(TVR1))                                                ! BRFX(PSX)        ! EQN 005 ! # of branches at each fork # (This is where new branch is initiated)
             ENDIF
-            DO L = 2,INT(SHNUM+2) ! L is shoot cohort,main=cohort 1
-               IF (SHNUM-FLOAT(L-1) > 0.0) THEN
-                   BRNUMSH(L) = BRNUMST(TVR1)*SHGR(L) * AMAX1(0.,AMIN1(FLOAT(L),SHNUM)-FLOAT(L-1))
-                   BRNUMSHM = BRNUMSHM + BRNUMSH(L)                             
-               ENDIF
-            ENDDO
         ENDIF 
-        BRNUMSHM = BRNUMSHM*PLTPOP
-        
-
         
         !LPM 05JUN2015 DSTAGE is not used
         !IF (MEDEV == 'DEVU'.AND.PSTART(MSTG) > 0.0) THEN   !LPM 04MAR15 MSTG TO PSX
@@ -207,7 +185,7 @@
         
         ! Primary stages.   Calculated using Pstart
         IF (BRSTAGEPREV < 0.0) BRSTAGEPREV = 0.0
-        L = AMIN1(PSX, INT(BRSTAGEPREV) + 1)
+        L = INT(BRSTAGEPREV) + 1
         !IF (PSDAT(L) <= 0.0.AND.CUMDU >= PSTART(L)) THEN !LPM 24APR2016 Using DABR instead of CUMDU
         IF (PSDAT(L) <= 0.0.AND.DABR >= PSTART(L)) THEN
             PSDAT(L) = YEARDOY

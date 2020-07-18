@@ -11,12 +11,14 @@
     USE ModuleDefs
     type YCA_VPD_type
         
-        TYPE (ControlType) :: CONTROL    ! Defined in ModuleDefs
-        TYPE (WeatherType) :: WEATHER    ! Defined in ModuleDefs
-        TYPE (SoilType) :: SOILPROP   ! Defined in ModuleDefs
+        TYPE (ControlType) :: CONTROL_    ! Defined in ModuleDefs
+        TYPE (WeatherType) :: WEATHER_    ! Defined in ModuleDefs
+        TYPE (SoilType) :: SOILPROP_   ! Defined in ModuleDefs
         
     contains
 
+        procedure, pass (this) :: get_YCA_EO
+        procedure, pass (this) :: get_YCA_EOP
         procedure, pass (this) :: get_YCA_VPDFPHR
         procedure, pass (this) :: get_YCA_VPDFP
         
@@ -39,9 +41,9 @@
         TYPE (WeatherType), intent (in) :: WEATHER    ! Defined in ModuleDefs
         TYPE (SoilType), intent (in) ::   SOILPROP   ! Defined in ModuleDefs
         
-        YCA_VPD_type_constructor%WEATHER = WEATHER
-        YCA_VPD_type_constructor%CONTROL = CONTROL
-        YCA_VPD_type_constructor%SOILPROP= SOILPROP
+        YCA_VPD_type_constructor%WEATHER_ = WEATHER
+        YCA_VPD_type_constructor%CONTROL_ = CONTROL
+        YCA_VPD_type_constructor%SOILPROP_= SOILPROP
         
     end function YCA_VPD_type_constructor    
 
@@ -54,7 +56,14 @@
         get_YCA_DAP = DAP
     end function get_YCA_DAP
     
-   
+    ! get_YCA_ LAI
+    real function get_YCA_LAI()
+        USE YCA_First_Trans_m
+        implicit none
+        
+        get_YCA_LAI = LAI
+    end function get_YCA_LAI
+    
     ! get_YCA_ PHSV
     real function get_YCA_PHSV()
         USE YCA_First_Trans_m
@@ -71,7 +80,29 @@
         get_YCA_PHTV = PHTV
     end function get_YCA_PHTV
     
+    ! get_YCA_ EO
+    real function get_YCA_EO(this)
+        USE ModuleDefs
+        Use YCA_Growth_VPD
+        
+        implicit none
+        class (YCA_VPD_type), intent(in) :: this
+        
+        get_YCA_EO = get_Growth_EO(get_YCA_DAP(), get_YCA_LAI(), get_YCA_PHSV(), get_YCA_PHTV(),  this%WEATHER_, this%CONTROL_, this%SOILPROP_)
+        
+    end function get_YCA_EO
     
+    ! get_YCA_ EOP
+    real function get_YCA_EOP(this)
+        USE ModuleDefs
+        Use YCA_Growth_VPD
+        
+        implicit none
+        class (YCA_VPD_type), intent(in) :: this
+        
+        get_YCA_EOP = get_Growth_EOP(get_YCA_DAP(), get_YCA_LAI(), get_YCA_PHSV(), get_YCA_PHTV(),  this%WEATHER_, this%CONTROL_, this%SOILPROP_)
+        
+    end function get_YCA_EOP
     
     ! get_YCA_ VPDFPHR
     real function get_YCA_VPDFPHR(this, hour)
@@ -82,19 +113,19 @@
         class (YCA_VPD_type), intent(in) :: this
         integer, intent(in) :: hour
         
-        get_YCA_VPDFPHR = get_Growth_VPDFPHR(get_YCA_PHSV(), get_YCA_PHTV(),  this%WEATHER % TDEW, this%WEATHER % TMIN, this%WEATHER % TAIRHR,hour)
+        get_YCA_VPDFPHR = get_Growth_VPDFPHR(get_YCA_DAP(), get_YCA_LAI(), get_YCA_PHSV(), get_YCA_PHTV(),  this%WEATHER_, this%CONTROL_, this%SOILPROP_, hour)
+        
     end function get_YCA_VPDFPHR
     
     ! get_YCA_ VPDFP
-    real function get_YCA_VPDFP(this,LAI)
+    real function get_YCA_VPDFP(this)
         USE ModuleDefs
         Use YCA_Growth_VPD
         
         implicit none
         class (YCA_VPD_type), intent(in) :: this
-        REAL LAI
         
-        get_YCA_VPDFP = get_Growth_VPDFP(get_YCA_DAP(), LAI, get_YCA_PHSV(), get_YCA_PHTV(),  this%WEATHER, this%CONTROL, this%SOILPROP)
+        get_YCA_VPDFP = get_Growth_VPDFP(get_YCA_DAP(), get_YCA_LAI(), get_YCA_PHSV(), get_YCA_PHTV(),  this%WEATHER_, this%CONTROL_, this%SOILPROP_)
         
     end function get_YCA_VPDFP
     

@@ -10,8 +10,6 @@ C  11/23/93 NBP Removed SLW effect from INVEG, all in PGLFEQ
 C  12/11/93 NBP Removed AWES1 from calc. of Rsoil.
 C  04/21/94 NBP Check in CANPET prevents small trans. amounts for LAI=0.
 C  01/10/00 NBP Modular version
-!  01/15/21 FO  ETPHOT - Second part of code protections for divisions by zero
-!                 and negative values.
 C-----------------------------------------------------------------------
 C  Called from: ETPHOT
 C  Calls:       CANPET,CANOPG,HSOILT
@@ -404,12 +402,7 @@ C     Compute canopy photosynthesis (µmol CO2/m2/s).
         ENDIF
       ENDIF
       PGHR = PGSL*LAISL + PGSH*LAISH
-      
-      IF(XLAI .GT. 0.0) THEN
-        AGEFAC = (LAISL*AGMXSL+LAISH*AGMXSH) / XLAI
-      ELSE
-        AGEFAC = 0.0
-      ENDIF
+      AGEFAC = (LAISL*AGMXSL+LAISH*AGMXSH) / XLAI
 
       RETURN
       END SUBROUTINE CANOPG
@@ -781,14 +774,13 @@ C     Solve 3-zone model for ET and E (mm/h).
      &  ECAN, G, LH, LHEAT, SH, SHEAT, TCAN, TSURF)       !Output
       ETHR = LH / LHVAP * 3600.0
       EHR = LHEAT(3,1) / LHVAP * 3600.0
-      
-      IF(XLAI .GT. 0.0) THEN
-        THR = ETHR - EHR
-      ELSE
+      IF (XLAI .LE. ZERO) THEN
         TSURF(1,1) = 0.0
         TSURF(2,1) = 0.0
         THR = 0.0
         EHR = ETHR
+      ELSE
+        THR = ETHR - EHR
       ENDIF
 
       RETURN
@@ -1421,16 +1413,14 @@ C     weighted according to leaf area index.  NEED VIEW FACTOR FOR LEAVES!
 
       EMISAV = FRSHV*EMISL + (1.0-FRSHV)*EMISS
       RBACK =  EMISAV * SBZCON * (TK4CAN-TK4SKY)
-      
-      IF(XLAI .GT. 0.0) THEN
+      IF (XLAI .LE. ZERO) THEN
+        RADBK(1) = 0.0
+        RADBK(2) = 0.0
+      ELSE
         RBKLF = FRSHV * RBACK
         RADBK(1) = 0.7 * RBKLF
         RADBK(2) = 0.3 * RBKLF
-      ELSE
-        RADBK(1) = 0.0
-        RADBK(2) = 0.0
       ENDIF
-
       RADBK(3) = (1.0-FRSHV) * RBACK
 
       RETURN

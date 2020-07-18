@@ -10,7 +10,7 @@
     
     SUBROUTINE YCA_Out_ReInit ( & 
         BRSTAGE     , CN          , DYNAMIC     , IDETL       , NFP         , RNMODE      , SRAD        , STGYEARDOY  , &
-        UNH4        , UNO3        , LAI         &
+        UNH4        , UNO3        &
         )
         
         USE ModuleDefs
@@ -21,7 +21,7 @@
      
         INTEGER :: CN          , DYNAMIC     , STGYEARDOY(0:19)
         
-        REAL    :: BRSTAGE     , NFP         , SRAD        , UNH4(NL)     , UNO3(NL)    , LAI
+        REAL    :: BRSTAGE     , NFP         , SRAD        , UNH4(NL)     , UNO3(NL)    
         
         CHARACTER(LEN=1)  :: IDETL       , RNMODE      
 
@@ -42,7 +42,10 @@
                 
             UNO3 = 0.0
             UNH4 = 0.0
-            
+                
+            WRITE (fnumwrk,*) ' '
+            WRITE (fnumwrk,'(A50)')' END OF RUN. WILL BEGIN NEW CYCLE IF CALLED FOR.  '
+            IF (IDETL /= 'N') WRITE (fnumwrk,*) ' '
             SEASENDOUT = 'Y'
                 
         ENDIF ! End STGYEARDOY(PSX) == YEARDOY.OR.DYNAMIC == SEASEND

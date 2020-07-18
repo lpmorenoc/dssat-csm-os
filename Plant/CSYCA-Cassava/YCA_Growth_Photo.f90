@@ -10,7 +10,7 @@
 !***************************************************************************************************************************
     
     SUBROUTINE YCA_Growth_Photo ( &
-        CO2         , NFP         , SLPF        , SRAD        , TAIRHR      , TDEW        , TMAX        , TMIN         , LAI      &
+        CO2         , NFP         , SLPF        , SRAD        , TAIRHR      , TDEW        , TMAX        , TMIN         &
         , CONTROL, WEATHER, SOILPROP)
         
         USE ModuleDefs
@@ -25,7 +25,7 @@
         TYPE (SoilType), intent (in) ::   SOILPROP   ! Defined in ModuleDefs
         
         REAL    CO2         , NFP         , SLPF        , SRAD        , TAIRHR(24)  , TDEW        , TMAX        , TMIN        
-        REAL    CSVPSAT     , LAI                                                                       ! REAL function call
+        REAL    CSVPSAT                                                                            ! REAL function call
         real availableCH2O
         
           
@@ -42,9 +42,11 @@
         ! Select method depending on choice in CONTROL FILE
         select case(MEPHO)
             case ('R')
-                availableCH2O = availableCarbohydrate_methodR(PARMJFAC, SRAD, PARU, CO2FP, TFP, RSFP, VPDFP, SLPF, PARI, PLTPOP, WFP)
-            case ('V')
-                availableCH2O = availableCarbohydrate_methodV(PARMJFAC, SRAD, PARU, CO2FP, TFP, RSFP, SLPF, PARI, PLTPOP, LAI, WFP, WEATHER, CONTROL, SOILPROP)
+                availableCH2O = availableCarbohydrate_methodR(PARMJFAC, SRAD, PARU, CO2FP, TFP, RSFP, SLPF, PARI, PLTPOP, WEATHER, CONTROL, SOILPROP)
+            case ('I')
+                availableCH2O = availableCarbohydrate_methodI(CO2, CO2AIR, CO2EX, CO2FP, CO2COMPC, PARMJFAC, PARFC, PARI, PARU, PLTPOP, RATM, RCROP, RLFC, RLF, RSFP, SLPF, SRAD, TMAX, TMIN, TFP, WFP)
+            case ('M')
+                availableCH2O = availableCarbohydrate_methodM(CO2AIR,PARU, RATM, RCROP,RLFC, RLF, WFP, MJPERE, PARMJFAC, SRAD, TFP, RSFP, SLPF, PARI, PLTPOP)
             end select
         CARBOBEG = availableCH2O
         

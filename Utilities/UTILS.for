@@ -714,8 +714,10 @@ C========================================================================
       CASE ('FILETMP'); LUN = 23  !Tony Hunt temp file
       CASE ('SIMCNTL'); LUN = 24  !Simulation Control file
       CASE ('DSPRO');   LUN = 25  !DSSATPRO file
-      CASE ('FILEWC');  LUN = 26  !*.cli - climate summary files
-      CASE ('FILEWG');  LUN = 27  !*.wtg - generated weather files
+
+!     RESERVE FOR ORYZA
+      CASE ('ORYZA1');  LUN = 26  !ORYZA
+      CASE ('ORYZA1A'); LUN = 27  !Prevent ORYZA1+1 from being used
 
 !     Currently 30 is the highest number for reserved logical units
 !     Change value in subroutine OUTFILES if necessary

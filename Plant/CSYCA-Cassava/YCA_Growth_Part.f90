@@ -8,7 +8,7 @@
 !***************************************************************************************************************************
     
     SUBROUTINE YCA_Growth_Part ( &
-        BRSTAGE     , ISWNIT      , NFP        , LAI          , WEATHER     &
+        BRSTAGE     , ISWNIT      , NFP         &
         )
     
         USE ModuleDefs
@@ -16,12 +16,11 @@
     
         IMPLICIT NONE
         
-        TYPE (WeatherType), intent (in) :: WEATHER    ! Defined in ModuleDefs
         INTEGER :: BR                      ! Index for branch number/cohorts#          ! (From SeasInit)  
         INTEGER :: LF                      ! Loop counter leaves            #          !LPM 21MAR15 to add a leaf counter
         REAL    :: Lcount                   ! counter for iterations in leafs (Lcount)
         CHARACTER(LEN=1) ISWNIT      
-        REAL    BRSTAGE     , NFP      , LAI    
+        REAL    BRSTAGE     , NFP         
 
         REAL    CSYVAL      , TFAC4     , TFAC5                                                           ! Real function call !LPM 19SEP2017 Added tfac5
         
@@ -45,7 +44,7 @@
         
 
 
-        LAWL(1) = LAWS - (SLATR*AMAX1(0.0,SLATS-TMEAN))*LAWS
+        LAWL(1) = LAWS
         !-----------------------------------------------------------------------
         !           Leaf growth
         !-----------------------------------------------------------------------
@@ -69,8 +68,6 @@
         SHLAGB2 = 0.0
         SHLAGB3 = 0.0
         SHLAGB4 = 0.0
-        node%LAGL = 0.0
-        node%LAGLT = 0.0
             
         
         
@@ -83,35 +80,13 @@
         
                 
             IF (DAWWP < 900) THEN
-                IF (WFGREA > 1.0) THEN
-                    node(BRSTAGE,(LNUMSIMSTG(BRSTAGE)+1))%LAPOTX =  LAXS                  ! LPM 07MAR15
-                ELSE
-                    node(BRSTAGE,(LNUMSIMSTG(BRSTAGE)+1))%LAPOTX =  LAXS*((DAWWP*1E-3)+0.10)
-                ENDIF    
+                node(BRSTAGE,(LNUMSIMSTG(BRSTAGE)+1))%LAPOTX =  LAXS*((DAWWP*1E-3)+0.10)                  ! LPM 07MAR15 
             ELSE
                 IF (DAWWP-TT< 900) DALSMAX = DAE                                 ! LPM 28FEB15 to define the day with the maximum leaf size
                 !LPM 12JUL2015 test with thermal time with optimum of 20 C
                 !LPM 24APR2016 Use of DALS (considering water stress) instead of TTCUMLS
-                IF (PDL(1) < 1200.) THEN
-                    node(BRSTAGE,(LNUMSIMSTG(BRSTAGE)+1))%LAPOTX = LAXS *(0.9**(BRSTAGE))/((1+(5.665259E-3*(DALS))))
-                ELSE
-                    node(BRSTAGE,(LNUMSIMSTG(BRSTAGE)+1))%LAPOTX = LAXS /((1+(1.665259E-3*(DALS))))
-                ENDIF
-                
-                !LPM 31MAR2021 Increase leaf size during the recovery of water stress
-                IF (WFGREA > 1.0) THEN
-                    node(BRSTAGE,(LNUMSIMSTG(BRSTAGE)+1))%LAPOTX = 2.0 *(node(BRSTAGE,(LNUMSIMSTG(BRSTAGE)+1))%LAPOTX)
-                ENDIF
-                
+                node(BRSTAGE,(LNUMSIMSTG(BRSTAGE)+1))%LAPOTX = LAXS/((1+(5.665259E-3*(DALS))))
             ENDIF
-            !LPM 16sep2020 Define potential leaf size for previous leaf if two leaves are created the same day
-            IF (node(BRSTAGE,(LNUMSIMSTG(BRSTAGE)))%LAPOTX <= 0.0) THEN
-                node(BRSTAGE,(LNUMSIMSTG(BRSTAGE)))%LAPOTX = node(BRSTAGE,(LNUMSIMSTG(BRSTAGE)+1))%LAPOTX
-            ENDIF
-            
-
-            node%LAGL = 0.0
-            node%LAGLT = 0.0
         
                                                                                                               
             DO BR = 0, BRSTAGE                                                                                        !LPM 23MAR15 To consider cohorts
@@ -297,19 +272,8 @@
             ENDIF
             ! Leaf+stem weight increase from plant reserves
             IF (GROLSA+GROLSSD+GROLSSEN < GROLSP) THEN
-                GROLSRS =  AMIN1(RSWT,GROLSP-GROLSA-GROLSSD-GROLSSEN)                                            !EQN 301
+                GROLSRS =  AMIN1(RSWT*RSUSE,GROLSP-GROLSA-GROLSSD-GROLSSEN)                                            !EQN 301
             ENDIF
-            
-             DO L = 5,2,-1
-                 GROLSRS05S(L) = GROLSRS05S(L-1)
-             ENDDO
-             
-             GROLSRS05S(1) = GROLSRS
-             
-            IF (SUM(GROLSRS05S) == 0.0 .AND. WFGREAcount == 1) THEN
-                WFGREAcount = 0
-            ENDIF
-            
             ! Leaf+stem weight increase from roots (after drought)
             GROLSRT = 0.0
             GROLSRTN = 0.0
@@ -371,13 +335,6 @@
         ENDIF
         
         !CRWTP = CRWTP + GROCR                 !LPM 020CT2015 Deleted to consider before (line 320)                      
- 
-        
-        GRORSP = CARBOT+GROLSSD+GROLSRT+SENLFGRS+GROLSRS-GROLF-GROST-GROCR                                    
-        IF(GRORSP < 0.0.AND.GRORSP > -1.0E-07) GRORSP = 0.0
 
-        ! Reserves to STORAGE ROOT if conc too great (overflow!)
-        SRWTGRSP = 0.0
         
-        SRWTGRSP = GRORSP
     END SUBROUTINE YCA_Growth_Part
