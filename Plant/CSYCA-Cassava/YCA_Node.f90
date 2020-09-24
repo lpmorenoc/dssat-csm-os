@@ -92,6 +92,8 @@ Module YCA_Node !Module of environment
         Node_type_constructor%latl3 = 0.0   !LPM 15NOV15 added to save leaf area by cohort
         Node_type_constructor%latl3t = 0.0 !LPM 15NOV15 added to save leaf area by cohort (considering assimilates restriction)
         Node_type_constructor%latl4 = 0.0 !LPM 15NOV15 added to save leaf area by cohort
+        Node_type_constructor%LBIRTHDAP = -99
+        Node_type_constructor%LDEATHDAP = -99
         Node_type_constructor%nddae = 0.0
         Node_type_constructor%nflf = 1.0
         Node_type_constructor%nflf2 = 0.0

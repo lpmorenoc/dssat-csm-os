@@ -393,7 +393,7 @@
                                     ENDIF
                                 ENDDO
                                 !IF (CFLAFLF == 'N') AFLF(BR,LF) = 1.0                                                 !LPM 23MAR15 Define previously  
-                                IF (LF == LNUMSIMSTG(BR) .AND. LNUMG > LNUMNEED .AND. BR == BRSTAGE) THEN                                             ! This is where new leaf is initiated
+                                IF (LF == INT(LNUMSIMSTG(BR)) .AND. LNUMG > LNUMNEED .AND. BR == INT(BRSTAGE)) THEN                                             ! This is where new leaf is initiated
                                     node(BR,LF+1)%LAGL3 = node(BR,LF+1)%LAGL * AMIN1(node(0,0)%AFLF,WFG,node(0,0)%NFLF2)
                                     node(BR,LF+1)%LATL3= node(BR,LF+1)%LATL3 + node(BR,LF+1)%LAGL3                                             !EQN 150 !LPM 24APR2016 to keep leaf area value with stress
                                     node(BR,LF+1)%AFLF = AMIN1(1.0,node(BR,LF+1)%AFLF + AMAX1(0.0,node(0,0)%AFLF) * (node(BR,LF+1)%LAGL)/node(BR,LF+1)%LAPOTX2)             !EQN 151   

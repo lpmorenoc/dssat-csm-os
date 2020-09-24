@@ -100,6 +100,9 @@
                 ! Basic leaf growth calculated on chronological time base. 
                 ! Basic response (cm2/day) considering a maximum growing duration of 10 days 
                 !!LPM 09OCT2019 Remove TFLfgrowth because it is the same than TFG 
+                        IF (node(BR,LF)%LBIRTHDAP < 0) THEN
+                            node(BR,LF)%LBIRTHDAP = DAP
+                        ENDIF
                         node(BR,LF)%LATLPREV = node(BR,LF)%LATL
                         node(BR,LF)%LAPOTX2 = node(BR,LF)%LAPOTX*TFG
                         node(BR,LF)%LAGL=node(BR,LF)%LAPOTX2*(TTL/LLIFGTT)
@@ -145,7 +148,7 @@
                         ENDIF
                         
                             ! New LEAF
-                        IF (LF == LNUMSIMSTG(BR) .AND. LNUMG > LNUMNEED .AND. BR == BRSTAGE) THEN                                             ! This is where new leaf is initiated
+                        IF (LF == INT(LNUMSIMSTG(BR)) .AND. LNUMG > LNUMNEED .AND. BR == INT(BRSTAGE)) THEN                                             ! This is where new leaf is initiated
                             node(BR,LF+1)%LAPOTX2 = node(BR,LF+1)%LAPOTX * TFG
                             !LPM 09OCT2019 Remove TTLfgrowth because it is the same than TFG 
                             node(BR,LF+1)%LAGL = node(BR,LF+1)%LAPOTX2 * (TTL/LLIFGTT)* EMRGFR * ((LNUMG-LNUMNEED)/LNUMG)   !LPM 02SEP2016 To register the growth of the leaf according LAGL(BR,LF) (see above)

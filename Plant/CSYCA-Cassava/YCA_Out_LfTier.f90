@@ -33,8 +33,8 @@
             OPEN(UNIT=FNUMLVS,FILE=FNAMELEAVES,POSITION='APPEND')
             WRITE (FNUMLVS,'(/,A79,/)') OUTHED
             WRITE (FNUMLVS,'(A14,F6.1)') '! LEAF NUMBER ',LNUM
-            WRITE (FNUMLVS,'(/,A42,A30,A30)')'@ BRNUM LNUM AREAP AREA1 AREA2 AREAT AREAS', &                 ! DA 26JAN2017 issue #5 removed LATL2C and LATL4C
-                '  WFLF  NFLF  AFLF TFGLF TFDLF ',' LLIFG LLIFA LLIFS LLIFE   DAP'  !LPM 07JUL2017 Issue #41 eliminate NFLF2 (same than NFLF)
+            WRITE (FNUMLVS,'(/,A42,A30,A36)')'@ BRNUM LNUM AREAP AREA1 AREA2 AREAT AREAS', &                 ! DA 26JAN2017 issue #5 removed LATL2C and LATL4C
+                '  WFLF  NFLF  AFLF TFGLF TFDLF ',' LLIFG LLIFA LLIFS LLIFE  DAPA  DAPD'  !LPM 07JUL2017 Issue #41 eliminate NFLF2 (same than NFLF)
             DO BR = 0, BRSTAGE
                 DO LF = 1, INT(LNUMSIMSTG(BR))  
                     CALL Csopline(lapotxc,node(BR,LF)%lapotx)
@@ -56,9 +56,9 @@
                     IF (node(BR,LF)%LDEATHDAP == 0) THEN
                         node%LDEATHDAP = -99
                     ENDIF
-                    WRITE (fnumlvs,'(2I6,5A6,5F6.2,4F6.1,I6)')BR, LF,LAPOTXC,LATLC,LATL3C,LAPC,LAPSC,1.0-node(BR,LF)%WFLF, &                          ! DA 26JAN2017 issue #5 removed LATL2C and LATL4C
+                    WRITE (fnumlvs,'(2I6,5A6,5F6.2,4F6.1,2I6)')BR, LF,LAPOTXC,LATLC,LATL3C,LAPC,LAPSC,1.0-node(BR,LF)%WFLF, &                          ! DA 26JAN2017 issue #5 removed LATL2C and LATL4C
                         1.0-node(BR,LF)%NFLF,1.0-AMAX1(0.0,AMIN1(1.0,node(BR,LF)%AFLF)),1.0-node(BR,LF)%TFGLF,1.0-node(BR,LF)%TFDLF,node(BR,LF)%DGLF, &  
-                        node(BR,LF)%DALF,node(BR,LF)%DSLF,node(BR,LF)%DGLF+node(BR,LF)%DALF+node(BR,LF)%DSLF,node(BR,LF)%LDEATHDAP
+                        node(BR,LF)%DALF,node(BR,LF)%DSLF,node(BR,LF)%DGLF+node(BR,LF)%DALF+node(BR,LF)%DSLF,node(BR,LF)%LBIRTHDAP,node(BR,LF)%LDEATHDAP
                 ENDDO
             ENDDO
                 
@@ -82,7 +82,8 @@
                 WRITE(fnumlvs,'( A)')'! LLIFA = Number of days of leaf fully active '
                 WRITE(fnumlvs,'( A)')'! LLIFS = Number of days of leaf senescing    '
                 WRITE(fnumlvs,'( A)')'! LLIFE = Total number of days of leaf longevity    '
-                WRITE(fnumlvs,'( A)')'! DAP   = Leaf decease day after planting    '
+                WRITE(fnumlvs,'( A)')'! DAPA  = Leaf appearance day after planting    '
+                WRITE(fnumlvs,'( A)')'! DAPD  = Leaf decease day after planting    '
             ENDIF
             CLOSE (FNUMLVS)
             ! End of Leaves.out
