@@ -33,7 +33,7 @@
         implicit none
         class (Node_type), intent(in) :: node
         
-        isLeafActive = node%LAGETT >= LLIFGTT .AND. node%LAGETT < LLIFGTT+LLIFATT
+        isLeafActive = node%LAGETT >= LLIFGTT .AND. node%LAGETT < LLIFGTT+node%LLIFATT
     end function isLeafActive
     
     ! true is leaf is senescing
@@ -41,7 +41,7 @@
         implicit none
         class (Node_type), intent(in) :: node
         
-        isLeafSenescing = node%LAGETT >= LLIFGTT+LLIFATT .AND. node%LAGETT < LLIFGTT+LLIFATT+LLIFSTT
+        isLeafSenescing = node%LAGETT >= LLIFGTT+node%LLIFATT .AND. node%LAGETT < LLIFGTT+node%LLIFATT+LLIFSTT
     end function isLeafSenescing
     
     ! true is leaf is alive
@@ -49,7 +49,7 @@
         implicit none
         class (Node_type), intent(in) :: node
         
-        isLeafAlive = node%LAGETT < LLIFGTT+LLIFATT+LLIFSTT
+        isLeafAlive = node%LAGETT < LLIFGTT+node%LLIFATT+LLIFSTT
     end function isLeafAlive
     
     ! true is leaf was active today
@@ -65,7 +65,7 @@
         implicit none
         class (Node_type), intent(in) :: node
         
-        didLeafStartSenescingToday = node%LAGETT-dailyGrowth()  < LLIFGTT+LLIFATT .AND. isLeafSenescing(node)
+        didLeafStartSenescingToday = node%LAGETT-dailyGrowth()  < LLIFGTT+node%LLIFATT .AND. isLeafSenescing(node)
     end function didLeafStartSenescingToday
     
     ! true is leaf will start senescing today
@@ -73,7 +73,7 @@
         implicit none
         class (Node_type), intent(in) :: node
         
-        willLeafStillGrowingToday =  node%LAGETT+dailyGrowth()  <= LLIFGTT+LLIFATT                                                      !EQN 371
+        willLeafStillGrowingToday =  node%LAGETT+dailyGrowth()  <= LLIFGTT+node%LLIFATT                                                      !EQN 371
     end function willLeafStillGrowingToday
     
     ! true is leaf fell today
@@ -81,7 +81,7 @@
         implicit none
         class (Node_type), intent(in) :: node
         
-        didLeafFallToday = node%LAGETT-dailyGrowth()  < LLIFGTT+LLIFATT+LLIFSTT .AND. .NOT. isLeafAlive(node)
+        didLeafFallToday = node%LAGETT-dailyGrowth()  < LLIFGTT+node%LLIFATT+LLIFSTT .AND. .NOT. isLeafAlive(node)
     end function didLeafFallToday
     
     ! real value of the leaf area left to senesce
@@ -119,7 +119,7 @@
         implicit none
         class (Node_type), intent(inout) :: node
         
-        node%LAGETT = LLIFGTT+LLIFATT                                             !EQN 359
+        node%LAGETT = LLIFGTT+node%LLIFATT                                             !EQN 359
     end subroutine setLeafAsSenescing
     
     ! set leaf age to fall 
@@ -127,7 +127,7 @@
         implicit none
         class (Node_type), intent(inout) :: node
         
-        node%LAGETT = LLIFGTT+LLIFATT+LLIFSTT
+        node%LAGETT = LLIFGTT+node%LLIFATT+LLIFSTT
     end subroutine setLeafAsFall
     
     ! increase leaf age 

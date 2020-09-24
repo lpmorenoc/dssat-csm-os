@@ -35,11 +35,11 @@
             RNCX = (RNCXS(0) + RNCXS(1))/2.0 
             RNCM = (RNCMN(0) + RNCMN(1))/2.0
             !LPM 22MAY2015 the stem nitrogen concentration changes according with the canopy level age (non-lignified to lignified)
-            IF((LLIFATT+LLIFSTT) > ZERO) THEN
+            IF((node(BR,LF)%LLIFATT+LLIFSTT) > ZERO) THEN
                 DO BR = 0, BRSTAGE                                                                                        
                  DO LF = 1, LNUMSIMSTG(BR)
-                    node(BR,LF)%SNCX = SNCXS(0) + (node(BR,LF)%LAGETT*(SNCXS(1)-SNCXS(0)) / (LLIFATT+LLIFSTT) )
-                    node(BR,LF)%SNCM = SNCMN(0) + (node(BR,LF)%LAGETT*(SNCMN(1)-SNCMN(0)) / (LLIFATT+LLIFSTT) )
+                    node(BR,LF)%SNCX = SNCXS(0) + (node(BR,LF)%LAGETT*(SNCXS(1)-SNCXS(0)) / (node(BR,LF)%LLIFATT+LLIFSTT) )
+                    node(BR,LF)%SNCM = SNCMN(0) + (node(BR,LF)%LAGETT*(SNCMN(1)-SNCMN(0)) / (node(BR,LF)%LLIFATT+LLIFSTT) )
                  ENDDO
                 ENDDO
             ENDIF

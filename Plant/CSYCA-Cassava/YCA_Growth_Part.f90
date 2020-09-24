@@ -91,6 +91,11 @@
             IF (node(BRSTAGE,(LNUMSIMSTG(BRSTAGE)))%LAPOTX <= 0.0) THEN
                 node(BRSTAGE,(LNUMSIMSTG(BRSTAGE)))%LAPOTX = node(BRSTAGE,(LNUMSIMSTG(BRSTAGE)+1))%LAPOTX
             ENDIF
+            !LPM 24spt2020 Define different leaf duration  based on plant age
+            node(BRSTAGE,(LNUMSIMSTG(BRSTAGE)+1))%LLIFATT = node(0,0)%LLIFATT - AMIN1((0.2*node(0,0)%LLIFATT),(DAWWP*0.2*node(0,0)%LLIFATT/2000.))
+            IF (node(BRSTAGE,(LNUMSIMSTG(BRSTAGE)))%LLIFATT <= 0.0) THEN
+                node(BRSTAGE,(LNUMSIMSTG(BRSTAGE)))%LLIFATT = node(BRSTAGE,(LNUMSIMSTG(BRSTAGE)+1))%LLIFATT
+            ENDIF
         
                                                                                                               
             DO BR = 0, BRSTAGE                                                                                        !LPM 23MAR15 To consider cohorts

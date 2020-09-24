@@ -29,7 +29,8 @@ Module YCA_Node !Module of environment
         REAL    :: LATLPOT                      ! Leaf area,shoot,leaf,pot       cm2/l      ! (From Growth)    
         REAL    :: LATLPREV                     ! Leaf area,shoot,leaf,prev.     cm2/l      ! (From Growth)    
         INTEGER :: LBIRTHDAP                    ! DAP on which leaf initiated    #          ! (From Growth)   !LPM 25MAR15 Adjusted to consider two dimensions  
-        INTEGER :: LDEATHDAP                    ! DAP on which leaf 100% dead    #          ! (From Integrate) 
+        INTEGER :: LDEATHDAP                    ! DAP on which leaf 100% dead    #          ! (From Integrate)
+        REAL    :: LLIFATT                      ! Leaf active duration           C.d        ! (From SeasInit)
         REAL    :: NDDAE                        ! DAE when a new node appears     ! DA 13DIC2016
         REAL    :: NDEMSMN                      ! N demand for growth/node min   g/p        !LPM 25MAY2015 addet to consider stem N by node cohort
         REAL    :: NFLF                         ! N factor for leaf,average      #          ! (From SeasInit) !LPM 23MAR15 Adjusted to consider two dimensions  
@@ -94,6 +95,7 @@ Module YCA_Node !Module of environment
         Node_type_constructor%latl4 = 0.0 !LPM 15NOV15 added to save leaf area by cohort
         Node_type_constructor%LBIRTHDAP = -99
         Node_type_constructor%LDEATHDAP = -99
+        Node_type_constructor%LLIFATT = 0.0
         Node_type_constructor%nddae = 0.0
         Node_type_constructor%nflf = 1.0
         Node_type_constructor%nflf2 = 0.0

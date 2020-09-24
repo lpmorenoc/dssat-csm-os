@@ -207,7 +207,7 @@
         IF (CFLLFLIFE=='T')THEN
             ! Read-in as thermal time 
             LLIFGTT = LLIFG                                                                                            !EQN 352
-            LLIFATT = LLIFA                                                                                            !EQN 353 
+            node(0,0)%LLIFATT = LLIFA                                                                                  !EQN 353 
             LLIFSTT = LLIFS                                                                                            !EQN 354
         ENDIF  
         

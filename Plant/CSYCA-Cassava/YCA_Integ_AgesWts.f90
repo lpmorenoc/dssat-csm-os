@@ -61,19 +61,19 @@
                         ENDIF
                         node(BR,LF)%DALF = node(BR,LF)%DALF + 1.0                                                                        !EQN 364b
                         !LPM 13DEC2016 To generate a restriction for leaf active duration which should not be greater than twice the chronological time at 24 C (TRDV3(2)) 
-                        IF (node(BR,LF)%DALF>(2.0*LLIFATT/(TRDV3(2)-TRDV3(1)))) THEN 
+                        IF (node(BR,LF)%DALF>(2.0*node(BR,LF)%LLIFATT/(TRDV3(2)-TRDV3(1)))) THEN 
                             call setLeafAsSenescing(node(BR,LF))
                         ENDIF
                     ELSE
                         IF (didLeafStartActiveToday(node(BR,LF))) THEN                     !LPM 28MAR15 LLIFGT was deleted 
-                            TVR1 = (LLIFATT-(node(BR,LF)%LAGETT-dailyGrowth()))/(dailyGrowth())
+                            TVR1 = (node(BR,LF)%LLIFATT-(node(BR,LF)%LAGETT-dailyGrowth()))/(dailyGrowth())
                             node(BR,LF)%DALF = node(BR,LF)%DALF + TVR1                                                                   !EQN 364c
                         ENDIF
                     ENDIF
                     ! Days senescing
                     IF (isLeafSenescing(node(BR,LF))) THEN                                                                 ! DA  If leaf is senescing
                         IF (didLeafStartSenescingToday(node(BR,LF))) THEN                                             ! DA  (and) If leaf started senescing today
-                            TVR1 = (LLIFGTT+LLIFATT-(node(BR,LF)%LAGETT-dailyGrowth()))/(dailyGrowth())
+                            TVR1 = (LLIFGTT+node(BR,LF)%LLIFATT-(node(BR,LF)%LAGETT-dailyGrowth()))/(dailyGrowth())
                             node(BR,LF)%DSLF = node(BR,LF)%DSLF + (1.0-TVR1)                                                            ! EQN 365a
                         ELSE                                                                                                  ! DA Else, if leaf didn't started senescing today
                             IF (isLeafAlive(node(BR,LF))) THEN                                                ! DA If the leaf is still alive
@@ -86,7 +86,7 @@
                         ENDIF
                     ENDIF
                     IF (didLeafFallToday(node(BR,LF))) THEN                             ! DA Or, if leaf died today
-                        TVR1 = ((LLIFGTT+LLIFATT+LLIFSTT)-(node(BR,LF)%LAGETT-dailyGrowth()))/(dailyGrowth())
+                        TVR1 = ((LLIFGTT+node(BR,LF)%LLIFATT+LLIFSTT)-(node(BR,LF)%LAGETT-dailyGrowth()))/(dailyGrowth())
                         node(BR,LF)%DSLF = node(BR,LF)%DSLF + TVR1                                                          ! EQN 365c
                         node(BR,LF)%LDEATHDAP = DAP                                                                    ! DA establish decease date
                     ENDIF

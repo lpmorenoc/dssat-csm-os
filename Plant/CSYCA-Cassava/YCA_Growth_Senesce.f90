@@ -50,7 +50,7 @@
             DO LF = 1, LNUMSIMSTG(BR)         
                 IF (.NOT. willLeafStillGrowingToday(node(BR,LF))) THEN                                                     !EQN 371 LPM28MAR15 Deleted LLIFGTT
                     IF (leafAreaLeftToSenesce(node(BR,LF)) > 0.0) THEN
-                        LAPSTMP = AMIN1((leafAreaLeftToSenesce(node(BR,LF))),(node(BR,LF)%LATL3T*(AMIN1((node(BR,LF)%LAGETT+(dailyGrowth())-(LLIFGTT+LLIFATT)), (dailyGrowth()))/LLIFSTT)))         !EQN 372
+                        LAPSTMP = AMIN1((leafAreaLeftToSenesce(node(BR,LF))),(node(BR,LF)%LATL3T*(AMIN1((node(BR,LF)%LAGETT+(dailyGrowth())-(LLIFGTT+node(BR,LF)%LLIFATT)), (dailyGrowth()))/LLIFSTT)))         !EQN 372
                         node(BR,LF)%LAPS = node(BR,LF)%LAPS + LAPSTMP
                         PLASP = PLASP + LAPSTMP                                                                                !EQN 370
                     ENDIF

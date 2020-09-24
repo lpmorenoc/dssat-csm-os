@@ -378,7 +378,7 @@ Module YCA_First_Trans_m
     REAL    :: LFWT                    ! Leaf weight                    g/p        ! (From SeasInit)  
     REAL    :: LFWTM                   ! Leaf weight,maturity           g/p        ! (From SeasInit)  
     REAL    :: LLIFA                   ! Leaf active duration,read      #          ! (From SeasInit)  
-    REAL    :: LLIFATT                 ! Leaf active duration           C.d        ! (From SeasInit)  
+    !REAL    :: LLIFATT                 ! Leaf active duration           C.d        ! (From SeasInit)  
     REAL    :: LLIFG                   ! Leaf expansion duration,read   #          ! (From SeasInit)  
     REAL    :: LLIFGTT                 ! Leaf expansion duration        C.d        ! (From SeasInit)  
     REAL    :: LLIFS                   ! Leaf senescence dur,as read    d          ! (From SeasInit)  
