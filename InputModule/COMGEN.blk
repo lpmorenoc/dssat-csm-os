@@ -16,7 +16,7 @@
       REAL          LAXND, LAXN2, LAFS, LAFND, SLASS, LLIFA, LPEFR
       REAL          STFR
 !     For CSYCA-cassava
-      REAL          LNSLP, NODWT, NODLT
+      REAL          LNSLP, NODWT, NODLT, LLIFD
       REAL          BR1FX, BR2FX, BR3FX, BR4FX
 	  
 !     For CSCRP-wheat
@@ -72,7 +72,7 @@
      &        , P6, P7, P8
      &        , GRNOW, GRWTX, SHWMS
      &        , GNOWT, GWTS, SHWTS, LAFV, LAFR
-     &        , LNSLP, NODWT, NODLT
+     &        , LNSLP, NODWT, NODLT, LLIFD
 !WDB Add new sugarbeet coefficients
      &        , PHYL1, PHYL2, FRSUG, DRCER
 

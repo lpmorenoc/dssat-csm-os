@@ -766,7 +766,7 @@ C         Branch to menu choice
      &     LAXS, SLASS, LLIFA, LPEFR, LNSLP, NODWT, NODLT
           
      
- 5941 FORMAT (12X,'0. End of changes ',//,
+ 5941  FORMAT (12X,'0. End of changes ',//,
      3  12X,' 1. B01ND ( 10.0 -  100.0).......................[',F6.0,/,
      2  12X,' 2. B12ND ( 10.0 -  100.0).......................[',F6.0,/,
      2  12X,' 3. B23ND ( 10.0 -  100.0).......................[',F6.0,/,
@@ -778,10 +778,11 @@ C         Branch to menu choice
      8  12X,' 9. LAXS  ( 1000 -   2000).......................[',F7.1,/,
      9  12X,'10. SLAS  (100.0 -  400.0).......................[',F7.2,/,
      1  12X,'11. LLIFA (300.0 - 1200.0).......................[',F7.1,/,  !LPM redefine limit values
-     2  12X,'12. LPEFR (0.250 -  0.400).......................[',F7.2,/,
-     3  12X,'13. LNSLP (0.60 -    1.60).......................[',F7.2,/,
-     4  12X,'14. NODWT (3.00 -    7.00).......................[',F7.2,/,
-     5  12X,'15. NODLT (1.00 -    4.00).......................[',F7.1,/)
+     1  12X,'12. LLIFD (0.10 -    0.40).......................[',F7.2,/,
+     2  12X,'13. LPEFR (0.250 -  0.400).......................[',F7.2,/,
+     3  12X,'14. LNSLP (0.60 -    1.60).......................[',F7.2,/,
+     4  12X,'15. NODWT (3.00 -    7.00).......................[',F7.2,/,
+     5  12X,'16. NODLT (1.00 -    4.00).......................[',F7.1,/)
  
           WRITE (*,5100)
 C
@@ -804,10 +805,11 @@ C         Branch to menu choice
           CASE( 9);  CALL GETREAL (LAXS  ,'LAXS',1000.,2000.0)
           CASE(10);  CALL GETREAL (SLASS ,'SLAS ',100.0, 400.0)
           CASE(11);  CALL GETREAL (LLIFA ,'LLIFA ',300.0,1200.0) 
-          CASE(12);  CALL GETREAL (LPEFR ,'LPEFR ',0.200, 0.400)
-          CASE(13);  CALL GETREAL (LNSLP ,'LNSLP ', 0.60, 1.60)
-          CASE(14);  CALL GETREAL (NODWT ,'NODWT ', 3.00, 7.00)
-          CASE(15);  CALL GETREAL (NODLT ,'NODLT ', 1.00, 4.00) 
+          CASE(12);  CALL GETREAL (LLIFD ,'LLIFD ',0.10,0.40)
+          CASE(13);  CALL GETREAL (LPEFR ,'LPEFR ',0.200, 0.400)
+          CASE(14);  CALL GETREAL (LNSLP ,'LNSLP ', 0.60, 1.60)
+          CASE(15);  CALL GETREAL (NODWT ,'NODWT ', 3.00, 7.00)
+          CASE(16);  CALL GETREAL (NODLT ,'NODLT ', 1.00, 4.00) 
         END SELECT
 
     

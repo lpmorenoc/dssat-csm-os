@@ -265,6 +265,7 @@
             CALL XREADR (FILEIO,TN,RN,SN,ON,CN,'BR3FX',brfx(3))
             CALL XREADR (FILEIO,TN,RN,SN,ON,CN,'BR4FX',brfx(4))
             CALL XREADR (FILEIO,TN,RN,SN,ON,CN,'LLIFA',llifa)
+            CALL XREADR (FILEIO,TN,RN,SN,ON,CN,'LLIFD',llifd)
             !CALL XREADR (FILEIO,TN,RN,SN,ON,CN,'STFR',swfrs)!LPM 05JUN2016 STFR are not used
             !CALL XREADR (FILEIO,TN,RN,SN,ON,CN,'SR#WT',srnow) ! issue 50  SR#WT is not used
             !CALL XREADR (FILEIO,TN,RN,SN,ON,CN,'SRFR',srfr) !LPM 08 JUN2015 SRFR is not used   
@@ -386,6 +387,7 @@
         CALL SPREADR (SPDIRFLE,'SLATR',lawtr)
         CALL SPREADR (SPDIRFLE,'SLATS',lawts)
         CALL SPREADR (SPDIRFLE,'LLIFG',llifg)
+        CALL SPREADR (SPDIRFLE,'LLIFR',llifr)
         CALL SPREADR (SPDIRFLE,'LLIFS',llifs)
         !CALL SPREADR (SPDIRFLE,'LLIFX',llifx) !LPM 14SEP2020 No longer used
         CALL SPREADR (SPDIRFLE,'LLIG%',lligp)

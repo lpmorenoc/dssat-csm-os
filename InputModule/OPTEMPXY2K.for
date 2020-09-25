@@ -306,7 +306,8 @@ C-GH        F6.2,6F6.1,5F6.2,F6.1,F6.0,2F6.1,F6.2,2F6.1,3F6.2,A)
      &      LNCU,CROP,VARNO,VRNAME(1:8),ECONO,
      &      B01ND, B12ND, B23ND, B34ND,  
      &      BR1FX, BR2FX, BR3FX, BR4FX,LAXS,
-     &      SLASS, LLIFA, LPEFR, LNSLP, NODWT, NODLT, TRIM(PLAINTXT)
+     &      SLASS, LLIFA, LLIFD, LPEFR, LNSLP, NODWT, 
+     &      NODLT, TRIM(PLAINTXT)
           
           
 !DA 04OCT2016 Removing LA1S variable, is not used according to LPM 07MAR15                         
@@ -314,7 +315,7 @@ C-GH        F6.2,6F6.1,5F6.2,F6.1,F6.0,2F6.1,F6.2,2F6.1,3F6.2,A)
 !     &      F6.2,2F6.0,1F6.2,2F6.1,3F6.0,3F6.2,1F6.1,A)   !LPM modified to read LLIFA greater than 999
 
   167     FORMAT (I3,1X,A2,1X,A6,1X,A8,1X,A6,
-     &      4F6.0,4F6.1,3F6.0,3F6.2,1F6.1,A)
+     &      4F6.0,4F6.1,3F6.0,4F6.2,1F6.1,A)
 
 C-LPM       F6.2,6F6.1,2F6.2,3F6.1,F6.0,7F6.1,F6.2,A) 
 C-GH        F6.2,6F6.1,5F6.2,F6.1,F6.0,2F6.1,F6.2,2F6.1,2F6.2,A)

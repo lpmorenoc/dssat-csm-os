@@ -748,8 +748,8 @@ c          WRITE (HEADER(I),'(2F6.0,F6.2)') PHINT, LLIFA, STFR
      &     "  LAXS  SLAS",
      &     " LLIFA LPEFR LNSLP NODWT NODLT"
         I=I+1
-         WRITE (HEADER(I),'(F6.1,F6.0,2F6.1,3F6.2, 1F6.1)') 
-     &    LAXS, SLASS, LLIFA,
+         WRITE (HEADER(I),'(F6.1,F6.0,1F6.1,4F6.2, 1F6.1)') 
+     &    LAXS, SLASS, LLIFA, LLIFD,
      &    LPEFR, LNSLP, NODWT, NODLT
        I=I+1
 !       Print optional extra stuff from ecotype file
