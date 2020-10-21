@@ -82,7 +82,7 @@ C-----------------------------------------------------------------------
       REAL X1, X2, X3, X4
 
 !      DATA  LALWR, SLAN /270.,0./
-      DATA  LALWR /270./      !leaf area:leaf wt. ratio (cm2/g)
+      DATA  LALWR /120./      !leaf area:leaf wt. ratio (cm2/g)
      
 !***********************************************************************
 !***********************************************************************
@@ -356,10 +356,10 @@ C        SLFN = 0.95 + 0.05*AGEFAC         ! ...Nitrogen stress
       PT_PAR = SRAD*0.5               ! PAR = SRAD*.02092
       IF (ISTAGE .LT. 2) THEN
          !PCARB = 3.5*PT_PAR/PLTPOP*(1.0 - EXP(-0.55*XLAI))    !CHP
-         PCARB = RUE1*PT_PAR/PLTPOP*(1.0 - EXP(-0.55*XLAI))    !CHP
+         PCARB = RUE1*PT_PAR/PLTPOP*(1.0 - EXP(-0.65*XLAI))    !CHP
        ELSE
          !PCARB = 4.0*PT_PAR/PLTPOP*(1.0 - EXP(-0.55*XLAI))    !CHP
-         PCARB = RUE2*PT_PAR/PLTPOP*(1.0 - EXP(-0.55*XLAI))    !CHP
+         PCARB = RUE2*PT_PAR/PLTPOP*(1.0 - EXP(-0.65*XLAI))    !CHP
          !PCARB = RUE2*TX_RUE*PT_PAR/PLTPOP*(1.0 - EXP(-0.55*XLAI))    !CHP
       END IF
 
