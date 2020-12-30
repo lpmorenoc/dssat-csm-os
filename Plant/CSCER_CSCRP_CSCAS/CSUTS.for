@@ -1014,7 +1014,7 @@
       IMPLICIT NONE
 
       CHARACTER (LEN=1000) tlinetmp, atline, tlinein, tlineout
-      CHARACTER (LEN=52)   tcharout
+      CHARACTER (LEN=312)   tcharout
       CHARACTER (LEN=1)    dottype
       CHARACTER (LEN=*)    tlineini, atlinein, widthc
       INTEGER              i,j,k,l,itmp,tvilent,blanks,width,start
@@ -1124,7 +1124,7 @@
           tlineout(1:start-1)=tlinein(1:start-1)
           tlineout(start:start+5)=' TEXT '
           lendata=Tvilent(tlinein)
-          lentchar=MIN(52,lendata-start+1)
+          lentchar=MAX(312,lendata-start+1)
           tcharout(1:lentchar)=tlinein(start:start+lentchar-1)
          ELSE
           tlineout=tlinein
@@ -1134,7 +1134,7 @@
 
       ! Create output character string
       IF(enddot.GT.start+1)THEN
-       i=MIN0(52,enddot-start+1)
+       i=MAX0(312,enddot-start+1)
        i=MAX0(i,1)
        tcharout(1:i)=tlinein(start:enddot)
        CALL ltrim(tcharout)

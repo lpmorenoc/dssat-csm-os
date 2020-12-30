@@ -28,7 +28,7 @@ C=======================================================================
 
       CHARACTER*1   IDETG, IDETL, IDETO, IDETS
       CHARACTER*1   ISWDIS, ISWWAT, ISWNIT, MESOM, RNMODE                                            
-      CHARACTER (LEN=120) FILEIOIN      ! Name of input file
+      CHARACTER (LEN=312) FILEIOIN      ! Name of input file
 
       INTEGER DYNAMIC, RUN, TN, RUNI, RN, ON
       INTEGER REP, STEP, CN, YRHAR, YREND, YRDOY

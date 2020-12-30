@@ -47,7 +47,7 @@ C=======================================================================
       CHARACTER*  8 MODEL
       CHARACTER* 16 CROPD, VRNAME
       CHARACTER* 25 TITLET
-      CHARACTER* 80 PATHEX
+      CHARACTER*300 PATHEX
       CHARACTER*120 WTHSTR
       CHARACTER*1000 ATLINE
 

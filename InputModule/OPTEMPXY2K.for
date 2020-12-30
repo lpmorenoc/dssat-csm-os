@@ -59,7 +59,7 @@ C=======================================================================
       CHARACTER*16 VRNAME
       CHARACTER*30 FILEIO,FILEIOH
       CHARACTER*42 CHEXTR(NAPPL)
-	CHARACTER*80 PATHEX
+	    CHARACTER*300 PATHEX
       CHARACTER*1000 ATLINE	
 
       INTEGER NYRS,I,LUNIO,ERRNUM,FROP,YRIC
@@ -100,37 +100,37 @@ C
 C-----------------------------------------------------------------------
       WRITE (LUNIO,'("@N  EXP.DATA    AFILE",8X,"ADIR")')
       WRITE (LUNIO,2100,IOSTAT=ERRNUM) LNSIM,FILEA,PATHEX
- 2100 FORMAT(I3,1X,'EXP         ',A12,1X,A80)
+ 2100 FORMAT(I3,1X,'EXP         ',A12,1X,A300)
 C-----------------------------------------------------------------------
 C
 C-----------------------------------------------------------------------
       WRITE (LUNIO,'("@N  SPECIES     SPFILE",7X,"SPDIR")')
       WRITE (LUNIO,2200,IOSTAT=ERRNUM) LNSIM,FILEC,PATHCR
- 2200 FORMAT(I3,1X,'SPE         ',A12,1X,A80)
+ 2200 FORMAT(I3,1X,'SPE         ',A12,1X,A300)
 C-----------------------------------------------------------------------
 C
 C-----------------------------------------------------------------------
       WRITE (LUNIO,'("@N  ECOTYPE     EFILE",8X,"EDIR")')
       WRITE (LUNIO,2300,IOSTAT=ERRNUM) LNSIM,FILEE,PATHEC
- 2300 FORMAT(I3,1X,'ECO         ',A12,1X,A80)
+ 2300 FORMAT(I3,1X,'ECO         ',A12,1X,A300)
 C-----------------------------------------------------------------------
 C
 C-----------------------------------------------------------------------
       WRITE (LUNIO,'("@N  CULTIVAR    CFILE",8X,"CDIR")')
       WRITE (LUNIO,2500,IOSTAT=ERRNUM) LNSIM,FILEG,PATHGE
- 2500 FORMAT(I3,1X,'CUL         ',A12,1X,A80)
+ 2500 FORMAT(I3,1X,'CUL         ',A12,1X,A300)
 C-----------------------------------------------------------------------
 C
 C-----------------------------------------------------------------------
       WRITE (LUNIO,'("@N  SOIL        SFILE",8X,"SDIR")')
       WRITE (LUNIO,2700,IOSTAT=ERRNUM) LNSIM,FILES,PATHSL
- 2700 FORMAT(I3,1X,'SOIL        ',A12,1X,A80)
+ 2700 FORMAT(I3,1X,'SOIL        ',A12,1X,A300)
 C-----------------------------------------------------------------------
 C
 C-----------------------------------------------------------------------
       WRITE (LUNIO,'("@N  WEATHER     WFILE",8X,"WDIR")')
       WRITE (LUNIO,2800,IOSTAT=ERRNUM) LNSIM,FILEW,PATHWT
- 2800 FORMAT(I3,1X,'WEATH       ',A12,1X,A80)
+ 2800 FORMAT(I3,1X,'WEATH       ',A12,1X,A300)
 C-----------------------------------------------------------------------
 C
 C-----------------------------------------------------------------------

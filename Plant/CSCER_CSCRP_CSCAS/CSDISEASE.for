@@ -168,7 +168,7 @@
       CHARACTER (LEN=6)   distotc       ! Sporulating area,total cm2/p
       CHARACTER (LEN=6)   ditotc        ! Total area cm2/p
       CHARACTER (LEN=6)   psizec        ! Pustule size cm2
-      CHARACTER (LEN=64)  spdirfle      ! Species directory+file
+      CHARACTER (LEN=312)  spdirfle      ! Species directory+file
       CHARACTER (LEN=79)  outhed        ! Output file heading
 
       LOGICAL             fopen         ! File open indicator

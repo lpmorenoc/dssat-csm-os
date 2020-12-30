@@ -44,7 +44,7 @@ C=======================================================================
       CHARACTER*15 NFMANT,WTMANT,PHMANT,INMANT
       CHARACTER*16 ETMANT,OMMANT
       CHARACTER*17 HYMANT
-      CHARACTER*80 PATHWT
+      CHARACTER*300 PATHWT
 
       INTEGER      MENU,NLOOP,YEAR,NSWITCH
 
@@ -403,7 +403,7 @@ C=======================================================================
       CHARACTER*1  RNMODE,MEWTH
       CHARACTER*6  ERRKEY
       CHARACTER*15 WTMANT
-      CHARACTER*80 PATHWT
+      CHARACTER*300 PATHWT
 
       INTEGER      NLOOP,MENU
 

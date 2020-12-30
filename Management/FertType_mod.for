@@ -70,10 +70,10 @@ C  06/15/2014 CHP Written
       INTEGER PFLAG
 
       CHARACTER*8, PARAMETER :: ERRKEY = 'FertRead'
-      CHARACTER*150 FILEF, CHARTEST
+      CHARACTER*312 FILEF, CHARTEST
 
       CHARACTER*12 NAMEF
-      CHARACTER*80 PATHSD
+      CHARACTER*300 PATHSD
 
 !-----------------------------------------------------------------------
 !     Read from FERTCH???.SDA file

@@ -367,8 +367,8 @@ C-----------------------------------------------------------------------
       CHARACTER*(LENCDE) FCODE
       CHARACTER*(LENTXT) FTEXT
       CHARACTER*10 FILECDE
-      CHARACTER*120 DATAX
-      CHARACTER*120 PATHX
+      CHARACTER*312 DATAX
+      CHARACTER*312 PATHX
 
       CHARACTER*6, PARAMETER :: ERRKEY = 'DETAIL'
       INTEGER FOUND, FIND_IN_FILE, ERR, LNUM, LUN
@@ -399,7 +399,7 @@ D       DATAX = STDPATH // FILECDE
 
       IF (.NOT. FEXIST) THEN
 !       Last, check for file in C:\DSSAT45 directory
-        DATAX = trim(STDPATH) // FILECDE
+        DATAX = trim(STDPATH) // SLASH // FILECDE
         INQUIRE (FILE = DATAX, EXIST = FEXIST)
       ENDIF
 
@@ -657,9 +657,9 @@ C-----------------------------------------------------------------------
       CHARACTER*6, PARAMETER :: ERRKEY = 'GETDSC'
       CHARACTER*8  FILECDE
       CHARACTER*50 DESCRIP(*), LONGTEXT
-      CHARACTER*120 DATAX
       CHARACTER*78 MSG(3)
-      CHARACTER*120 PATHX
+      CHARACTER*312 DATAX
+      CHARACTER*312 PATHX
 
       INTEGER COUNT, ERR, I, LUN, LNUM
 
@@ -685,7 +685,7 @@ C-----------------------------------------------------------------------
 
       IF (.NOT. FEXIST) THEN
 !       Last, check for file in C:\DSSAT45 directory
-        DATAX = trim(STDPATH) // FILECDE
+        DATAX = trim(STDPATH) // SLASH // FILECDE
         INQUIRE (FILE = DATAX, EXIST = FEXIST)
       ENDIF
 
@@ -938,8 +938,8 @@ C-----------------------------------------------------------------------
       CHARACTER*14  FILECDE
       CHARACTER*23  SECTION
       CHARACTER*80  CHAR
-      CHARACTER*120 DATAX
-      CHARACTER*120 PATHX
+      CHARACTER*312 DATAX
+      CHARACTER*312 PATHX
 
       CHARACTER*6, PARAMETER :: ERRKEY = 'SIMCDE'
       INTEGER FOUND, ERR, LNUM, LUN
@@ -968,7 +968,7 @@ D       DATAX = STDPATH // FILECDE
 
       IF (.NOT. FEXIST) THEN
 !       Last, check for file in C:\DSSAT45 directory
-        DATAX = trim(STDPATH) // FILECDE
+        DATAX = trim(STDPATH) // SLASH // FILECDE
         INQUIRE (FILE = DATAX, EXIST = FEXIST)
       ENDIF
 

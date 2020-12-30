@@ -29,7 +29,7 @@ C=======================================================================
       CHARACTER     AKEY*6,BLANK*80,KEY*6,LINE*80
       CHARACTER*78  MSG(10)
       CHARACTER*100 ERRORX, SAVE_ERRORX
-      CHARACTER*120 PATHX
+      CHARACTER*312 PATHX
 
       INTEGER       ANUM,ERRNUM,LNUM, LUN, I , ELUN
       INTEGER       IMSG

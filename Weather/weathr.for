@@ -54,8 +54,8 @@ C=======================================================================
       CHARACTER*6  ERRKEY
       CHARACTER*12 FILEW
       CHARACTER*78 MESSAGE(10)
-      CHARACTER*80 PATHWT
-      CHARACTER*92 FILEWW
+      CHARACTER*300 PATHWT
+      CHARACTER*312 FILEWW
 
       INTEGER DOY, MULTI, NEV, RUN, YEAR, YRDOY, YRSIM, YYDDD
       INTEGER RSEED1, RSEED(4), REPNO

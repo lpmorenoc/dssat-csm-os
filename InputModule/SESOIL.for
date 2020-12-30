@@ -44,7 +44,7 @@ C=======================================================================
       CHARACTER*10 PEDON,SLNO
       CHARACTER*12 FILES,FILEX
       CHARACTER*80 PATHSL
-      CHARACTER*92 FILESS,FILEX_P
+      CHARACTER*312 FILESS,FILEX_P
 
       INTEGER      MENU,NSENS,NLAYR,NLOOP,LNIC,LNSA,YRIC,PATHL,I,YRSIM
       LOGICAL      FEXIST

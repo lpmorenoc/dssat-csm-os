@@ -153,7 +153,7 @@ C=======================================================================
       CHARACTER*8   MODEL
       CHARACTER*16  VRNAME
       CHARACTER*25  TITLET
-      CHARACTER*80  PATHEX
+      CHARACTER*300  PATHEX
       CHARACTER*120 HEADER(100) !Simulation header
       CHARACTER*120 WTHSTR
 

@@ -55,8 +55,8 @@ C=======================================================================
       CHARACTER*12  FILEG
       CHARACTER*16  VRNAME
       CHARACTER*78  MSG(3)
-      CHARACTER*80  PATHGE
-      CHARACTER*92  FILEGG
+      CHARACTER*300  PATHGE
+      CHARACTER*312  FILEGG
       CHARACTER*1000 C360,ATLINE
 
       INTEGER       I,NSENS,NLVAR,LUNVAR,LINVAR,ISECT,NLOOP

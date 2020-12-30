@@ -76,6 +76,7 @@ C  02/20/2006 GH  Add RNMODE="G" option for GENCALC
 C  01/11/2007 CHP Changed GETPUT calls to GET and PUT
 C  01/12/2007 CHP Read trt number and rotation number for sequence mode
 C  10/09/2020 FO  Y4K implementation for weather files
+C  12/01/2020 FO  Increased file path length to 312 characters.
 C=======================================================================
       PROGRAM CSM
 
@@ -91,12 +92,11 @@ C-----------------------------------------------------------------------
       CHARACTER*12  FILEX   !,DSCSM,INPUT
       CHARACTER*30  FILEB,FILEIO,FILEIOH
       CHARACTER*78  MSG(10)
-      CHARACTER*80  PATHEX
-      CHARACTER*102 DSSATP
-!     CHARACTER*120 INPUTX
-      CHARACTER*120 FILECTL !12/11/08 control file includes path
-      CHARACTER*120 PATHX
-      CHARACTER*130 CHARTEST
+      CHARACTER*300  PATHEX
+      CHARACTER*312 DSSATP
+      CHARACTER*312 FILECTL !12/11/08 control file includes path
+      CHARACTER*312 PATHX
+      CHARACTER*350 CHARTEST
 
       INTEGER       YRDOY,YRSIM,YRPLT,MDATE,YREND,YR,ISIM, YR0, ISIM0
       INTEGER       MULTI,NYRS,INCYD,YEAR,DOY,DAS,TIMDIF
@@ -263,11 +263,12 @@ C***********************************************************************
      &     0 .AND. RUN .EQ. 1)) THEN
         CALL IGNORE (LUNBIO,LINBIO,ISECT,CHARTEST)
         IF (ISECT .EQ. 1) THEN
-
+          
           END_POS = LEN(TRIM(CHARTEST(1:92)))+1
           FILEX = CHARTEST((END_POS-12):(END_POS-1))
           PATHEX = CHARTEST(1:END_POS-13)
           READ(CHARTEST(93:113),110,IOSTAT=ERRNUM) TRTNUM,TRTREP,ROTNUM
+
  110      FORMAT(3(1X,I6))
           IF (ERRNUM .NE. 0) CALL ERROR (ERRKEY,26,FILEB,LINBIO)
         ELSE

@@ -62,9 +62,9 @@ C-----------------------------------------------------------------------
       CHARACTER(len=12)  FILESS, NAMEF
       CHARACTER(len=30)  FILEIO
       CHARACTER(len=78)  MSG(4)
-      CHARACTER(len=80)  PATHSD
-      CHARACTER(len=92)  SOILNF
       CHARACTER(len=180) CHAR
+      CHARACTER(len=300)  PATHSD
+      CHARACTER(len=312)  SOILNF
 
       INTEGER FOUND, ERR, ISECT, LUNSOL, LNUM
       INTEGER I, J, JJ, LUNIO, NRES, PFLAG

@@ -42,7 +42,7 @@ C=======================================================================
       CHARACTER*10 PEDON,SLNO
       CHARACTER*12 FILEX
       CHARACTER*80 CHARTEST
-	CHARACTER*92 FILEX_P
+	    CHARACTER*312 FILEX_P
 
       INTEGER      L,LN,LUNEXP,NLAYRI,NLAYR,LINEXP,ISECT,LNIC,FWY1P,
      &             YRIC,ERRNUM,IFIND,YRSIM, YRICYEAR, YR, DOY
@@ -244,7 +244,7 @@ C=======================================================================
       CHARACTER*10 SLNO, PEDON
       CHARACTER*12 FILEX
       CHARACTER*80 CHARTEST*80
-	CHARACTER*92 FILEX_P
+	    CHARACTER*312 FILEX_P
 
       INTEGER      LN,LUNEXP,NLAYRI,NLAYR,LINEXP,ISECT,LNSA
       INTEGER      ERRNUM,SADAT,IFIND,L,YRSIM

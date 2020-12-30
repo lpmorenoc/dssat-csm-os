@@ -44,9 +44,9 @@ C=======================================================================
       CHARACTER*12 FILEW, LastFILEW
       CHARACTER*30 FILEIO
       CHARACTER*78 MSG(8)
-      CHARACTER*80 PATHWT
-      CHARACTER*92 FILEWW
       CHARACTER*120 LINE
+      CHARACTER*312 FILEWW
+      CHARACTER*300 PATHWT
 
       INTEGER DOY, DYNAMIC, ERR, ErrCode, FOUND, INCYD, ISIM
       INTEGER LINWTH, LNUM, LUNIO, LUNWTH, MULTI, NYEAR
@@ -108,7 +108,7 @@ C     The components are copied into local variables for use here.
       IF (INDEX('FQ',RNMODE) <= 0 .OR. RUN. EQ. 1) THEN
         OPEN (LUNIO, FILE = FILEIO,STATUS = 'OLD',IOSTAT=ERR)
         IF (ERR /= 0) CALL ERROR(ERRKEY,ERR,FILEIO,0)
-        READ (LUNIO,'(11(/),15X,A12,1X,A80)',IOSTAT=ERR) FILEW, PATHWT
+        READ (LUNIO,'(11(/),15X,A12,1X,A300)',IOSTAT=ERR) FILEW, PATHWT
         IF (ERR /= 0) CALL ERROR(ERRKEY,ERR,FILEIO,12)
 
         REWIND (LUNIO)
@@ -144,7 +144,7 @@ C     The components are copied into local variables for use here.
 
       OPEN (LUNIO, FILE = FILEIO,STATUS = 'OLD',IOSTAT=ERR)
       IF (ERR /= 0) CALL ERROR(ERRKEY,ERR,FILEIO,0)
-      READ (LUNIO,'(11(/),15X,A12,1X,A80)',IOSTAT=ERR) FILEW, PATHWT
+      READ (LUNIO,'(11(/),15X,A12,1X,A300)',IOSTAT=ERR) FILEW, PATHWT
       IF (ERR /= 0) CALL ERROR(ERRKEY,ERR,FILEIO,12)
       CLOSE (LUNIO)
 
@@ -713,7 +713,7 @@ C         Read in weather file header.
       CHARACTER*6, PARAMETER :: ERRKEY = "IPWTH "
       CHARACTER*78 MSG(2)
       CHARACTER*120 LINE  
-      CHARACTER*92 FILEWW
+      CHARACTER*312 FILEWW
 
       INTEGER CENTURY, ERR, ErrCode, FOUND, LINWTH, LUNWTH, MULTI, RUN  
       INTEGER YRDOY, YRDOYW, YRDOYWY, YRDOY_start, YREND, YRSIM
@@ -938,7 +938,7 @@ C         Read in weather file header.
 !     to INFO.OUT the headers that are found.
 !-----------------------------------------------------------------------
       CHARACTER*1 UPCASE
-      CHARACTER*92 FILEWW
+      CHARACTER*312 FILEWW
       INTEGER IM, LINWTH
       CHARACTER*6, PARAMETER :: ERRKEY = 'IPWTH '
 
@@ -1137,7 +1137,7 @@ c                   available.
 
       CHARACTER*6, PARAMETER :: ERRKEY = 'IPWTH '
       CHARACTER*78 MSG(4)
-      CHARACTER*92 FILEWW
+      CHARACTER*312 FILEWW
 
       INTEGER DOYY, ErrCode, I, LNUM, YRDOYW, YREND, YRY
       INTEGER LenString, NCHAR, NMSG

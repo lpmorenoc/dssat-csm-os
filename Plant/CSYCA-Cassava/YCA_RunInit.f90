@@ -24,7 +24,7 @@
         INTEGER TVILENT                                                                       ! Integer function call
 
         CHARACTER(LEN=1)   IDETL       , ISWNIT      , ISWWAT      , RNMODE      
-        CHARACTER(LEN=120) FILEIOIN    
+        CHARACTER(LEN=312) FILEIOIN    
         CHARACTER(LEN=10)  TL10FROMI                                                          ! Character function call
         
         !-----------------------------------------------------------------------

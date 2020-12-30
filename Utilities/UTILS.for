@@ -1271,7 +1271,8 @@ C=======================================================================
 
       CHARACTER*10 FILECDE
       CHARACTER*80 CHARTEST
-      CHARACTER*120 DATAX, PATHX
+      CHARACTER*300 DSSAT_HOME
+      CHARACTER*312 DATAX, PATHX
 
       INTEGER ERR, I, ISECT, LNUM, LUN
       LOGICAL FEXIST      !EOF, 
@@ -1305,8 +1306,12 @@ C=======================================================================
       ENDIF        
 
       IF (.NOT. FEXIST) THEN
+        CALL get_environment_variable("DSSAT_HOME", DSSAT_HOME)
+        IF(TRIM(DSSAT_HOME) .NE. '') THEN
+            STDPATH = TRIM(DSSAT_HOME)
+        ENDIF
 !       Last, check for file in C:\DSSAT45 directory
-        DATAX = trim(STDPATH) // FILECDE
+        DATAX = trim(STDPATH) // SLASH // FILECDE
         INQUIRE (FILE = DATAX, EXIST = FEXIST)
       ENDIF
 

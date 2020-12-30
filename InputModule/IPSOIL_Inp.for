@@ -44,8 +44,8 @@ C=======================================================================
       CHARACTER*6   ERRKEY
       CHARACTER*12  FILES
       CHARACTER*78  MSG(25)
-      CHARACTER*80  PATHSL
-      CHARACTER*92  FILESS
+      CHARACTER*300  PATHSL
+      CHARACTER*312  FILESS
       CHARACTER*255 C255
 
       INTEGER I,J,P1,NLAYRI,LINSOL,ISECT
