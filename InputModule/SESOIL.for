@@ -43,7 +43,7 @@ C=======================================================================
       CHARACTER*6  ERRKEY
       CHARACTER*10 PEDON,SLNO
       CHARACTER*12 FILES,FILEX
-      CHARACTER*80 PATHSL
+      CHARACTER*300 PATHSL
       CHARACTER*312 FILESS,FILEX_P
 
       INTEGER      MENU,NSENS,NLAYR,NLOOP,LNIC,LNSA,YRIC,PATHL,I,YRSIM
