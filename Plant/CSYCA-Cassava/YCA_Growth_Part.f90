@@ -282,7 +282,7 @@
             ENDIF
             ! Leaf+stem weight increase from plant reserves
             IF (GROLSA+GROLSSD+GROLSSEN < GROLSP) THEN
-                GROLSRS =  AMIN1(RSWT*RSUSE,GROLSP-GROLSA-GROLSSD-GROLSSEN)                                            !EQN 301
+                GROLSRS =  AMIN1(RSWT,GROLSP-GROLSA-GROLSSD-GROLSSEN)                                            !EQN 301
             ENDIF
             ! Leaf+stem weight increase from roots (after drought)
             GROLSRT = 0.0
@@ -353,5 +353,5 @@
         ! Reserves to STORAGE ROOT if conc too great (overflow!)
         SRWTGRSP = 0.0
         
-        SRWTGRSP = RSWT+GRORSP
+        SRWTGRSP = GRORSP
     END SUBROUTINE YCA_Growth_Part
