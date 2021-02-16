@@ -100,7 +100,8 @@
                     BRFX(INT(TVR1)) = BRFX(INT(TVR1-1))                 !LPM 09JUN2015 To avoid number of branches 0 for BRSTAGE>6
                 endif                                
             !LPM 11DEC2020 to reduce # of branches due to water or N stress
-                BRNUMST(TVR1) = BRNUMST(BRSTAGE)*BRFX(INT(TVR1))*AMIN1(WFG,NFG)                    ! BRFX(PSX)        ! EQN 005 ! # of branches at each fork # (This is where new branch is initiated)
+            !LPM 16FEB2021 avoid reduction in the number of branches of more than 50% of the maximum branching
+                BRNUMST(TVR1) = BRNUMST(BRSTAGE)*BRFX(INT(TVR1))*AMAX1(0.5,AMIN1(WFG,NFG))                    ! BRFX(PSX)        ! EQN 005 ! # of branches at each fork # (This is where new branch is initiated)
             ENDIF
         ENDIF 
         
