@@ -139,9 +139,15 @@
             TMEAN20 = 0.0
             STRESS20 = 0.0
             STRESS20N = 0.0
-            STRESS20N = 0.0
+            STRESS20W = 1.0
         ENDIF
-                
+        
+        IF (STRESS20W < 0.5 .AND. (SUM(STRESSW(1:5))/5.0) > 0.5) THEN
+            WFGREA = 1 + (SUM(STRESSW(1:5))/5.0)-(SUM(STRESSW(6:20))/15.0) 
+        ELSE
+            WFGREA = 1
+        ENDIF
+            
         ! Monthly means
         CALL Calendar (year,doy,dom,month)
         IF (DOM > 1) THEN

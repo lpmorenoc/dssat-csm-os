@@ -1023,6 +1023,7 @@ Module YCA_First_Trans_m
     REAL    :: WFGL                    ! Water factor,growth,lower      #          ! (From SeasInit)  
     REAL    :: WFGPAV(0:19)            ! Water factor,growth,average    #          ! (From SeasInit)  
     REAL    :: WFGPC                   ! Water factor,growth,cumulative #          ! (From SeasInit)  
+    REAL    :: WFGREA                  ! Water factor, reallocation     #               
     REAL    :: WFGU                    ! Water factor,growth,upper      #          ! (From SeasInit)  
     !REAL    :: WFLAW                   ! Water factor,leaf area/weight  #          ! (From Growth)    !LPM 12DEC2016 Delete temperature, water and leaf position factors in SLA
     REAL    :: WFNU                    ! Water factor,N uptake          #          ! (From Growth)    
@@ -1597,6 +1598,7 @@ Module YCA_First_Trans_m
         srootn = 0.0
         srwt = 0.0
         srwtgrs = 0.0
+        SRWTGRSADJ = 0.0
         srwum = 0.0
         srwum = 0.0
         stai = 0.0
@@ -1604,8 +1606,8 @@ Module YCA_First_Trans_m
         stais = 0.0
         stemn = 0.0
         stgedat = 0
-        SRWTGRSADJ = 0.0
         stwad = 0.0
+        STRESSW = 1.0
         stwt = 0.0
         stwtp = 0.0 !LPM 23MAY2015 Added to keep the potential stem weight
         stwtm = 0.0
@@ -1683,6 +1685,7 @@ Module YCA_First_Trans_m
         wfppav = 1.0
         wfpcc = 0.0
         wfppc = 0.0
+        WFGREA = 1.0
         wsdays = 0
         wupr = 1.0
         
