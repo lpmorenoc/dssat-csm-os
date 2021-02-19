@@ -162,7 +162,7 @@
                     IF (KEYPS(L) > 0) WRITE(FNUMPRES,'(I6)',ADVANCE='NO')PSDAP(KEYPS(L))
                 ENDIF
             ENDDO
-            WRITE (fnumpres, FMT409)NINT(hwam),hwumchar, NINT(hnumam),NINT(hnumgm),laixchar,lnumsm,brnumsh,NINT(cwam), &
+            WRITE (fnumpres, FMT409)NINT(hwam),hwumchar, NINT(hnumam),NINT(hnumgm),laixchar,lnumsm,BRNUMSHM,NINT(cwam), &
                 NINT(vwam),hiamchar,NINT(rwam),hnpcmchar,NINT(AMAX1(-99.0,cnam+rnam)),NINT(cnam),NINT(hnam),hinmchar, &
                 pltpop,NINT(amtnit),sradcav,tmaxcav,tmincav,NINT(raincc)
             CLOSE(FNUMPRES)

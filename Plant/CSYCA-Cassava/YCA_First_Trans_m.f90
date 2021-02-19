@@ -37,7 +37,7 @@ Module YCA_First_Trans_m
     REAL    :: BASELAYER               ! Depth at base of layer         cm         ! (From Integrate) 
     INTEGER :: BRDAE(PSX)              ! DAE when a new branch appears  d          ! LPM 11APR15 To save the date of branch appearance
     REAL    :: BRFX(0:PSX)             ! Branch # per fork at each fork #          ! (From SeasInit)  
-    REAL    :: BRNUMSH(0:PSX)          ! Branch number/shoot at harvest #          ! (From Integrate) !LPM 28MAR15 to have the apex number by branch level 
+    REAL    :: BRNUMSH(0:25)           ! Branch number/shoot at harvest #          ! (From Integrate) !LPM 28MAR15 to have the apex number by branch level 
     REAL    :: BRNUMSHM                ! Branch #/shoot,harvest,measurd #          ! (From Output)    
     REAL    :: BRNUMST(0:PSX)          ! Branch number/shoot (>forking) #          ! (From RunInit) !LPM 23MAR15 to have the apex number by branch level   
     REAL    :: BRNUMSTPREV(0:PSX)      ! Branch number/shoot,previous   #          ! (From Output)  !LPM 23MAR15 to have the apex number by branch level      
@@ -766,7 +766,7 @@ Module YCA_First_Trans_m
     REAL    :: SESR                    ! Shoot elongation rate+reserves cm2/g      ! (From SeasInit) !LPM 21MAR2016 Added SESR   
     INTEGER :: SHDAP                   ! Shoot prodn.start DAP          #          ! (From Integrate) 
     INTEGER :: SHDAT                   ! Shoot prodn.startdate YEARDOY  #          ! (From SeasInit)  
-    REAL    :: SHGR(22)                ! Shoot size relative to 1       #          ! (From SeasInit)  
+    REAL    :: SHGR(25)                ! Shoot size relative to 1       #          ! (From SeasInit)  
     REAL    :: SHLA(25)                ! Shoot leaf area produced       cm2        ! (From SeasInit)  
     REAL    :: SHLAG2(25)              ! Shoot lf area gr,all axis,H2oN cm2        ! (From SeasInit)  
     REAL    :: SHLAG2B(0:PSX)          ! Shoot lf area gr by br         cm2        ! (From SeasInit)
