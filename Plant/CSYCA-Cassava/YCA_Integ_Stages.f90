@@ -87,8 +87,8 @@
         ENDIF    
         
         !LPM 19FEB2021 Increase # of shoots after release of water stress
-        !IF (WFGREA > 1.2) THEN
-        !    SHNUM = AMIN1(25.0, SHNUM + 1.0)
+        !IF (WFGREA > 1.5) THEN
+        !    SHNUM = AMIN1(25.0, SHNUM + 0.5)
         !ENDIF
         
         IF (INT(BRSTAGE) == 0.0) THEN
