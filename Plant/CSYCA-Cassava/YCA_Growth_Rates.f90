@@ -109,7 +109,7 @@
                     !    WFP = AMAX1(0.0,AMIN1(1.0,(RAW-WFPL)/(WFPU-WFPL)))                                                   !EQN 145
                     
                     
-                    IF (ISWWATEARLY == 'N') THEN
+                    IF (ISWWATEARLY == 'N' .OR. WFGREA > 1.0) THEN
                         WFG = 1.0
                         WFP = 1.0
                     ENDIF
@@ -221,29 +221,29 @@
             IF (DAE > 0) THEN
                 IF (ISWWAT == 'Y') THEN
                     IF (ISWNIT /= 'N') THEN
-                        LNUMG = ((1.048488E6*LNSLP)/((((3.5986E3))+DAWWP)**2))*TT* (AMIN1(WFG,NFG))  
+                        LNUMG = LNSLP * tfd * (AMIN1(WFG,NFG))  
                     ELSE
-                        LNUMG = ((1.048488E6*LNSLP)/((((3.5986E3))+DAWWP)**2))*(TT*WFG)                                       !LPM 31JUL2015 to consider water stress
+                        LNUMG = LNSLP *tfd * WFG                                       !LPM 31JUL2015 to consider water stress
                     ENDIF
-                    IF (WFGREA > 1.0) THEN
-                        LNUMG = LNUMG * 3.0
-                    ENDIF
+                    !IF (WFGREA > 1.0) THEN
+                    !    LNUMG = LNUMG * 3.0
+                    !ENDIF
                 ELSE
-                    LNUMG = ((1.048488E6*LNSLP)/(((3.5986E3)+TTCUM)**2))*TT                                              !LPM 21/02/2015 leaf number curve
+                    LNUMG = LNSLP * tfd                                              !LPM 21/02/2015 leaf number curve
                 ENDIF
             ELSEIF (DAG > 0) THEN
                 IF (ISWWAT == 'Y') THEN
                     IF (ISWNIT /= 'N') THEN
-                        LNUMG = ((1.048488E6*LNSLP)/((((3.5986E3))+DAWWP)**2))*TTGEM*(AMIN1(WFG,NFG))                            !LPM 31JUL2015 to consider water stress
+                        LNUMG = LNSLP * Tfgem * AMIN1(WFG,NFG)                             !LPM 31JUL2015 to consider water stress
                     ELSE
-                        LNUMG = ((1.048488E6*LNSLP)/((((3.5986E3))+DAWWP)**2))*(TTGEM*WFG)   
+                        LNUMG = LNSLP * Tfgem * WFG  
                     ENDIF
-                    IF (WFGREA > 1.0) THEN
-                        LNUMG = LNUMG * 3.0
-                    ENDIF
+                    !IF (WFGREA > 1.0) THEN
+                    !    LNUMG = LNUMG * 3.0
+                    !ENDIF
                     
                 ELSE
-                    LNUMG = ((1.048488E6*LNSLP)/(((3.5986E3)+TTCUM)**2))*TTGEM                                              !LPM 21/02/2015 leaf number curve
+                    LNUMG = LNSLP * Tfgem                                              !LPM 21/02/2015 leaf number curve
                 ENDIF
             ENDIF
     END SUBROUTINE YCA_Growth_Rates
