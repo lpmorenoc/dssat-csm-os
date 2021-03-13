@@ -86,10 +86,6 @@
             ENDIF        
         ENDIF    
         
-        !LPM 19FEB2021 Increase # of shoots after release of water stress
-        !IF (WFGREA > 1.5) THEN
-        !    SHNUM = AMIN1(25.0, SHNUM + 0.5)
-        !ENDIF
         
         IF (INT(BRSTAGE) == 0.0) THEN
             BRNUMST(INT(BRSTAGE)) = 1
@@ -114,8 +110,8 @@
                     BRFX(INT(TVR1)) = BRFX(INT(TVR1-1))                 !LPM 09JUN2015 To avoid number of branches 0 for BRSTAGE>6
                 ENDIF                                
             !LPM 11DEC2020 to reduce # of branches due to water or N stress
-            !LPM 16FEB2021 avoid reduction in the number of branches of more than 50% of the maximum branching
-                BRNUMST(INT(TVR1)) = BRNUMST(BRSTAGE)*BRFX(INT(TVR1))*AMAX1(0.5,AMIN1(WFG,NFG))                    ! BRFX(PSX)        ! EQN 005 ! # of branches at each fork # (This is where new branch is initiated)
+            !LPM 16FEB2021 avoid reduction in the number of branches of no more than 50% of the maximum branching
+                BRNUMST(INT(TVR1)) = BRNUMST(BRSTAGE)*BRFX(INT(TVR1))                    ! BRFX(PSX)        ! EQN 005 ! # of branches at each fork # (This is where new branch is initiated)
                 BRNUMSHM = BRNUMST(INT(TVR1))
             ENDIF
             DO L = 2,INT(SHNUM+2) ! L is shoot cohort,main=cohort 1

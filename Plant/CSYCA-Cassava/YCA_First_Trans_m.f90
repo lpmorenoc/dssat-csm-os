@@ -100,6 +100,7 @@ Module YCA_First_Trans_m
     INTEGER :: DAG                     ! Days after germination         d          !  !LPM 10JUL2017 To consider root and stem development after germination and before emergence (planting stick below-ground)
     REAL    :: DAGERM                  ! Dev. age for germination       #          ! (From SeasInit)  !LPM 21MAR2015 DAGERM added to save develpomental age at germination (with stress)
     REAL    :: DALS                    ! Development Age leaf size (2)  C.d        ! (From SeasInit) !LPM 24APR2016 DALS added to save Dev. age for potential leaf size (with stress)
+    INTEGER :: DALScount               ! DALS count                     #
     INTEGER :: DALSMAX                 ! DAE with the max leaf size     d          ! LPM 28FEB15 
     INTEGER :: DAP                     ! Days after planting            d          ! (From SeasInit)  
     INTEGER :: DAS                     ! Days after start of simulation d          ! (From Output)    
@@ -235,7 +236,8 @@ Module YCA_First_Trans_m
     REAL    :: GROLS                   ! Leaf+stem growth               g/p        ! (From Growth)    
     REAL    :: GROLSA                  ! Leaf+stem gr from assimilates  g/p        ! (From Growth)    
     REAL    :: GROLSP                  ! Leaf+stem growth potential     g/p        ! (From Growth)    
-    REAL    :: GROLSRS                 ! Leaf+stem growth from reserves g/p        ! (From Growth)    
+    REAL    :: GROLSRS                 ! Leaf+stem growth from reserves g/p        ! (From Growth) 
+    REAL    :: GROLSRS05S(5)           ! GROLSRS values for last 5 days g/p  
     REAL    :: GROLSRT                 ! Leaf+stem gr from root dmatter g/p        ! (From Growth)    
     REAL    :: GROLSRTN                ! Leaf+stem N growth from root N g/p        ! (From Growth)    
     REAL    :: GROLSSD                 ! Leaf+stem gr from seed         g/p        ! (From Growth)    
@@ -1024,6 +1026,7 @@ Module YCA_First_Trans_m
     REAL    :: WFGPAV(0:19)            ! Water factor,growth,average    #          ! (From SeasInit)  
     REAL    :: WFGPC                   ! Water factor,growth,cumulative #          ! (From SeasInit)  
     REAL    :: WFGREA                  ! Water factor, reallocation     #               
+    INTEGER :: WFGREAcount             ! WFGREA index,stop reallocation #
     REAL    :: WFGU                    ! Water factor,growth,upper      #          ! (From SeasInit)  
     !REAL    :: WFLAW                   ! Water factor,leaf area/weight  #          ! (From Growth)    !LPM 12DEC2016 Delete temperature, water and leaf position factors in SLA
     REAL    :: WFNU                    ! Water factor,N uptake          #          ! (From Growth)    
@@ -1274,6 +1277,7 @@ Module YCA_First_Trans_m
         dag=-99 !LPM 10JUL2017 To consider root and stem develpment after germination and before emergence (planting stick below-ground)
         dagerm = 0.0 !LPM 21MAR2015 DAGERM added to save develpomental age at germination (with stress)
         dals = 0.0 !LPM 24APR2016 DALS added as developmental age for leaf size (when DAWWP> 900)
+        DALScount = 0
         dap = -99
         dawwp = 0.0 !LPM 06MAR2016 DAWWP added to save Development Age (with stress)
         daylcc = 0.0
@@ -1340,6 +1344,7 @@ Module YCA_First_Trans_m
         grocradj = 0.0
         grolf = 0.0
         grolfadj = 0.0
+        GROLSRS05S = 1.0
         grors = 0.0
         grorsp = 0.0
         grost = 0.0
@@ -1686,6 +1691,7 @@ Module YCA_First_Trans_m
         wfpcc = 0.0
         wfppc = 0.0
         WFGREA = 1.0
+        WFGREAcount = 0
         wsdays = 0
         wupr = 1.0
         

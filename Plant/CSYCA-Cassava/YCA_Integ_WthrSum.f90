@@ -49,7 +49,15 @@
         IF (DAWWP > 900.0) THEN
             TTCUMLS = TTCUMLS + TTlfsize   ! LPM 12JUL2015 added to consider a different optimum temperature for potential leaf size
             IF (ISWWAT == 'Y') THEN
-                DALS = DALS + (TTlfsize*WFG) !LPM 24APR2015 Added to have a new clock with water stress
+                IF (WFGREA > 1.0 .AND. DALScount == 0 .AND. WFGREAcount == 0) THEN
+                    !DALS = 0.0
+                    DALS = DALS + (TTlfsize*WFG)
+                    DALScount = 1
+                    WFGREAcount = 1
+                    GROLSRS05S = 1.0
+                ELSE
+                    DALS = DALS + (TTlfsize*WFG) !LPM 24APR2015 Added to have a new clock with water stress
+                ENDIF                 
             ELSE
                 DALS = TTCUMLS
             ENDIF
@@ -131,10 +139,10 @@
             STRESS20W = STRESS20WS/20.0
         ELSE
             SRAD20 = 0.0
-            IF (TMEANNUM == 1) THEN       !CHP
+            IF (TMEANNUM <= 1) THEN       !CHP
               TT20 = TT20S                !CHP
             ELSE                          !CHP
-              TT20 = TT20S/(TMEANNUM-1)   !LPM 28FEB15 to have a value different than 0  
+              TT20 = TT20S/(TMEANNUM)     ! 
             ENDIF                         !CHP
             TMEAN20 = 0.0
             STRESS20 = 0.0
