@@ -133,11 +133,8 @@
                 LFWT = 0.0
             ENDIF
             !LPM 16FEB2021 Add reallocation of assimilates from the storage roots to the leaves and stems
-            IF (WFGREA > 1.0) THEN
-                RSWT = SRWT*RSUSE                                                                                          !EQN 429
-            ELSE
-                RSWT = 0.0
-            ENDIF
+            RSWT = SRWT*RSUSE                                                                                          !EQN 429
+
             
             RSWPHC = RSWPHC +  RSWPH                                                                                   !EQN 430
             ! Reserves distribution 
