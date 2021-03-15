@@ -143,7 +143,7 @@
         implicit none
         
         IF (WFG < 1.0) THEN
-            dailyGrowth = (TTLFLife*EMRGFR)*(1.0 + (0.3 * (1.0 - WFG)))
+            dailyGrowth = (TTLFLife*EMRGFR)*(1.0 + (WFSU * (1.0 - WFG)))
         ELSE 
             dailyGrowth = (TTLFLife*EMRGFR)
         ENDIF
