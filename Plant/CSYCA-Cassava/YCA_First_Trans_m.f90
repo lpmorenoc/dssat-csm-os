@@ -1039,7 +1039,7 @@ Module YCA_First_Trans_m
     !REAL    :: WFPU                    ! Water factor,phs,upper         #          ! (From SeasInit)  
     REAL    :: WFRG                    ! Water factor,root growth,0-1   #          ! (From Growth)    
     REAL    :: WFRTG                   ! Water factor,root gr           #          ! (From SeasInit)  
-    !REAL    :: WFSU                    ! Water fac,senescence,upper 0-1 #          ! (From SeasInit)  
+    REAL    :: WFSU                    ! Water fac,leaf senescence,0-1  #          ! (From SeasInit)  
     INTEGER :: WSDAYS                  ! Water stress days              #          ! (From SeasInit)  
     REAL    :: WTDEP                   ! Water table depth              cm         ! (From SeasInit)  
     REAL    :: WUPR                    ! Water pot.uptake/demand        #          ! (From SeasInit)  
