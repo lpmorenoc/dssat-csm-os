@@ -32,8 +32,14 @@ $SPECIES:CSYCA047.020421    Last edit: 02/04/2021 LPM
     7      K B7DAT 7thBranch
     8      K B8DAT 8thBranch
     9      K B9DAT 9thBranch
-    9      K B9DAT 9thBranch
-   10      K B0DAT 10thBranch
+   10      K B10DT 10thBranch
+   11      K B11DT 11thBranch
+   12      K B12DT 12thBranch
+   13      K B13DT 13thBranch
+   14      K B14DT 14thBranch
+   15      K B15DT 15thBranch
+   16      K B16DT 16thBranch
+   17      K B17DT 17thBranch
 ! Phase durations
 @PEMRG  ! gr by cum. soil temperature                              
 !gCH2O/TT                                                              
@@ -68,7 +74,7 @@ $SPECIES:CSYCA047.020421    Last edit: 02/04/2021 LPM
 ! Shoots 
 @SGRO2  ! Relative size of 2nd shoot
 !   fr
-  1.00     
+  0.75     
 ! Reserves   
 @RSUSE  ! fr utilizeable/day
 !   fr 

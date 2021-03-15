@@ -182,7 +182,7 @@
         IF (PARMJIC > 0.0) THEN
             PARIUED = AMAX1(0.0,(totalWeight()+SENTOPLITTER+SENROOT-SEEDUSE)* PLTPOP / PARMJIC)
         ENDIF
-        IF (CARBOBEG > 0.0) THEN
+        IF (CARBOBEG > 0.0 .AND. PARMJFAC > 0.0 .AND. SRAD > 0.0 .AND. PARI > 0.0) THEN
             PARIUE = (CARBOBEG*PLTPOP)/(PARMJFAC*SRAD*PARI)
         ENDIF
                 
