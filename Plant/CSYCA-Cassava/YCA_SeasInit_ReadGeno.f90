@@ -345,6 +345,7 @@
         CALL ECREADR (ECDIRFLE,ECONO,'PPS3',dayls(3))
         CALL ECREADR (ECDIRFLE,ECONO,'PHTV',PHTV)
         CALL ECREADR (ECDIRFLE,ECONO,'PHSV',PHSV)
+        CALL ECREADR (ECDIRFLE,ECONO,'WFSU',WFSU)
         ! Following may have been (temporarily) in the CUL file
         ! Radiation use efficiency
         IF (PARUE <= 0.0) CALL ECREADR (ECDIRFLE,ECONO,'PARUE',parue)
