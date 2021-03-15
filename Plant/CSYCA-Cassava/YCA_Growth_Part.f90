@@ -94,12 +94,16 @@
                 !LPM 24APR2016 Use of DALS (considering water stress) instead of TTCUMLS
 
                 node(BRSTAGE,(LNUMSIMSTG(BRSTAGE)+1))%LAPOTX = LAXS /((1+(5.665259E-3*(DALS))))
+                IF (WFGREA > 1.0) THEN
+                    node(BRSTAGE,(LNUMSIMSTG(BRSTAGE)+1))%LAPOTX = 2.0 *(node(BRSTAGE,(LNUMSIMSTG(BRSTAGE)+1))%LAPOTX)
+                ENDIF
                 
             ENDIF
             !LPM 16sep2020 Define potential leaf size for previous leaf if two leaves are created the same day
             IF (node(BRSTAGE,(LNUMSIMSTG(BRSTAGE)))%LAPOTX <= 0.0) THEN
                 node(BRSTAGE,(LNUMSIMSTG(BRSTAGE)))%LAPOTX = node(BRSTAGE,(LNUMSIMSTG(BRSTAGE)+1))%LAPOTX
             ENDIF
+            
 
             node%LAGL = 0.0
             node%LAGLT = 0.0
