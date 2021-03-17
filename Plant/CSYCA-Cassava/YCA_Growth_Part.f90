@@ -92,11 +92,15 @@
                 IF (DAWWP-TT< 900) DALSMAX = DAE                                 ! LPM 28FEB15 to define the day with the maximum leaf size
                 !LPM 12JUL2015 test with thermal time with optimum of 20 C
                 !LPM 24APR2016 Use of DALS (considering water stress) instead of TTCUMLS
-
-                node(BRSTAGE,(LNUMSIMSTG(BRSTAGE)+1))%LAPOTX = LAXS /((1+(5.665259E-3*(DALS))))
-                IF (WFGREA > 1.0) THEN
-                    node(BRSTAGE,(LNUMSIMSTG(BRSTAGE)+1))%LAPOTX = 2.0 *(node(BRSTAGE,(LNUMSIMSTG(BRSTAGE)+1))%LAPOTX)
+                IF (PDL(1) < 1200.) THEN
+                    node(BRSTAGE,(LNUMSIMSTG(BRSTAGE)+1))%LAPOTX = LAXS /((1+(5.665259E-3*(DALS))))
+                ELSE
+                    node(BRSTAGE,(LNUMSIMSTG(BRSTAGE)+1))%LAPOTX = AMAX1((0.5 * LAXS),(LAXS /((1+(5.665259E-3*DALS)))))
                 ENDIF
+                
+                !IF (WFGREA > 1.0) THEN
+                !    node(BRSTAGE,(LNUMSIMSTG(BRSTAGE)+1))%LAPOTX = 2.0 *(node(BRSTAGE,(LNUMSIMSTG(BRSTAGE)+1))%LAPOTX)
+                !ENDIF
                 
             ENDIF
             !LPM 16sep2020 Define potential leaf size for previous leaf if two leaves are created the same day
