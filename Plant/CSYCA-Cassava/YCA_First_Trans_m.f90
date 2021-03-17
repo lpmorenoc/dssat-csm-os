@@ -1344,6 +1344,7 @@ Module YCA_First_Trans_m
         grocradj = 0.0
         grolf = 0.0
         grolfadj = 0.0
+        GROLSRS = 0.0
         GROLSRS05S = 1.0
         grors = 0.0
         grorsp = 0.0
