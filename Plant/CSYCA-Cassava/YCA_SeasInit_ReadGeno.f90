@@ -346,6 +346,7 @@
         CALL ECREADR (ECDIRFLE,ECONO,'PHTV',PHTV)
         CALL ECREADR (ECDIRFLE,ECONO,'PHSV',PHSV)
         CALL ECREADR (ECDIRFLE,ECONO,'WFSU',WFSU)
+        CALL ECREADR (ECDIRFLE,ECONO,'RSUSE',rsuse)
         ! Following may have been (temporarily) in the CUL file
         ! Radiation use efficiency
         IF (PARUE <= 0.0) CALL ECREADR (ECDIRFLE,ECONO,'PARUE',parue)
@@ -404,7 +405,8 @@
         IF (RSEN < 0.0) CALL SPREADR (SPDIRFLE,'RSEN%' ,rsen)
         CALL SPREADR (SPDIRFLE,'RSFPL',rsfpl)
         CALL SPREADR (SPDIRFLE,'RSFPU',rsfpu)
-        CALL SPREADR (SPDIRFLE,'RSUSE',rsuse)
+        !LPM 17MAR2021 Move RSUSE to the ecotype file
+        !CALL SPREADR (SPDIRFLE,'RSUSE',rsuse)
         CALL SPREADR (SPDIRFLE,'RTUFR',rtufr)
         CALL SPREADR (SPDIRFLE,'RWUMX',rwumx)
         CALL SPREADR (SPDIRFLE,'RWUPM',rwupm)
