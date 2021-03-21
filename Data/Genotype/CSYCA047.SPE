@@ -1,4 +1,4 @@
-$SPECIES:CSYCA047.020421    Last edit: 02/04/2021 LPM
+$SPECIES:CSYCA047.032121    Last edit: 03/21/2021 LPM
 
 
 ! Coefficients differ from those used in the CROPSIM cassava model.
@@ -75,10 +75,7 @@ $SPECIES:CSYCA047.020421    Last edit: 02/04/2021 LPM
 @SGRO2  ! Relative size of 2nd shoot
 !   fr
   0.75     
-! Reserves   
-@RSUSE  ! fr utilizeable/day
-!   fr 
-   0.1 
+
 ! Stems
 @SLIG%  SESR ! Lignin%, elongation rate (shoot)
 !    %  cm/gCH2O 
@@ -201,7 +198,6 @@ $SPECIES:CSYCA047.020421    Last edit: 02/04/2021 LPM
 ! RRATE   Relative process rate (#)
 ! RRESP   Root respiration fraction (fr)
 ! RSEN    Root senescence rate (%/standard day)
-! RSUSE   Reserves utilisation fraction,vegetative phases (fr)
 ! RTNO3   NO3 uptake/root length  (mg N/cm.day)
 ! RTNH4   NH4 uptake/root length  (mg N/cm.day)
 ! RWUMX   Maximum water uptake rate (cm3/cm.d)
