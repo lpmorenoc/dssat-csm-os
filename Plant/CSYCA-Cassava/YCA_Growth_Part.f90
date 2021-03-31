@@ -95,7 +95,7 @@
                 IF (PDL(1) < 1200.) THEN
                     node(BRSTAGE,(LNUMSIMSTG(BRSTAGE)+1))%LAPOTX = LAXS /((1+(5.665259E-3*(DALS))))
                 ELSE
-                    node(BRSTAGE,(LNUMSIMSTG(BRSTAGE)+1))%LAPOTX = AMAX1((0.5 * LAXS),(LAXS /((1+(5.665259E-3*DALS)))))
+                    node(BRSTAGE,(LNUMSIMSTG(BRSTAGE)+1))%LAPOTX = LAXS /((1+(1.665259E-3*(DALS))))
                 ENDIF
                 
                 !IF (WFGREA > 1.0) THEN
