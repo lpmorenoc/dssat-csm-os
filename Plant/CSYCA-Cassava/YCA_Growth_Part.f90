@@ -93,7 +93,7 @@
                 !LPM 12JUL2015 test with thermal time with optimum of 20 C
                 !LPM 24APR2016 Use of DALS (considering water stress) instead of TTCUMLS
                 IF (PDL(1) < 1200.) THEN
-                    node(BRSTAGE,(LNUMSIMSTG(BRSTAGE)+1))%LAPOTX = LAXS /((1+(5.665259E-3*(DALS))))
+                    node(BRSTAGE,(LNUMSIMSTG(BRSTAGE)+1))%LAPOTX = LAXS *(0.9**(BRSTAGE))/((1+(5.665259E-3*(DALS))))
                 ELSE
                     node(BRSTAGE,(LNUMSIMSTG(BRSTAGE)+1))%LAPOTX = LAXS /((1+(1.665259E-3*(DALS))))
                 ENDIF
