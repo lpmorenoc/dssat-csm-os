@@ -98,9 +98,10 @@
                     node(BRSTAGE,(LNUMSIMSTG(BRSTAGE)+1))%LAPOTX = LAXS /((1+(1.665259E-3*(DALS))))
                 ENDIF
                 
-                !IF (WFGREA > 1.0) THEN
-                !    node(BRSTAGE,(LNUMSIMSTG(BRSTAGE)+1))%LAPOTX = 2.0 *(node(BRSTAGE,(LNUMSIMSTG(BRSTAGE)+1))%LAPOTX)
-                !ENDIF
+                !LPM 31MAR2021 Increase leaf size during the recovery of water stress
+                IF (WFGREA > 1.0) THEN
+                    node(BRSTAGE,(LNUMSIMSTG(BRSTAGE)+1))%LAPOTX = 2.0 *(node(BRSTAGE,(LNUMSIMSTG(BRSTAGE)+1))%LAPOTX)
+                ENDIF
                 
             ENDIF
             !LPM 16sep2020 Define potential leaf size for previous leaf if two leaves are created the same day
