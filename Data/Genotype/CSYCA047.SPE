@@ -119,9 +119,9 @@ $SPECIES:CSYCA047.032121    Last edit: 03/21/2021 LPM
   0.00  0.06 
 ! Water shortage effects
 ! Based on ratio of soil water content to field capacity 
-@ WFGU  WFGL  ! Growth,phs
-!   fr    fr
-   1.0   0.0
+@ WFGU  WFGL  WFPU  WFPL  ! Growth,phs
+!   fr    fr    fr    fr
+   1.0   0.0   1.0   0.0
 @WFGEM WFRGU  ! Germination/emergence, root growth
 !   fr    fr
   0.50  0.25
@@ -224,3 +224,5 @@ $SPECIES:CSYCA047.032121    Last edit: 03/21/2021 LPM
 ! WFGEM   Water factor,germination and emergence (fr)
 ! WFGL    Water factor,growth,lower (fr)
 ! WFGU    Water factor,growth,upper (fr)
+! WFPL    Water factor,photosynthesis,lower (fr)
+! WFPU    Water factor,photosynthesis,upper (fr)

@@ -61,9 +61,9 @@
         ! End of day interception = today's starting interception
         select case(MEPHO)
             case ('R')
-                availableCH2O = availableCarbohydrate_methodR(PARMJFAC, SRAD, PARU, CO2FP, TFP, RSFP, VPDFP, SLPF, PARI, PLTPOP)
+                availableCH2O = availableCarbohydrate_methodR(PARMJFAC, SRAD, PARU, CO2FP, TFP, RSFP, VPDFP, SLPF, PARI, PLTPOP, WFP)
             case ('V')
-                availableCH2O = availableCarbohydrate_methodV(PARMJFAC, SRAD, PARU, CO2FP, TFP, RSFP, SLPF, PARI, PLTPOP, LAI, WEATHER, CONTROL, SOILPROP)
+                availableCH2O = availableCarbohydrate_methodV(PARMJFAC, SRAD, PARU, CO2FP, TFP, RSFP, SLPF, PARI, PLTPOP, LAI, WFP, WEATHER, CONTROL, SOILPROP)
         end select
         CARBOEND = availableCH2O
             
@@ -105,8 +105,8 @@
                     !Linear decrease according SWP
                     IF (WFGU-WFGL > 0.0) &
                         WFG = AMAX1(0.0,AMIN1(1.0,(RAW-WFGL)/(WFGU-WFGL)))                                                   !EQN 147
-                    !IF (WFPU-WFPL > 0.0) &
-                    !    WFP = AMAX1(0.0,AMIN1(1.0,(RAW-WFPL)/(WFPU-WFPL)))                                                   !EQN 145
+                    IF (WFPU-WFPL > 0.0) &
+                        WFP = AMAX1(0.0,AMIN1(1.0,(RAW-WFPL)/(WFPU-WFPL)))                                                   !EQN 145
                     
                     
                     IF (ISWWATEARLY == 'N') THEN
