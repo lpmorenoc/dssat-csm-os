@@ -750,7 +750,7 @@ C         Branch to menu choice
           CASE(16);  CALL GETREAL (LAFS  ,'LAFS', 20.0,  50.0)
           CASE(17);  CALL GETREAL (LAFND ,'LAFND ',100.0, 350.0)
           CASE(18);  CALL GETREAL (SLASS ,'SLAS ',100.0, 400.0)
-          CASE(19);  CALL GETREAL (LLIFA ,'LLIFA ',300.0,1200.0) !LPM redefine limit values
+          CASE(19);  CALL GETREAL (LLIFA ,'LLIFA ',300.0,1200.0)
           CASE(20);  CALL GETREAL (LPEFR ,'LPEFR ',0.200, 0.400)
           CASE(21);  CALL GETREAL (STFR  ,'STFR ',0.250, 0.450)
           END SELECT
@@ -809,6 +809,8 @@ C         Branch to menu choice
           CASE(14);  CALL GETREAL (NODWT ,'NODWT ', 3.00, 7.00)
           CASE(15);  CALL GETREAL (NODLT ,'NODLT ', 1.00, 4.00) 
         END SELECT
+
+    
 !=======================================================================
 !     CANEGRO sugarcane model
       CASE ('SCCAN')
