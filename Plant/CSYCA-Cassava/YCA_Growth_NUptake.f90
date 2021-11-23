@@ -614,6 +614,7 @@
                         IF (node(BR,LF)%LAGETT <= LLIFGTT .AND. node(BR,LF)%LAPOTX2 > 0.0 ) THEN
                             IF (LNUMSIMSTG(BR) < LCNUMX) THEN
                                 !LPM 15NOV15 Variables LAGL3, LAGL3T and LATL3T created to save the actual leaf are by cohort (all the plant (all branches and shoots))
+                                !LPM 13MAR21 Remove WFG effect on leaf size
                                 !LAGL3(BR,LF) = LAGL(BR,LF) * AMIN1(AFLF(0,0),WFG,NFG) !LPM 02SEP2016  Use of NFLF2 instead of NFG
                                 node(BR,LF)%LAGL3 = node(BR,LF)%LAGL * AMIN1(node(0,0)%AFLF,node(0,0)%NFLF2) 
                                 !LATL3(BR,LF)= LATL2(BR,LF)-LAGL(BR,LF) + LAGL3(BR,LF)                                             !EQN 150 !LPM  15NOV15 The reduction is just in the leaf area growing
@@ -661,7 +662,7 @@
             GROCRADJ = AMIN1(GROCR,GROCRADJ)
             !GROLFADJ = AMIN1(GROLF,GROLFADJ)
                         ! Potential leaf weight increase.
-            !LPM 16DEC2016 GROLFADJ is defined by the new estimation of leaf area which is considering water stress (WFG), carbohydrates available (AFLF) and nitrogen restrictions (NFLF2)
+            !LPM 16DEC2016 GROLFADJ is defined by the new estimation of leaf area which is considering carbohydrates available (AFLF) and nitrogen restrictions (NFLF2)
             IF (LAWL(1) > 0.0) GROLFADJ = (PLAGSB4/LAWL(1)) / (1.0-LPEFR)                                                   !EQN 297    
             !LPM 09OCT2019 Adding the WFG at the same time than the restrictions due to N and assimilates (selecting the most limiting)
             ! No water stress factor added to the roots
