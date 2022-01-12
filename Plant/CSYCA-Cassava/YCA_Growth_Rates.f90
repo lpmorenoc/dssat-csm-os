@@ -103,10 +103,11 @@
                         RAW = SWP(LSEED)/WFGEM
                     ENDIF
                     !Linear decrease according SWP
-                    IF (WFGU-WFGL > 0.0) &
+                    !LPM 12jan2022 Define WFP with the same value than WFG. Issue #55
+                    IF (WFGU-WFGL > 0.0) THEN
                         WFG = AMAX1(0.0,AMIN1(1.0,(RAW-WFGL)/(WFGU-WFGL)))                                                   !EQN 147
-                    IF (WFPU-WFPL > 0.0) &
-                        WFP = AMAX1(0.0,AMIN1(1.0,(RAW-WFPL)/(WFPU-WFPL)))                                                   !EQN 145
+                        WFP = WFG                                                                                            !EQN 145
+                    ENDIF
                     
                     
                     IF (ISWWATEARLY == 'N') THEN
