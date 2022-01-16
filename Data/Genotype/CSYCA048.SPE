@@ -61,7 +61,7 @@ $SPECIES:CSYCA048.041621    Last edit: 04/16/2021 LPM
  100.0  70.0
 @LWLOS  ! Loss when normal senescence   
 !   fr
-  0.30  
+  1.00  
 @SLATS SLATR   ! Specific leaf area temperature effect parameters
 !  oC     fr 
   30.0 0.022   
