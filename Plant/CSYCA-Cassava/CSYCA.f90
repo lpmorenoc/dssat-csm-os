@@ -200,12 +200,12 @@
 !*******************************************************************************************************************************
 
             CALL YCA_Integrate ( &
-                ALBEDOS     , BD          , BRSTAGE     , LAI         , CANHT       , CO2         , DAYL        , DEPMAX      , &
-                DLAYR       , DOY         , DRAIN       , EOP         , EP          , ET          , FERNIT      , IRRAMT      , &
-                ISWNIT      , ISWWAT      , LL          , NFP         , NH4LEFT     , NLAYR       , NO3LEFT     , RAIN        , &
-                RESCALG     , RESLGALG    , RESNALG     , RLV         , RUNOFF      , SRAD        , STGYEARDOY  , SW          , &
-                TLCHD       , TMAX        , TMIN        , TNIMBSOM    , TNOXD       , TOMINFOM    , TOMINSOM    , TOMINSOM1   , &
-                TOMINSOM2   , TOMINSOM3   , YEAR        & 
+                  ALBEDOS     , BD          , BRSTAGE     , LAI         , CANHT       , CO2         , DAYL        , DEPMAX      , &
+                  DLAYR       , DOY         , DRAIN       , EOP         , EP          , ET          , FERNIT      , IRRAMT      , &
+                  ISWNIT      , ISWWAT      , KCAN        , LL          , NFP         , NH4LEFT     , NLAYR       , NO3LEFT     , &
+                  RAIN        , RESCALG     , RESLGALG    , RESNALG     , RLV         , RUNOFF      , SRAD        , STGYEARDOY  , &
+                  SW          , TLCHD       , TMAX        , TMIN        , TNIMBSOM    , TNOXD       , TOMINFOM    , TOMINSOM    , &
+                  TOMINSOM1   , TOMINSOM2   , TOMINSOM3   , YEAR        & 
                 )
 
 !*******************************************************************************************************************************

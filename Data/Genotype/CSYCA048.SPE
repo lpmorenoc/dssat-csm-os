@@ -68,9 +68,9 @@ $SPECIES:CSYCA048.041621    Last edit: 04/16/2021 LPM
 @ TPAR TSRAD  ! Individual leaf transmission PAR, solar radiation  
 !   fr    fr
   0.07  0.25
-@PARIX  ! PAR interception beyond which accelerated ageing    
-!   fr
-  0.95
+@PARTH  ! PAR threshold below which accelerated ageing    
+! MJ/m2
+  0.1
 ! Shoots 
 @SGRO2  ! Relative size of 2nd shoot
 !   fr
@@ -187,7 +187,7 @@ $SPECIES:CSYCA048.041621    Last edit: 04/16/2021 LPM
 ! NH4MN   NH4 minimum concentration for uptake (mg/MG)
 ! NLAB%   N labile fraction,standard (%)
 ! NO3MN   NO3 minimum concentration for uptake (mg/MG)
-! PARIX   PAR interception beyond which accelerated ageing (fr)
+! PARTH   PAR threshold below which accelerated ageing (MJ/m2)
 ! PDSV    Photosynthesis,sensitivity to VPD, daily effect (fr/kPa)
 ! PDTV    Photosynthesis,threshold VPD for reduction in rate, daily effect (kPa)
 ! PEMRG   Rate of reserves use by unit of thermal time during emergence (gCH2O/TT)

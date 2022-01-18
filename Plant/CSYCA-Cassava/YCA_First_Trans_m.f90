@@ -369,7 +369,8 @@ Module YCA_First_Trans_m
     REAL    :: LAIXERR                 ! Leaf area index,max,error      %          ! (From Output)    
     REAL    :: LAIXM                   ! Lf lamina area index,mx,meas   m2/m2      ! (From SeasInit)  
     REAL    :: LAIXT                   ! Leaf area index,max,t-file     m2/m2      ! (From Output)    
-    REAL    :: LAIXX                   ! Leaf area index,max posible    #          ! (From SeasInit)  
+    !LPM 18jan2022 Use minimum radiation threshold instead of LAIXX
+    !REAL    :: LAIXX                   ! Leaf area index,max posible    #          ! (From SeasInit)  
     REAL    :: LANCM                   ! Leaf actual mean N conc.       #
     REAL    :: LANCRS                  ! Leaf N+rsN concentration       #          ! (From Growth)    
     REAL    :: LAPD                    ! Leaf area (green) per plant    cm2        ! (From Growth)    
@@ -528,11 +529,14 @@ Module YCA_First_Trans_m
     REAL    :: PARIPREV                ! PAR interception fr,previous   #          ! (From Growth)    
     REAL    :: PARIUE                  ! PAR intercepted use efficiency g/MJ       ! (From SeasInit)  
     REAL    :: PARIUED                 ! PAR intercepted use efficiency g/MJ       ! (From Integrate) 
-    REAL    :: PARIX                   ! PAR interception,maximum,fr    #          ! (From SeasInit)  
+    !!LPM 18jan2022 Use minimum radiation threshold instead of LAIXX
+    !Replace PARIX for PARTH
+    !REAL    :: PARIX                   ! PAR interception,maximum,fr    #          ! (From SeasInit)  
     REAL    :: PARMJC                  ! PAR,cumulative                 MJ/m2      ! (From SeasInit)  
     REAL    :: PARMJFAC                ! PAR conversion factor          MJ/MJ      ! (From RunInit)   
     REAL    :: PARMJIADJ               ! PAR intercepted adjustment     MJ/m2      ! (From Growth)    
     REAL    :: PARMJIC                 ! PAR intercepted,cumulative     MJ/m2      ! (From SeasInit)  
+    REAL    :: PARTH                   ! PAR threshold for lf senes.    MJ/m2      !
     REAL    :: PARU                    ! PAR utilization effic          g/MJ       ! (From SeasInit)  
     REAL    :: PARU2                   ! PAR use efficiency,afterchange g/MJ       ! (From SeasInit)  
     REAL    :: PARUE                   ! PAR use efficiency,standard    g/MJ       ! (From SeasInit)  

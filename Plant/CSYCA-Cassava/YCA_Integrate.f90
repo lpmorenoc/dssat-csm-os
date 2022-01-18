@@ -13,10 +13,10 @@
     SUBROUTINE YCA_Integrate ( &
         ALBEDOS     , BD          , BRSTAGE     , LAI         , CANHT       , CO2         , DAYL        , DEPMAX      , &
         DLAYR       , DOY         , DRAIN       , EOP         , EP          , ET          , FERNIT      , IRRAMT      , &
-        ISWNIT      , ISWWAT      , LL          , NFP         , NH4LEFT     , NLAYR       , NO3LEFT     , RAIN        , &
-        RESCALG     , RESLGALG    , RESNALG     , RLV         , RUNOFF      , SRAD        , STGYEARDOY  , SW          , &
-        TLCHD       , TMAX        , TMIN        , TNIMBSOM    , TNOXD       , TOMINFOM    , TOMINSOM    , TOMINSOM1   , &
-        TOMINSOM2   , TOMINSOM3   , YEAR        & 
+        ISWNIT      , ISWWAT      , KCAN        , LL          , NFP         , NH4LEFT     , NLAYR       , NO3LEFT     , &
+        RAIN        , RESCALG     , RESLGALG    , RESNALG     , RLV         , RUNOFF      , SRAD        , STGYEARDOY  , &
+        SW          , TLCHD       , TMAX        , TMIN        , TNIMBSOM    , TNOXD       , TOMINFOM    , TOMINSOM    , &
+        TOMINSOM1   , TOMINSOM2   , TOMINSOM3   , YEAR        & 
         )
         
         USE ModuleDefs
@@ -27,7 +27,8 @@
         INTEGER DOY         , NLAYR       , STGYEARDOY(0:19)            , YEAR
         
         REAL    ALBEDOS     , BD(NL)      , BRSTAGE     , LAI         , CANHT       , CO2         , DAYL        , DEPMAX
-        REAL    DLAYR(NL)   , DRAIN       , EOP         , EP          , ET          , FERNIT      , IRRAMT      , LL(NL)      
+        REAL    DLAYR(NL)   , DRAIN       , EOP         , EP          , ET          , FERNIT      , IRRAMT      , KCAN
+        REAL    LL(NL)      
         REAL    NFP         , NH4LEFT(NL) , NO3LEFT(NL) , RAIN        , RESCALG(0:NL)             , RESLGALG(0:NL)            
         REAL    RESNALG(0:NL)             , RLV(NL)     , RUNOFF      , SRAD        , SW(NL)      , TLCHD       , TMAX      
         REAL    TMIN        , TNIMBSOM    , TNOXD       , TOMINFOM    , TOMINSOM    , TOMINSOM1   , TOMINSOM2   , TOMINSOM3           
@@ -38,7 +39,7 @@
         !         Update ages
         !----------------------------------------------------------------------
         CALL YCA_Integ_AgesWts ( &
-            NLAYR,      BRSTAGE       & 
+            NLAYR,      BRSTAGE       , KCAN       , SRAD        & 
             )
             
         !-----------------------------------------------------------------------

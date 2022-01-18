@@ -395,8 +395,11 @@
         CALL SPREADR (SPDIRFLE,'LPEAW',lpeaw)
         CALL SPREADR (SPDIRFLE,'NCRG',ncrg)
         !CALL SPREADR (SPDIRFLE,'NTUPF',ntupf)
-        CALL SPREADR (SPDIRFLE,'PARIX',parix)
-        CALL SPREADR (SPDIRFLE,'LAIXX',laixx)
+        !!LPM 18jan2022 Use minimum radiation threshold instead of LAIXX
+        !Replace PARIX for PARTH
+        !CALL SPREADR (SPDIRFLE,'PARIX',parix)
+        CALL SPREADR (SPDIRFLE,'PARTH',parth)
+        !CALL SPREADR (SPDIRFLE,'LAIXX',laixx)
         !CALL SPREADR (SPDIRFLE,'PARFC',parfc)
         CALL SPREADR (SPDIRFLE,'PEMRG',pemrg) !LPM 22MAR2016 To use the same name than in the SPE file (no PECM)  
         CALL SPREADR (SPDIRFLE,'PDSV' ,pdsv)

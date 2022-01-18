@@ -40,6 +40,7 @@ Module YCA_Node !Module of environment
         REAL    :: LNCR                         ! Leaf N relative to maximum     #          ! (From SeasInit)
         REAL    :: LNCX                         ! Leaf N conc,maximum            fr         !
         REAL    :: LNDEMN                       ! Leaves demand for N by node    g/n/p      ! 
+        INTEGER :: LOWPARCOUNT                  ! Days with low PAR intercepted  #          !
         REAL    :: NDDAE                        ! DAE when a new node appears     ! DA 13DIC2016
         REAL    :: NDEMLMN                      ! N demand for growth/leaf min   g/p        !
         REAL    :: NDEMSMN                      ! N demand for growth/node min   g/p        !LPM 25MAY2015 addet to consider stem N by node cohort
@@ -51,6 +52,8 @@ Module YCA_Node !Module of environment
         REAL    :: NODEWTGB                     ! Leaf wt growth     g/d/leaf   ! DA 16DIC16 
         REAL    :: NPOOLLN                      ! Leaf N pool by node            g/p        !
         REAL    :: NPOOLSN                      ! Stem N pool by node            g/p        ! LPM 25MAY2015 Added to consider different N concentration by node 
+        REAL    :: PARAVAILABLE                 !PAR no intercepted in cohort    MJ/m2
+        REAL    :: PARINTER                     ! Fraction of intercepted rad    fr
         REAL    :: SANC                         ! Stem N concentration           #          ! (From SeasInit) !LPM 25MAY2015 change the dimensions to include values by node
         REAL    :: SCNC                         ! Stem critical max N conc/node  #/n        !LPM 25MAY2015 Added to estimate the value by cohort
         REAL    :: SCNM                         ! Stem critical min N conc/node  #/n       !LPM 25MAY2015 Added to estimate the value by cohort
@@ -120,6 +123,7 @@ Module YCA_Node !Module of environment
         Node_type_constructor%lncr = 0.0
         Node_type_constructor%lncx = 0.0
         Node_type_constructor%LNDEMN = 0.0
+        Node_type_constructor%LOWPARCOUNT = 0
         Node_type_constructor%nddae = 0.0
         Node_type_constructor%NDEMLMN = 0.0
         Node_type_constructor%NDEMSMN = 0.0
@@ -129,6 +133,8 @@ Module YCA_Node !Module of environment
         Node_type_constructor%NODEWTG = 0.0
         Node_type_constructor%NODEWTGB = 0.0 !LPM 11APR15 New variables of node growth
         Node_type_constructor%NODEWT = 0.0 !LPM 11APR15 New variables of node growth
+        Node_type_constructor%PARAVAILABLE = 0.0
+        Node_type_constructor%PARINTER = 0.0
         Node_type_constructor%sanc = 0.0
         Node_type_constructor%scnc = 0.0
         Node_type_constructor%scnm = 0.0

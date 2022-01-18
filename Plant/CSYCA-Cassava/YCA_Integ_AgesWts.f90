@@ -9,10 +9,11 @@
 !***************************************************************************************************************************
     
     SUBROUTINE YCA_Integ_AgesWts ( &
-        NLAYR,      BRSTAGE       & 
+        NLAYR,      BRSTAGE       , KCAN       , SRAD        & 
         )
         
         USE YCA_First_Trans_m
+        USE YCA_Control_Environment
         USE YCA_Control_Leaf
         USE YCA_Control_Plant
     
@@ -21,7 +22,7 @@
         INTEGER NLAYR
         INTEGER :: BR                      ! Index for branch number/cohorts#          ! (From SeasInit)  
         INTEGER :: LF                      ! Loop counter leaves            #          !LPM 21MAR15 to add a leaf counter
-        REAL BRSTAGE, TEMP
+        REAL BRSTAGE, KCAN, SRAD, TEMP
         
         !-----------------------------------------------------------------------
         !         Update ages
@@ -43,15 +44,21 @@
                 IF (isLeafAlive(node(BR,LF))) THEN             !LPM 24APR2016 Leaf age in thermal time
                     call leafAge(node(BR,LF))
                     
+                   node(BR,LF)%PARINTER = calculatePortionOfRadiation(KCAN, node(BR,LF)%LAIByCohort)
+                   node(BR,LF)%PARAVAILABLE = (1.0 - node(BR,LF)%PARINTER) * (PARMJFAC*SRAD)                    
                     ! Accelerated senescence at base of dense leaf canopy
-                    IF (node(BR,LF)%LAIByCohort > LAIXX) THEN
+                    !LPM 17jan2022 Use minimum radiation threshold instead of LAIXX
+                    !IF (node(BR,LF)%LAIByCohort > LAIXX) THEN
+                   IF (node(BR,LF)%PARAVAILABLE < PARTH) THEN
+                       node(BR,LF)%LOWPARCOUNT = node(BR,LF)%LOWPARCOUNT + 1
                             ! Increase age if deep shading at base of canopy
                             ! (Maximum accelerated ageing set in SPE file)
                             ! Accelerated ageing of lowermost active leaf
+                       IF (node(BR,LF)%LOWPARCOUNT >= 5) THEN
                             IF (isLeafExpanding(node(BR,LF)) .OR. isLeafActive(node(BR,LF))) THEN                                                  !LPM 28MAR15 LLIFGT was deleted 
                                 call setLeafAsSenescing(node(BR,LF))
                             ENDIF
-
+                       ENDIF
                     ENDIF
                  ! Days active
                     IF (isLeafActive(node(BR,LF))) THEN                                                  !LPM 28MAR15 LLIFGT was deleted 

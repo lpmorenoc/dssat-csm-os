@@ -175,7 +175,10 @@
         ! Various
         !IF (RSFRS < 0.0) RSFRS = 0.05 !LPM 09OCT2019 Remove the reserve fraction to the stems (RSFRS)
         IF (LSENI < 0.0) LSENI = 0.0
-        IF (PARIX <= 0.0) PARIX = 0.995
+        !LPM 18jan2022 Use minimum radiation threshold instead of LAIXX
+        !Replace PARIX for PARTH
+        !IF (PARIX <= 0.0) PARIX = 0.995
+        IF (PARTH <= 0.0) PARTH = 0.1
         !LPM 15NOV2020 Remove the N top-up fraction
         !IF (NTUPF < 0.0) NTUPF = 0.2
         IF (PPEXP < 0.0) PPEXP = 2.0
@@ -206,7 +209,9 @@
         ! Initial leaf growth aspects
         
         ! If max LAI not read-in,calculate from max interception
-        IF (LAIXX <= 0.0) LAIXX = LOG(1.0-PARIX)/(-KCAN)                                                               ! EQN 008
+        !LPM 18jan2022 Use minimum radiation threshold instead of LAIXX
+        !Replace PARIX for PARTH
+        !IF (LAIXX <= 0.0) LAIXX = LOG(1.0-PARIX)/(-KCAN)                                                               ! EQN 008
         
         !PHINT = PHINTS  !LPM 21MAY2015 this variable is not used
         
