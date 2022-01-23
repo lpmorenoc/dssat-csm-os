@@ -68,8 +68,11 @@
                 DO LF = 1, LNUMSIMSTG(BR)
                     IF (isLeafExpanding(node(BR,LF))) THEN
                         IF(BRSTAGE>=1.0) THEN
+                            !LPM19jan2022 Add node length by cohort NODELT in cm
+                            node(BR,LF)%NODELT = node(BR,LF)%NODELT + MAX(0.0,NODLT*(dailyGrowth()/LLIFGTT)*AMIN1(WFG,node(0,0)%NFLF2)*0.5)
                             CANHTG = CANHTG + MAX(0.0,NODLT*(dailyGrowth()/LLIFGTT)*AMIN1(WFG,node(0,0)%NFLF2)*0.5)/100.0
                         ELSE
+                            node(BR,LF)%NODELT = node(BR,LF)%NODELT + MAX(0.0,NODLT*(dailyGrowth()/LLIFGTT)*AMIN1(WFG,node(0,0)%NFLF2))
                             CANHTG = CANHTG + MAX(0.0,NODLT*(dailyGrowth()/LLIFGTT)*AMIN1(WFG,node(0,0)%NFLF2))/100.0
                         ENDIF
                     ENDIF

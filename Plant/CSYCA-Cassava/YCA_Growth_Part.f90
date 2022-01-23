@@ -13,6 +13,7 @@
     
         USE ModuleDefs
         USE YCA_First_Trans_m
+        USE YCA_Control_Leaf
     
         IMPLICIT NONE
         
@@ -242,7 +243,16 @@
                 !LPM 09OCT2019 Removing the water stress factor to be considered at the same time  than the assimilates and the N restrictions
                 node(BR,LF)%NODEWTGB = (1/(1+(((Lcount)/NDLEV_B)**NDLEV_C)))  *  (NDDAE_E*(((NDDAED)**NDDAE_F) / ((NDDAED**NDDAE_G)+1)**2))  *  TFG *NODWT 
            
-                node(BR,LF)%NODEWTG = node(BR,LF)%NODEWTGB
+                IF (isLeafExpanding(node(BR,LF))) THEN
+                    node(BR,LF)%NODEWTG = node(BR,LF)%NODEWTGB
+                ELSE
+                    IF (nodlt > 1.e-6) THEN
+                        node(BR,LF)%NODEWTG = node(BR,LF)%NODEWTGB * (node(BR,LF)%NODELT/NODLT)
+                    ELSE
+                        node(BR,LF)%NODEWTG = 0.0 
+                    ENDIF
+                ENDIF
+                    
                 !IF (BR == 0.AND.LF == 1.AND.DAE == 1.AND.SEEDUSES > 0.0) NODEWTG(BR,LF) = SEEDUSES + NODEWTGB(BR) !LPM 22MAR2016 To add the increase of weight from reserves 
                 node(BR,LF)%NODEWT = node(BR,LF)%NODEWT + node(BR,LF)%NODEWTG
                 GROSTP = GROSTP + (node(BR,LF)%NODEWTG*BRNUMST(BR)) !LPM08JUN2015 added BRNUMST(BR) to consider the amount of branches by br. level

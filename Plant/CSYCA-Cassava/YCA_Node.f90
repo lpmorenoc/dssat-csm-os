@@ -47,6 +47,7 @@ Module YCA_Node !Module of environment
         REAL    :: NFLF                         ! N factor for leaf,average      #          ! (From SeasInit) !LPM 23MAR15 Adjusted to consider two dimensions  
         REAL    :: NFLF2                        ! N factor for leaf area adj     #          ! (From SeasInit) !LPM 23MAR15 Adjusted to consider two dimensions 
         REAL    :: NFLFP                        ! N factor phs leaf,average      #          ! (From SeasInit) !LPM 25MAR15 Adjusted to consider two dimensions  
+        REAL    :: NODELT                       ! Node length by cohort          cm         !LPM 19jan2022 To keep track of node length by cohort
         REAL    :: NODEWT                       ! Node wt  by cohort             g/p        ! LPM 11APR15
         REAL    :: NODEWTG                      ! Node wt growth by cohort       g/d/p      ! LPM 02MAR15 
         REAL    :: NODEWTGB                     ! Leaf wt growth     g/d/leaf   ! DA 16DIC16 
@@ -130,6 +131,7 @@ Module YCA_Node !Module of environment
         Node_type_constructor%nflf = 0.0
         Node_type_constructor%nflf2 = 0.0
         Node_type_constructor%nflfp = 1.0
+        Node_type_constructor%NODELT = 0.0 !LPM 19jan2022 To keep track of node length by cohort
         Node_type_constructor%NODEWTG = 0.0
         Node_type_constructor%NODEWTGB = 0.0 !LPM 11APR15 New variables of node growth
         Node_type_constructor%NODEWT = 0.0 !LPM 11APR15 New variables of node growth
