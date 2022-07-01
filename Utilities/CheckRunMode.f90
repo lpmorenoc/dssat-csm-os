@@ -3,7 +3,7 @@ Subroutine CheckRunMode(RNMODE)
   Implicit None
   INTEGER COUNT
   CHARACTER*1 RNMODE
-  CHARACTER*120 MSG(67)
+  CHARACTER*120 MSG(68)
 
   DATA MSG / &
   "-----------------------------------------------------------------------------", &
@@ -39,6 +39,7 @@ Subroutine CheckRunMode(RNMODE)
   " F   BatchFile  NA    Farm model: Batchfile lists experiments and treatments.", &
   " G   FileX      TrtNo Gencalc: Run single FileX and treatment #.             ", &
   " I   NA         NA    Interactive: Interactively select FileX and TrtNo.     ", &
+  " M   BatchFile  NA    Intercropping: Batchfile lists FileX and TrtNo.        ", &
   " L   BatchFile  NA    Gene-based model (Locus): Batchfile for FileX and TrtNo", &
   " N   BatchFile  NA    Seasonal analysis: Batchfile lists FileX and TrtNo.    ", &
   " Q   BatchFile  NA    Sequence analysis: Batchfile lists FileX & rotation #. ", &
@@ -74,7 +75,7 @@ Subroutine CheckRunMode(RNMODE)
   "           simulation control options specified by DSCSM048.CTR              ", &
   "-----------------------------------------------------------------------------"/
 
-  IF (INDEX('ABCDEFGILNQSTYabcdefginlqsty',RNMODE) .GT. 0) RETURN
+  IF (INDEX('ABCDEFGILNQSTYMabcdefginlqstym',RNMODE) .GT. 0) RETURN
 
   COUNT = SIZE(MSG)
   WRITE(*,'(100(/,A))') MSG

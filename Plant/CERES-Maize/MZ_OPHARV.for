@@ -328,7 +328,7 @@ C  02/09/2007 GH  Add path for FileA
       PBIOMS = TOPWT * 10.0
 
 !-----------------------------------------------------------------------
-      IF ((INDEX('YE',IDETO) > 0 .OR. INDEX('IAEBCGDT',RNMODE) .GT. 0) 
+      IF ((INDEX('YE',IDETO) > 0 .OR. INDEX('IAEBCGDTM',RNMODE) .GT. 0) 
      &  .OR. (INDEX('AY',IDETS) .GT. 0 .AND. CROP .NE. 'FA')) THEN
          IF (INDEX('FQ',RNMODE) > 0) THEN
            TRT_ROT = CONTROL % ROTNUM

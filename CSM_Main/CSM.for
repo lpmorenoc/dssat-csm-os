@@ -98,6 +98,8 @@ C-----------------------------------------------------------------------
       INTEGER       YRSIM_SAVE, YRDIF, YRDOY_END !IP,IPX, 
       INTEGER       LUNBIO,LINBIO,ISECT,IFIND,LN, LNUM, FOUND
       INTEGER       NREPS, REPNO,END_POS, ROTNUM, TRTREP, NARG
+      INTEGER       OPNUM, CRPN
+      INTEGER, DIMENSION(2) :: CROPNUM
 
       LOGICAL       FEXIST, DONE
 
@@ -159,6 +161,7 @@ C      F - Farm model.  Use Batch file to define experiment
 C      G - Gencalc. Use Command line to define experiment and treatment
 C      I - Interactive mode.  Use model interface for exp. & trtno.
 C      L - Gene based model (Locus). Use Batch file to define experiment
+C      M - Intercropping. Use Batch file to define experiment
 C      N - Seasonal analysis. Use Batch file to define experiment and 
 C          treatments 
 C      Q - Sequence analysis. Use Batch file to define experiment
@@ -170,6 +173,9 @@ C-----------------------------------------------------------------------
       RNMODE = UPCASE(RNMODE)
       ROTNUM = 0
       TRTNUM = 0
+      OPNUM  = 0
+      CROPNUM = 0
+      CRPN = 0
       SELECT CASE(RNMODE)
 
 !     Read experiment file from command line -- run all treatments
@@ -185,9 +191,10 @@ C-----------------------------------------------------------------------
         READ(TRNARG,'(I6)') TRTNUM
 
 !     Get experiment and treatment from batch file
-      CASE('B','N','Q','S','F','T','E','L','Y')
+      CASE('B','N','Q','S','F','T','E','L','Y', 'M')
 !           Batch, seasoNal, seQuence, Spatial, 
 !           Farm, Gencalc(T), sEnsitivity, Locus, Yield forecast
+!           Intercrop          
         CALL GETARG(NARG+1,FILEB)   !,IP   !Batch file name
         CALL GETARG(NARG+2,FILECTL) !,IP   !Simulation control file name
 
@@ -226,7 +233,7 @@ C-----------------------------------------------------------------------
 C-----------------------------------------------------------------------
 C    Open BATCH file
 C-----------------------------------------------------------------------
-        IF (INDEX('NQSFBETY',RNMODE) .GT. 0) THEN
+        IF (INDEX('NQSFBETYM',RNMODE) .GT. 0) THEN
            CALL GETLUN('BATCH ', LUNBIO)
            FINDCH='$BATCH'
            OPEN (LUNBIO, FILE = FILEB,STATUS = 'UNKNOWN',IOSTAT=ERRNUM)
@@ -285,11 +292,30 @@ C***********************************************************************
         IF (ERRNUM .NE. 0) CALL ERROR (ERRKEY,26,FILEB,LINBIO)
       ENDIF
 
+      IF (INDEX('M',RNMODE) .GT. 0) THEN
+        !DO WHILE (CRPN .LT. 2)
+          CRPN = CRPN +1
+           CALL IGNORE (LUNBIO,LINBIO,ISECT,CHARTEST)
+         IF (ISECT .EQ. 1) THEN
+           END_POS = LEN(TRIM(CHARTEST(1:92)))+1
+           FILEX = CHARTEST((END_POS-12):(END_POS-1))
+           PATHEX = CHARTEST(1:END_POS-13)
+           READ(CHARTEST(93:127),120,IOSTAT=ERRNUM) TRTNUM,TRTREP,ROTNUM
+     &         , OPNUM,CROPNUM(CRPN)
+ 120       FORMAT(5(1X,I6))
+           IF (ERRNUM .NE. 0) CALL ERROR (ERRKEY,26,FILEB,LINBIO)
+         ELSE
+           DONE = .TRUE.
+           GO TO 2000
+         ENDIF
+        !ENDDO
+      ENDIF
       CONTROL % FILEIO  = FILEIO
       CONTROL % FILEX   = FILEX
       CONTROL % RNMODE  = RNMODE
       CONTROL % ROTNUM  = ROTNUM
       CONTROL % TRTNUM  = TRTNUM
+      CONTROL % CROPNUM  = CROPNUM
       CONTROL % ERRCODE = 0
       CALL PUT(CONTROL)
 
@@ -305,7 +331,7 @@ C-----------------------------------------------------------------------
       IF (RNMODE .NE. 'D') THEN
         CALL INPUT_SUB(
      &    FILECTL, FILEIO, FILEX, MODELARG, PATHEX,       !Input
-     &    RNMODE, ROTNUM, RUN, TRTNUM,                    !Input
+     &    RNMODE, ROTNUM, RUN, TRTNUM, CROPNUM,           !Input
      &    ISWITCH, CONTROL)                               !Output
       ELSE
         FILEX = '            '    !Debug mode - no FILEX

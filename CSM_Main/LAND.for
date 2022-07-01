@@ -40,6 +40,7 @@ C-----------------------------------------------------------------------
       PARAMETER   (ERRKEY = 'LAND  ')
       CHARACTER*8  MODEL
       CHARACTER*30 FILEIO
+      CHARACTER*1   RNMODE
       
 C-----------------------------------------------------------------------
 C     Date / Timing / Sequencing Variables
@@ -132,6 +133,7 @@ C     Transfer values from constructed data types into local variables.
       MODEL   = CONTROL % MODEL
       YRDOY   = CONTROL % YRDOY
       YRSIM   = CONTROL % YRSIM
+      RNMODE  = CONTROL % RNMODE
 
       IPLTI   = ISWITCH % IPLTI
 
@@ -187,6 +189,20 @@ C-----------------------------------------------------------------------
 C-----------------------------------------------------------------------
 C     Read initial plant module data
 C-----------------------------------------------------------------------
+      IF (RNMODE == 'M') THEN
+      CALL INTERCROP(CONTROL, ISWITCH, 
+     &    EO, EOP, EOS, EP, ES, FLOODWAT, HARVFRAC,       !Input
+     &    NH4_plant, NO3_plant, SKi_Avail, SomLitC, SomLitE, !Input
+     &    SPi_AVAIL, SNOW, SOILPROP, SRFTEMP, ST, SW,     !Input
+     &    TRWU, TRWUP, UPPM, WEATHER, YREND, YRPLT,       !Input
+     &    IRRAMT,                                         !Input
+     &    FLOODN,                                         !I/O
+     &    CANHT, EORATIO, HARVRES, KSEVAP, KTRANS,        !Output
+     &    KUptake, MDATE, NSTRES, PSTRES1,                !Output
+     &    PUptake, PORMIN, RLV, RWUMX, SENESCE,           !Output
+     &    STGDOY, FracRts, UH2O, UNH4, UNO3, XHLAI, XLAI) !Output
+      
+      ELSE   
       CALL PLANT(CONTROL, ISWITCH, 
      &    EO, EOP, EOS, EP, ES, FLOODWAT, HARVFRAC,       !Input
      &    NH4_plant, NO3_plant, SKi_Avail, SomLitC, SomLitE, !Input
@@ -198,6 +214,8 @@ C-----------------------------------------------------------------------
      &    KUptake, MDATE, NSTRES, PSTRES1,                !Output
      &    PUptake, PORMIN, RLV, RWUMX, SENESCE,           !Output
      &    STGDOY, FracRts, UH2O, UNH4, UNO3, XHLAI, XLAI) !Output
+      
+      ENDIF 
 
 C-----------------------------------------------------------------------
 C     Initialize summary.out information
@@ -272,6 +290,20 @@ C-----------------------------------------------------------------------
 C-----------------------------------------------------------------------
 C     Initialize PLANT routines (including phenology and pest)
 C-----------------------------------------------------------------------
+      IF (RNMODE == 'M') THEN
+      CALL INTERCROP(CONTROL, ISWITCH, 
+     &    EO, EOP, EOS, EP, ES, FLOODWAT, HARVFRAC,       !Input
+     &    NH4_plant, NO3_plant, SKi_Avail, SomLitC, SomLitE, !Input
+     &    SPi_AVAIL, SNOW, SOILPROP, SRFTEMP, ST, SW,     !Input
+     &    TRWU, TRWUP, UPPM, WEATHER, YREND, YRPLT,       !Input
+     &    IRRAMT,                                         !Input
+     &    FLOODN,                                         !I/O
+     &    CANHT, EORATIO, HARVRES, KSEVAP, KTRANS,        !Output
+     &    KUptake, MDATE, NSTRES, PSTRES1,                !Output
+     &    PUptake, PORMIN, RLV, RWUMX, SENESCE,           !Output
+     &    STGDOY, FracRts, UH2O, UNH4, UNO3, XHLAI, XLAI) !Output
+      
+      ELSE   
       CALL PLANT(CONTROL, ISWITCH, 
      &    EO, EOP, EOS, EP, ES, FLOODWAT, HARVFRAC,       !Input
      &    NH4_plant, NO3_plant, SKi_Avail, SomLitC, SomLitE, !Input
@@ -283,6 +315,8 @@ C-----------------------------------------------------------------------
      &    KUptake, MDATE, NSTRES, PSTRES1,                !Output
      &    PUptake, PORMIN, RLV, RWUMX, SENESCE,           !Output
      &    STGDOY, FracRts, UH2O, UNH4, UNO3, XHLAI, XLAI) !Output
+      
+      ENDIF 
 C-----------------------------------------------------------------------
 C     Initialize summary output file - possible output from 
 C     various modules.
@@ -347,7 +381,8 @@ C     Skip plant growth and development routines for fallow runs
 C-----------------------------------------------------------------------
 !      IF (CROP .NE. 'FA' .AND. 
 !     &    YRDOY .GE. YRPLT .AND. YRPLT .NE. -99) THEN
-        CALL PLANT(CONTROL, ISWITCH, 
+      IF (RNMODE == 'M') THEN
+      CALL INTERCROP(CONTROL, ISWITCH, 
      &    EO, EOP, EOS, EP, ES, FLOODWAT, HARVFRAC,       !Input
      &    NH4_plant, NO3_plant, SKi_Avail, SomLitC, SomLitE, !Input
      &    SPi_AVAIL, SNOW, SOILPROP, SRFTEMP, ST, SW,     !Input
@@ -358,6 +393,21 @@ C-----------------------------------------------------------------------
      &    KUptake, MDATE, NSTRES, PSTRES1,                !Output
      &    PUptake, PORMIN, RLV, RWUMX, SENESCE,           !Output
      &    STGDOY, FracRts, UH2O, UNH4, UNO3, XHLAI, XLAI) !Output
+      
+      ELSE   
+      CALL PLANT(CONTROL, ISWITCH, 
+     &    EO, EOP, EOS, EP, ES, FLOODWAT, HARVFRAC,       !Input
+     &    NH4_plant, NO3_plant, SKi_Avail, SomLitC, SomLitE, !Input
+     &    SPi_AVAIL, SNOW, SOILPROP, SRFTEMP, ST, SW,     !Input
+     &    TRWU, TRWUP, UPPM, WEATHER, YREND, YRPLT,       !Input
+     &    IRRAMT,                                         !Input
+     &    FLOODN,                                         !I/O
+     &    CANHT, EORATIO, HARVRES, KSEVAP, KTRANS,        !Output
+     &    KUptake, MDATE, NSTRES, PSTRES1,                !Output
+     &    PUptake, PORMIN, RLV, RWUMX, SENESCE,           !Output
+     &    STGDOY, FracRts, UH2O, UNH4, UNO3, XHLAI, XLAI) !Output
+      
+      ENDIF 
 !      ENDIF
 
 C***********************************************************************
@@ -394,7 +444,8 @@ C     plant state variables.
 C-----------------------------------------------------------------------
       IF (CROP .NE. 'FA' .AND. 
      &        YRDOY .GE. YRPLT .AND. YRPLT .NE. -99) THEN
-        CALL PLANT(CONTROL, ISWITCH, 
+      IF (RNMODE == 'M') THEN
+      CALL INTERCROP(CONTROL, ISWITCH, 
      &    EO, EOP, EOS, EP, ES, FLOODWAT, HARVFRAC,       !Input
      &    NH4_plant, NO3_plant, SKi_Avail, SomLitC, SomLitE, !Input
      &    SPi_AVAIL, SNOW, SOILPROP, SRFTEMP, ST, SW,     !Input
@@ -405,6 +456,21 @@ C-----------------------------------------------------------------------
      &    KUptake, MDATE, NSTRES, PSTRES1,                !Output
      &    PUptake, PORMIN, RLV, RWUMX, SENESCE,           !Output
      &    STGDOY, FracRts, UH2O, UNH4, UNO3, XHLAI, XLAI) !Output
+      
+      ELSE   
+      CALL PLANT(CONTROL, ISWITCH, 
+     &    EO, EOP, EOS, EP, ES, FLOODWAT, HARVFRAC,       !Input
+     &    NH4_plant, NO3_plant, SKi_Avail, SomLitC, SomLitE, !Input
+     &    SPi_AVAIL, SNOW, SOILPROP, SRFTEMP, ST, SW,     !Input
+     &    TRWU, TRWUP, UPPM, WEATHER, YREND, YRPLT,       !Input
+     &    IRRAMT,                                         !Input
+     &    FLOODN,                                         !I/O
+     &    CANHT, EORATIO, HARVRES, KSEVAP, KTRANS,        !Output
+     &    KUptake, MDATE, NSTRES, PSTRES1,                !Output
+     &    PUptake, PORMIN, RLV, RWUMX, SENESCE,           !Output
+     &    STGDOY, FracRts, UH2O, UNH4, UNO3, XHLAI, XLAI) !Output
+      
+      ENDIF 
       ENDIF
 
 C-----------------------------------------------------------------------
@@ -446,8 +512,9 @@ C***********************************************************************
 C-----------------------------------------------------------------------
 C     Call plant module for daily printout.
 C-----------------------------------------------------------------------
-        IF (CROP .NE. 'FA') THEN
-          CALL PLANT(CONTROL, ISWITCH, 
+      IF (CROP .NE. 'FA') THEN
+      IF (RNMODE == 'M') THEN
+      CALL INTERCROP(CONTROL, ISWITCH, 
      &    EO, EOP, EOS, EP, ES, FLOODWAT, HARVFRAC,       !Input
      &    NH4_plant, NO3_plant, SKi_Avail, SomLitC, SomLitE, !Input
      &    SPi_AVAIL, SNOW, SOILPROP, SRFTEMP, ST, SW,     !Input
@@ -458,7 +525,22 @@ C-----------------------------------------------------------------------
      &    KUptake, MDATE, NSTRES, PSTRES1,                !Output
      &    PUptake, PORMIN, RLV, RWUMX, SENESCE,           !Output
      &    STGDOY, FracRts, UH2O, UNH4, UNO3, XHLAI, XLAI) !Output
-        ENDIF
+      
+      ELSE   
+      CALL PLANT(CONTROL, ISWITCH, 
+     &    EO, EOP, EOS, EP, ES, FLOODWAT, HARVFRAC,       !Input
+     &    NH4_plant, NO3_plant, SKi_Avail, SomLitC, SomLitE, !Input
+     &    SPi_AVAIL, SNOW, SOILPROP, SRFTEMP, ST, SW,     !Input
+     &    TRWU, TRWUP, UPPM, WEATHER, YREND, YRPLT,       !Input
+     &    IRRAMT,                                         !Input
+     &    FLOODN,                                         !I/O
+     &    CANHT, EORATIO, HARVRES, KSEVAP, KTRANS,        !Output
+     &    KUptake, MDATE, NSTRES, PSTRES1,                !Output
+     &    PUptake, PORMIN, RLV, RWUMX, SENESCE,           !Output
+     &    STGDOY, FracRts, UH2O, UNH4, UNO3, XHLAI, XLAI) !Output
+      
+      ENDIF 
+      ENDIF
 
         CALL MGMTOPS(CONTROL, ISWITCH, 
      &    FLOODWAT, HARVRES, SOILPROP, ST,                !Input 
@@ -494,6 +576,20 @@ C     Print seasonal summaries and close files.
      &    EO, EOP, EOS, EP, ES, RWU, SRFTEMP, ST,         !Output
      &    SWDELTX, TRWU, TRWUP, UPFLOW)                   !Output
 
+      IF (RNMODE == 'M') THEN
+      CALL INTERCROP(CONTROL, ISWITCH, 
+     &    EO, EOP, EOS, EP, ES, FLOODWAT, HARVFRAC,       !Input
+     &    NH4_plant, NO3_plant, SKi_Avail, SomLitC, SomLitE, !Input
+     &    SPi_AVAIL, SNOW, SOILPROP, SRFTEMP, ST, SW,     !Input
+     &    TRWU, TRWUP, UPPM, WEATHER, YREND, YRPLT,       !Input
+     &    IRRAMT,                                         !Input
+     &    FLOODN,                                         !I/O
+     &    CANHT, EORATIO, HARVRES, KSEVAP, KTRANS,        !Output
+     &    KUptake, MDATE, NSTRES, PSTRES1,                !Output
+     &    PUptake, PORMIN, RLV, RWUMX, SENESCE,           !Output
+     &    STGDOY, FracRts, UH2O, UNH4, UNO3, XHLAI, XLAI) !Output
+      
+      ELSE   
       CALL PLANT(CONTROL, ISWITCH, 
      &    EO, EOP, EOS, EP, ES, FLOODWAT, HARVFRAC,       !Input
      &    NH4_plant, NO3_plant, SKi_Avail, SomLitC, SomLitE, !Input
@@ -505,6 +601,8 @@ C     Print seasonal summaries and close files.
      &    KUptake, MDATE, NSTRES, PSTRES1,                !Output
      &    PUptake, PORMIN, RLV, RWUMX, SENESCE,           !Output
      &    STGDOY, FracRts, UH2O, UNH4, UNO3, XHLAI, XLAI) !Output
+      
+      ENDIF 
 
 !     Call management operations module for seasonal printout.
       CALL MGMTOPS(CONTROL, ISWITCH, 

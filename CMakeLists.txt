@@ -190,6 +190,7 @@ set(
         "Management/Tillage.for"
         "Management/TillEvent.for"
         "Plant/plant.for"
+        "Plant/intercrop.for"
         "Plant/ALOHA-Pineapple/Aloha_GROSUB.for"
         "Plant/ALOHA-Pineapple/Aloha_mod.f90"
         "Plant/ALOHA-Pineapple/Aloha_NFACTO.for"
