@@ -70,7 +70,6 @@ C-----------------------------------------------------------------------
       CHARACTER*6  ERRKEY
       PARAMETER (ERRKEY = 'INTERCROP')
       CHARACTER*8  MODEL
-      CHARACTER*8  MODELS(2)
       CHARACTER*78 MESSAGE(10)    !Up to 10 lines of text to be output
 
       INTEGER DYNAMIC
@@ -84,8 +83,6 @@ C-----------------------------------------------------------------------
       REAL TMAX, TMIN, TRWU
       REAL TRWUP, TWILEN, XLAI, XHLAI
       
-      REAL CANHT2, EORATIO2, HAR
-
       REAL, DIMENSION(2)  :: HARVFRAC
       REAL, DIMENSION(NL) :: NH4, NO3, RLV, UPPM  !, RWU
       REAL, DIMENSION(NL) :: ST, SW, UNO3, UNH4, UH2O
@@ -114,7 +111,20 @@ C         Variables to run CASUPRO from Alt_PLANT.  FSR 07-23-03
       REAL, DIMENSION(0:NL) :: SomLitC
       REAL, DIMENSION(0:NL,NELEM) :: SomLitE
       LOGICAL, PARAMETER :: OR_OUTPUT = .FALSE.
-
+      
+!     Variables intercrop      
+      INTEGER, DIMENSION(2)  :: MDATEM
+      INTEGER STGDOYM(20,2)
+      REAL, DIMENSION(2)  :: CANHTM, EORATIOM, KCANM, KEPM, KSEVAPM
+      REAL, DIMENSION(2)  :: KTRANSM
+      REAL, DIMENSION(2)  :: NSTRESM, PORMINM, PSTRES1M, RWUMXM
+      REAL, DIMENSION(2)  :: XLAIM, XHLAIM
+      
+      REAL, DIMENSION(NL,2) :: PUptakeM, FracRtsM, RLVM, UNO3M, UNH4M
+      REAL, DIMENSION(NL,2) :: KUptakeM
+      CHARACTER*2, CROPS(2)
+      CHARACTER*8  MODELS(2)
+      CHARACTER*30 FILEIOM(2)
 !-----------------------------------------------------------------------
 !     Constructed variables are defined in ModuleDefs.
       TYPE (ControlType)  CONTROL
@@ -217,29 +227,45 @@ C         Variables to run CASUPRO from Alt_PLANT.  FSR 07-23-03
 !     Initialize output variables.
 !     Each plant routine may or may not re-compute these values.
       CANHT    = 0.0
+      CANHTM    = 0.0
       EORATIO  = 1.0
+      EORATIOM  = 1.0
       KCAN     = 0.85
+      KCANM     = 0.85
       KEP      = 1.0
+      KEPM      = 1.0
       KSEVAP   = -99.
+      KSEVAPM   = -99.
       KTRANS   = 1.0
+      KTRANSM   = 1.0
       MDATE    = -99
+      MDATEM    = -99
       NSTRES   = 1.0
+      NSTRESM   = 1.0
       !NVALP0   = 10000
       PORMIN   = 0.02
+      PORMINM   = 0.02
       RLV      = 0.0
+      RLVM     = 0.0
       RWUEP1   = 1.5
       RWUMX    = 0.03
+      RWUMXM    = 0.03
       !SENESCE % CumResWt= 0.0
       !SENESCE % CumResE = 0.0
       STGDOY   = 9999999
+      STGDOYM   = 9999999
       XHLAI    = 0.0
+      XHLAIM    = 0.0
       XLAI     = 0.0
+      XLAIM     = 0.0
       !YREMRG   = -99
       SENESCE % ResWt  = 0.0
       SENESCE % ResLig = 0.0
       SENESCE % ResE   = 0.0
       UNH4     = 0.0
+      UNH4M    = 0.0
       UNO3     = 0.0
+      UNO3M    = 0.0
       UH2O     = 0.0
 
       CALL READ_ASCE_KT(CONTROL, MEEVP)
@@ -262,25 +288,36 @@ C         Variables to run CASUPRO from Alt_PLANT.  FSR 07-23-03
 !     Initialize output variables.
 !     Each plant routine may or may not re-compute these values.
       CANHT    = 0.0
+      CANHTM    = 0.0
 !      EORATIO  = 1.0
       FracRts  = 0.0
+      FracRtsM  = 0.0
 !      KCAN     = 0.85
 !      KEP      = 1.0
 !      KSEVAP   = -99.
 !      KTRANS   = 1.0
       KUptake = 0.0
+      KUptakeM = 0.0
       NSTRES   = 1.0
+      NSTRESM   = 1.0
 !      PORMIN   = 0.02
       PSTRES1  = 1.0
+      PSTRES1M  = 1.0
       PUPTAKE  = 0.0
+      PUPTAKEM  = 0.0
       RLV      = 0.0
+      RLVM     = 0.0
 !      RWUEP1   = 1.5
 !      RWUMX    = 0.03
       UH2O     = 0.0
       UNH4     = 0.0
+      UNH4M    = 0.0
       UNO3     = 0.0
+      UNO3M    = 0.0
       XHLAI    = 0.0
+      XHLAIM    = 0.0
       XLAI     = 0.0
+      XLAIM     = 0.0
       SENESCE % ResWt  = 0.0
       SENESCE % ResLig = 0.0
       SENESCE % ResE   = 0.0
@@ -298,9 +335,13 @@ C         Variables to run CASUPRO from Alt_PLANT.  FSR 07-23-03
 
       ELSE
         CANHT = 0.0
+        CANHTM = 0.0
         RLV   = 0.0
+        RLVM   = 0.0
         XHLAI = 0.0
+        XHLAIM = 0.0
         XLAI  = 0.0
+        XLAIM = 0.0
         RETURN
       ENDIF
 
@@ -318,352 +359,33 @@ C         Variables to run CASUPRO from Alt_PLANT.  FSR 07-23-03
 !     CROPGRO model
       CASE('CRGRO')
         CALL CROPGRO(CONTROL, ISWITCH,
-     &    EOP, HARVFRAC, NH4, NO3, SOILPROP, SPi_AVAIL,   !Input
-     &    ST, SW, TRWUP, WEATHER, YREND, YRPLT,           !Input
-     &    CANHT, EORATIO, HARVRES, KSEVAP, KTRANS, MDATE, !Output
-     &    NSTRES, PSTRES1,                                !Output
-     &    PUptake, PORMIN, RLV, RWUMX, SENESCE,           !Output
-     &    STGDOY, FracRts, UNH4, UNO3, XHLAI, XLAI)       !Output
-!-----------------------------------------------------------------------
-!     Forage model
-      CASE('PRFRM')
-      call FORAGE(CONTROL, ISWITCH,
-     &    EOP, HARVFRAC, NH4, NO3, SOILPROP,              !Input
-     &    ST, SW, TRWUP, WEATHER, YREND, YRPLT,           !Input
-     &    CANHT, EORATIO, HARVRES, KSEVAP, KTRANS, MDATE, !Output
-     &    NSTRES, PSTRES1,                                !Output
-     &    PORMIN, RLV, RWUMX, SENESCE,                    !Output
-     &    STGDOY, UNH4, UNO3, XHLAI, XLAI)                !Output
-
-!     -------------------------------------------------
-!     Wheat and Barley CSCER
-      CASE('CSCER')
-        CALL CSCERES_Interface (CONTROL, ISWITCH,          !Input
-     &     EOP, YREND, NH4, NO3, SNOW, SOILPROP,           !Input
-     &     SRFTEMP, ST, SW, TRWUP, WEATHER, YRPLT, HARVFRAC,!Input
-     &     CANHT, HARVRES, KCAN, KEP, MDATE, NSTRES,PORMIN,!Output
-     &     RLV, RWUMX, SENESCE, STGDOY, UNH4, UNO3, XLAI)  !Output
-
-        IF (DYNAMIC .EQ. SEASINIT) THEN
-          KTRANS = KEP
-          KSEVAP = KEP
-          XHLAI = XLAI
-        ELSEIF (DYNAMIC .EQ. INTEGR) THEN
-          XHLAI = XLAI
-        ENDIF
-
-!     -------------------------------------------------
-!     Wheat and Barley CSCRP
-      CASE('CSCRP')
-        CALL CSCRP_Interface (CONTROL, ISWITCH,           !Input
-     &    EOP, ES, NH4, NO3, SNOW, SOILPROP, SRFTEMP,     !Input
-     &    ST, SW, TRWUP, WEATHER, YREND, YRPLT, HARVFRAC, !Input
-     &    CANHT, HARVRES, KCAN, KEP, MDATE, NSTRES,       !Output
-     &    PORMIN, RLV, RWUMX, SENESCE, STGDOY,            !Output
-     &    UNH4, UNO3, XLAI)                               !Output
-        IF (DYNAMIC .EQ. SEASINIT) THEN
-          KTRANS = KEP
-          KSEVAP = KEP
-        ELSEIF (DYNAMIC .EQ. INTEGR) THEN
-          XHLAI = XLAI
-        ENDIF
-!     -------------------------------------------------
-!     Cassava CSCAS
-      CASE('CSCAS')
-        CALL CSCAS_Interface (CONTROL, ISWITCH,           !Input
-     &    EOP, ES, NH4, NO3, SOILPROP, SRFTEMP,           !Input
-     &    ST, SW, TRWUP, WEATHER, YREND, YRPLT, HARVFRAC, !Input
-     &    CANHT, HARVRES, KCAN, KEP, MDATE, NSTRES,       !Output
-     &    PORMIN, RLV, RWUMX, SENESCE, STGDOY,            !Output
-     &    UNH4, UNO3, XLAI)                               !Output
-
-        IF (DYNAMIC .EQ. SEASINIT) THEN
-          KTRANS = KEP
-          KSEVAP = KEP
-        ELSEIF (DYNAMIC .EQ. INTEGR) THEN
-          XHLAI = XLAI
-        ENDIF
-!     -------------------------------------------------
-!     Cassava CSYCA (CIAT cassava model)
-      CASE('CSYCA')
-        CALL CSYCA_Interface (CONTROL, ISWITCH,           !Input
-     &    EOP, ES, NH4, NO3, SOILPROP, SRFTEMP,           !Input
-     &    ST, SW, TRWUP, WEATHER, YREND, YRPLT, HARVFRAC, !Input
-     &    CANHT, HARVRES, KCAN, KEP, MDATE, NSTRES,       !Output
-     &    PORMIN, RLV, RWUMX, SENESCE, STGDOY,            !Output
-     &    UNH4, UNO3, XLAI)                               !Output
-
-        IF (DYNAMIC .EQ. SEASINIT) THEN
-          KTRANS = KEP
-          KSEVAP = KEP
-        ELSEIF (DYNAMIC .EQ. INTEGR) THEN
-          XHLAI = XLAI
-        ENDIF
-
-!     -------------------------------------------------
-!     APSIM N-wheat WHAPS
-      CASE('WHAPS')
-        CALL WH_APSIM (CONTROL, ISWITCH,              !Input
-     &     EO, EOP, ES, HARVFRAC, NH4, NO3, SKi_Avail,            !Input
-     &     SPi_AVAIL, SNOW,                               !Input
-     &     SOILPROP, SW, TRWUP, WEATHER, YREND, YRPLT,    !Input
-     &     CANHT, HARVRES, KCAN, KEP, KUptake, MDATE,     !Output
-     &     NSTRES, PORMIN, PUptake, RLV,                  !Output
-     &     RWUMX, SENESCE, STGDOY, FracRts,               !Output
-     &     UNH4, UNO3, XLAI, XHLAI, UH2O)               !Output
-
-        IF (DYNAMIC < RATE) THEN
-!          KTRANS = KCAN + 0.15        !Or use KEP here??
-          KTRANS = KEP        !KJB/WDB/CHP 10/22/2003
-          KSEVAP = KEP
-        ENDIF
-!     -------------------------------------------------
-!     APSIM Tef TFAPS
-      CASE('TFAPS')
-        CALL TF_APSIM (CONTROL, ISWITCH,              !Input
-     &     EO, EOP, ES, HARVFRAC, NH4, NO3, SKi_Avail,            !Input
-     &     SPi_AVAIL, SNOW,                               !Input
-     &     SOILPROP, SW, TRWUP, WEATHER, YREND, YRPLT,    !Input
-     &     CANHT, HARVRES, KCAN, KEP, KUptake, MDATE,     !Output
-     &     NSTRES, PORMIN, PUptake, RLV,                  !Output
-     &     RWUMX, SENESCE, STGDOY, FracRts,               !Output
-     &     UNH4, UNO3, XLAI, XHLAI, UH2O)               !Output
-
-        IF (DYNAMIC < RATE) THEN
-!          KTRANS = KCAN + 0.15        !Or use KEP here??
-          KTRANS = KEP        !KJB/WDB/CHP 10/22/2003
-          KSEVAP = KEP
-        ENDIF
-
-!     -------------------------------------------------
-!     Millet
-      CASE('MLCER')
-        CALL ML_CERES (CONTROL, ISWITCH,
-     &     CO2, DAYL, EOP, HARVFRAC, NH4, NO3,            !Input
-     &     SNOW, SOILPROP, SRAD, SW, TMAX, TMIN,          !Input
-     &     TRWUP, TWILEN, YREND, YRPLT,                   !Input
-     $     CANHT, HARVRES, MDATE, NSTRES, PORMIN, RLV,    !Output
-     &     RWUMX, SENESCE, STGDOY, UNO3, UNH4, XLAI,      !Output
-     &     KCAN, KEP)                                     !Output
-
-        IF (DYNAMIC .EQ. SEASINIT) THEN
-!          KTRANS = KCAN + 0.15        !Or use KEP here??
-          KTRANS = KEP        !KJB/WDB/CHP 10/22/2003
-          KSEVAP = KEP
-        ELSEIF (DYNAMIC .EQ. INTEGR) THEN
-          XHLAI = XLAI
-        ENDIF
+     &    EOP, HARVFRAC, NH4, NO3, SOILPROP, SPi_AVAIL,              !Input
+     &    ST, SW, TRWUP, WEATHER, YREND, YRPLT,                      !Input
+     &    CANHTM(1), EORATIOM(1), HARVRES, KSEVAPM(1), KTRANSM(1),   !Output
+     &    MDATEM(1),NSTRESM(1), PSTRES1M(1),                         !Output
+     &    PUptakeM(:,1), PORMINM(1), RLVM(:,1), RWUMXM(1),           !Output
+     &    SENESCE, STGDOYM(:,1), FracRtsM(:,1), UNH4M(:,1),          !Output
+     &    UNO3M(:,1), XHLAIM(1), XLAIM(1))                           !Output
 
 !     -------------------------------------------------
 !     Maize, Sweetcorn
       CASE('MZCER','MZIXM','SWCER')
-        CALL MZ_CERES (CONTROL, ISWITCH,                  !Input
-     &     EOP, HARVFRAC, NH4, NO3, SKi_Avail,            !Input
-     &     SPi_AVAIL, SNOW,                               !Input
-     &     SOILPROP, SW, TRWUP, WEATHER, YREND, YRPLT,    !Input
-     &     CANHT, HARVRES, KCAN, KEP, KUptake, MDATE,     !Output
-     &     NSTRES, PORMIN, PUptake, RLV, RWUMX, SENESCE,  !Output
-     &     STGDOY, FracRts, UNH4, UNO3, XLAI, XHLAI)      !Output
+        CALL MZ_CERES (CONTROL, ISWITCH,                             !Input
+     &     EOP, HARVFRAC, NH4, NO3, SKi_Avail,                       !Input
+     &     SPi_AVAIL, SNOW,                                          !Input
+     &     SOILPROP, SW, TRWUP, WEATHER, YREND, YRPLT,               !Input
+     &     CANHTM(1), HARVRES, KCANM(1), KEPM(1), KUptakeM(:,1),     !Output
+     &     MDATEM(1), NSTRESM(1), PORMINM(1), PUptakeM(:,1),         !Output
+     &     RLVM(:,1), RWUMXM(1), SENESCE, STGDOYM(:,1),              !Output
+     &     FracRtsM(:,1), UNH4M(:,1), UNO3M(:,1), XLAIM(1),          !Output
+     &     XHLAIM(1))                                                !Output
 
         IF (DYNAMIC < RATE) THEN
 !          KTRANS = KCAN + 0.15        !Or use KEP here??
-          KTRANS = KEP        !KJB/WDB/CHP 10/22/2003
-          KSEVAP = KEP
+          KTRANSM(1) = KEPM(1)        !KJB/WDB/CHP 10/22/2003
+          KSEVAPM(1) = KEPM(1)
         ENDIF
 
-!     -------------------------------------------------
-!     Sugarbeet
-      CASE('BSCER')
-        CALL BS_CERES (CONTROL, ISWITCH,              !Input
-     &     EOP, HARVFRAC, NH4, NO3, SKi_Avail,            !Input
-     &     SPi_AVAIL, SNOW,                               !Input
-     &     SOILPROP, SW, TRWUP, WEATHER, YREND, YRPLT,    !Input
-     &     CANHT, HARVRES, KCAN, KEP, MDATE,              !Output
-     &     NSTRES, PORMIN, PUptake, RLV, RWUMX, SENESCE,  !Output
-     &     STGDOY, FracRts,XLAI, XHLAI)          !Output
-
-        IF (DYNAMIC < RATE) THEN
-          KTRANS = KEP        !KJB/WDB/CHP 10/22/2003
-          KSEVAP = KEP
-        ENDIF
-
-!     -------------------------------------------------
-!     Potato
-      CASE('PTSUB')
-        CALL PT_SUBSTOR(CONTROL, ISWITCH,
-     &    CO2, EOP, HARVFRAC, NH4, NO3, SOILPROP, SRAD,   !Input
-     &    ST, SW, TMAX, TMIN, TRWUP, TWILEN, YREND, YRPLT,!Input
-     &    CANHT, HARVRES, MDATE, NSTRES, PORMIN, RLV,     !Output
-     &    RWUMX, SENESCE, STGDOY, UNH4, UNO3, XLAI)       !Output
-
-        IF (DYNAMIC .EQ. INTEGR) THEN
-          XHLAI = XLAI
-        ENDIF
-
-!     -------------------------------------------------
-!     Rice
-      CASE('RICER')
-        CALL RICE(CONTROL, ISWITCH,
-     &    CO2, DAYL, EOP, FLOODWAT, HARVFRAC, NH4, NO3,   !Input
-     &    SKi_Avail, SPi_AVAIL,                           !Input
-     &    SOILPROP, SRAD, ST, SW, TMAX, TMIN, TRWUP,      !Input
-     &    TWILEN, YRPLT,                                  !Input
-     &    FLOODN,                                         !I/O
-     &    CANHT, HARVRES, XLAI, KUptake, MDATE, NSTRES,   !Output
-     &    PORMIN, PUptake, RWUEP1, RWUMX,                 !Output
-     &    RLV, SENESCE, STGDOY, FracRts, UNH4, UNO3)      !Output
-
-        IF (DYNAMIC .EQ. INTEGR) THEN
-          XHLAI = XLAI
-        ENDIF
-
-!     -------------------------------------------------
-!     CERES-TEFF
-      CASE('TFCER')
-        CALL TEFF(CONTROL, ISWITCH,
-     &    CO2, DAYL, EOP, FLOODWAT, HARVFRAC, NH4, NO3,   !Input
-     &    SKi_Avail, SPi_AVAIL,                           !Input
-     &    SOILPROP, SRAD, ST, SW, TMAX, TMIN, TRWUP,      !Input
-     &    TWILEN, YRPLT,                                  !Input
-     &    FLOODN,                                         !I/O
-     &    CANHT, HARVRES, XLAI, KUptake, MDATE, NSTRES,   !Output
-     &    PORMIN, PUptake, RWUEP1, RWUMX,                 !Output
-     &    RLV, SENESCE, STGDOY, FracRts, UNH4, UNO3)      !Output
-
-        IF (DYNAMIC .EQ. INTEGR) THEN
-          XHLAI = XLAI
-        ENDIF
-
-!!     -------------------------------------------------
-!!     ORYZA2000 Rice
-!      CASE('RIORZ')
-!        CALL ORYZA_Interface (CONTROL, ISWITCH,                  !Input
-!     &   EOP, FLOODWAT, HARVFRAC, NH4, NO3, SOILPROP,            !Input
-!     &   SomLitC, SomLitE,                                       !Input
-!     &   ST, SW, TRWUP, UPPM, WEATHER, YRPLT, YREND, OR_OUTPUT,  !Input
-!     &   CANHT, HARVRES, KTRANS, KSEVAP, MDATE, NSTRES, PORMIN,  !Output
-!     &   RLV, RWUMX, SENESCE, STGDOY, UNH4, UNO3, UH2O, XLAI)    !Output
-!
-!        IF (DYNAMIC .EQ. INTEGR) THEN
-!          XHLAI = XLAI
-!        ENDIF
-
-!!     -------------------------------------------------
-!!	Generic Salus crop model
-!!	KD 09/14/2009
-!	CASE('SALUS')
-!	  CALL SALUS(CONTROL, ISWITCH, WEATHER, SOILPROP, ST,         !Input
-!     &  HARVFRAC, YRPLT, EOP, SW, RWU, TRWUP, NH4, NO3, SPi_AVAIL,  !Input
-!     &  KCAN, MDATE, RLV, XHLAI, UNO3, UNH4, PUptake)  	            !Output
-!	  IF (DYNAMIC .EQ. INTEGR) THEN
-!          XLAI = XHLAI
-!        ENDIF
-
-!     -------------------------------------------------
-!     Sugarcane - CANEGRO
-!     :::::::::::::::::::
-!     Matthew Jones, 2006-09-20
-!     :::::::::::::::::::::::::
-      CASE('SCCAN')
-      !  MJ Added IRRAMT July 2015
-      !  MJ Added ES July 2015
-      !  MJ added SATFAC Jan 2018
-        CALL SC_CNGRO (
-     &    CONTROL, ISWITCH,                                   !Input
-     &    CO2, DAYL, EOP, EP, EO, ES, HARVFRAC, NH4, NO3, SNOW,   !Input
-     &    SOILPROP, SRAD, SW, TMAX, TMIN, TRWUP, TRWU, EOS,   !Input
-     &    RWUEP1, TWILEN, YREND, YRPLT, WEATHER, IRRAMT,      !Input
-     $    CANHT, HARVRES, KCAN, KTRANS, MDATE, NSTRES,        !Output
-     &    PORMIN, RLV, RWUMX,SENESCE, STGDOY, UNH4,           !Output
-     &    UNO3, XLAI, XHLAI, EORATIO)                 !Output
-
-c     Added by MJ, 2007-04-04:
-c     ::::::::::::::::::::::::
-c     Total LAI must exceed or be equal to healthy LAI:
-          XLAI = MAX(XLAI, XHLAI)
-!     -------------------------------------------------
-!     Sugarcane - SAMUCA
-      CASE('SCSAM')
-          call SAMUCA(
-     &    CONTROL, ISWITCH,                                      !Input
-     &    CO2, DAYL, EOP, EP, EO, ES, HARVFRAC, NH4, NO3, SNOW,  !Input
-     &    SOILPROP, ST, SRAD, SW, TMAX, TMIN, TRWUP, TRWU, EOS,  !Input
-     &    RWUEP1, TWILEN, YREND, YRPLT, WEATHER, IRRAMT,         !Input
-     $    CANHT, HARVRES, KCAN, KTRANS, MDATE, NSTRES,           !Output
-     &    PORMIN, RLV, RWUMX,SENESCE, STGDOY, UNH4,              !Output
-     &    UNO3, XLAI, XHLAI, EORATIO)                            !Output
-          
-!     -------------------------------------------------
-!     Sugarcane - CASUPRO
-      CASE('SCCSP')
-        CALL CSP_CASUPRO(CONTROL, ISWITCH,
-     &    CO2, EOP, EOS, HARVFRAC, NH4, NO3, PAR,           !Input
-     &    SOILPROP, SPi_AVAIL, SW, TAVG, TGRO,              !Input
-     &    TGROAV, TMIN, TRWUP, WEATHER, YREND, YRPLT,       !Input
-     &    CANHT, EORATIO, HARVRES, KTRANS, LFmntDEF, MDATE, !Output
-     &    NSTRES, PUptake, PORMIN, RLV, RWUMX, SENESCE,     !Output
-     &    STGDOY, FracRts, UNH4, UNO3, XHLAI, XLAI)         !Output
-
-!     -------------------------------------------------
-!     Sorghum
-      CASE('SGCER')
-        CALL SG_CERES (CONTROL, ISWITCH,
-     &     CO2, DAYL, EOP, HARVFRAC, NH4, NO3,                  !Input
-     &     SNOW, SOILPROP, SPi_AVAIL, SRAD, SW, TMAX, TMIN,     !Input
-     &     TRWUP, TWILEN, YREND, YRPLT,                         !Input
-     &     CANHT, HARVRES, MDATE, NSTRES, PORMIN, PUptake,      !Output
-     &     RLV, RWUMX, SENESCE, STGDOY, UNO3, UNH4,             !Ouput
-     &     XLAI, KCAN, KEP, FracRts)                            !Output
-
-        IF (DYNAMIC .EQ. SEASINIT) THEN
-!          KTRANS = KCAN + 0.15        !Or use KEP here??
-          KTRANS = KEP        !KJB/WDB/CHP 10/22/2003
-          KSEVAP = KEP
-        ELSEIF (DYNAMIC .EQ. INTEGR) THEN
-          XHLAI = XLAI
-        ENDIF
-
-!     -------------------------------------------------
-!     Sunflower
-      CASE('SUOIL')
-        CALL SU_CERES (CONTROL, ISWITCH,              !Input
-     &     EOP, HARVFRAC, NH4, NO3, SKi_Avail,            !Input
-     &     SPi_AVAIL, SNOW,                               !Input
-     &     SOILPROP, SW, TRWUP, WEATHER, YREND, YRPLT,    !Input
-     &     CANHT, HARVRES, KCAN, KEP,KUptake,  MDATE,     !Output
-     &     NSTRES, PORMIN, PUptake, RLV, RWUMX, SENESCE,  !Output
-     &     STGDOY, FracRts, UNH4, UNO3, XLAI, XHLAI)      !Output
-
-        IF (DYNAMIC < RATE) THEN
-          KTRANS = KEP        !KJB/WDB/CHP 10/22/2003
-          KSEVAP = KEP
-        ENDIF
-        
-!     -------------------------------------------------
-!     Aroids-taro
-      CASE('TRARO','TNARO')
-        CALL TR_SUBSTOR(CONTROL, ISWITCH,
-     &    CO2, DAYL, EOP, FLOODWAT, HARVFRAC, NH4, NO3,   !Input
-     &    SOILPROP, SRAD, ST, SW, TMAX, TMIN, TRWUP,      !Input
-     &    YRPLT,                                          !Input
-     &    FLOODN,                                         !I/O
-     &    CANHT, HARVRES, XLAI, MDATE, NSTRES, PORMIN,    !Output
-     &    RWUEP1, RWUMX, RLV, SENESCE, STGDOY, UNH4, UNO3)!Output
-
-        IF (DYNAMIC .EQ. INTEGR) THEN
-          XHLAI = XLAI
-        ENDIF
-
-!     -------------------------------------------------
-!     Pineapple - Aloha model
-      CASE('PIALO')
-        CALL Aloha_Pineapple(CONTROL, ISWITCH,
-     &    EOP, HARVFRAC, NH4, NO3, SOILPROP, SW, TRWUP,   !Input
-     &    WEATHER, YRPLT,                                 !Input
-     &    LAI, MDATE, RLV, SENESCE, STGDOY, UNH4, UNO3)   !Output
-
-        XLAI  = LAI
-        XHLAI = LAI
 !     -------------------------------------------------
       END SELECT
       
@@ -724,6 +446,7 @@ c     Total LAI must exceed or be equal to healthy LAI:
 !       crop routine.
         IF (FixCanht .AND. (XLAI .GT. 0.0 .OR. XHLAI .GT. 0.0)) THEN
           CANHT = 0.5
+          CANHTM = 0.5
           FixCanht = .FALSE.
         ENDIF
 
