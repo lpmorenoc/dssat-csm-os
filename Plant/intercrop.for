@@ -115,6 +115,7 @@ C         Variables to run CASUPRO from Alt_PLANT.  FSR 07-23-03
 !     Variables intercrop      
       INTEGER, DIMENSION(2)  :: MDATEM
       INTEGER STGDOYM(20,2)
+      INTEGER      I
       REAL, DIMENSION(2)  :: CANHTM, EORATIOM, KCANM, KEPM, KSEVAPM
       REAL, DIMENSION(2)  :: KTRANSM
       REAL, DIMENSION(2)  :: NSTRESM, PORMINM, PSTRES1M, RWUMXM
@@ -144,6 +145,10 @@ C         Variables to run CASUPRO from Alt_PLANT.  FSR 07-23-03
       RUN     = CONTROL % RUN
       MODELS(1) = MODEL
       MODELS(2) = 'CRGRO'
+      CROPS(1) = CROP
+      CROPS(2) = 'SB'
+      FILEIOM(1) = 'DSSAT48.INP'
+      FILEIOM(2) = 'DSSAT48_SB.INP'
 
       MEEVP  = ISWITCH % MEEVP
       BUNDED = FLOODWAT % BUNDED
@@ -352,20 +357,21 @@ C         Variables to run CASUPRO from Alt_PLANT.  FSR 07-23-03
 !***********************************************************************
 !***********************************************************************
 !     Call crop models for all values of DYNAMIC:
-        CONTROL % CROP = 'MZ'
-        CONTROL % FILEIO = 'DSSAT48.INP' 
-      SELECT CASE (MODELS(1)(1:5))
+      DO I=1, 2
+        CONTROL % CROP = CROPS(I)
+        CONTROL % FILEIO = FILEIOM(I) 
+      SELECT CASE (MODELS(I)(1:5))
 !-----------------------------------------------------------------------
 !     CROPGRO model
       CASE('CRGRO')
         CALL CROPGRO(CONTROL, ISWITCH,
      &    EOP, HARVFRAC, NH4, NO3, SOILPROP, SPi_AVAIL,              !Input
      &    ST, SW, TRWUP, WEATHER, YREND, YRPLT,                      !Input
-     &    CANHTM(1), EORATIOM(1), HARVRES, KSEVAPM(1), KTRANSM(1),   !Output
-     &    MDATEM(1),NSTRESM(1), PSTRES1M(1),                         !Output
-     &    PUptakeM(:,1), PORMINM(1), RLVM(:,1), RWUMXM(1),           !Output
-     &    SENESCE, STGDOYM(:,1), FracRtsM(:,1), UNH4M(:,1),          !Output
-     &    UNO3M(:,1), XHLAIM(1), XLAIM(1))                           !Output
+     &    CANHTM(I), EORATIOM(I), HARVRES, KSEVAPM(I), KTRANSM(I),   !Output
+     &    MDATEM(I),NSTRESM(I), PSTRES1M(I),                         !Output
+     &    PUptakeM(:,I), PORMINM(I), RLVM(:,I), RWUMXM(I),           !Output
+     &    SENESCE, STGDOYM(:,I), FracRtsM(:,I), UNH4M(:,I),          !Output
+     &    UNO3M(:,I), XHLAIM(I), XLAIM(I))                           !Output
 
 !     -------------------------------------------------
 !     Maize, Sweetcorn
@@ -374,55 +380,23 @@ C         Variables to run CASUPRO from Alt_PLANT.  FSR 07-23-03
      &     EOP, HARVFRAC, NH4, NO3, SKi_Avail,                       !Input
      &     SPi_AVAIL, SNOW,                                          !Input
      &     SOILPROP, SW, TRWUP, WEATHER, YREND, YRPLT,               !Input
-     &     CANHTM(1), HARVRES, KCANM(1), KEPM(1), KUptakeM(:,1),     !Output
-     &     MDATEM(1), NSTRESM(1), PORMINM(1), PUptakeM(:,1),         !Output
-     &     RLVM(:,1), RWUMXM(1), SENESCE, STGDOYM(:,1),              !Output
-     &     FracRtsM(:,1), UNH4M(:,1), UNO3M(:,1), XLAIM(1),          !Output
-     &     XHLAIM(1))                                                !Output
+     &     CANHTM(I), HARVRES, KCANM(I), KEPM(I), KUptakeM(:,I),     !Output
+     &     MDATEM(I), NSTRESM(I), PORMINM(I), PUptakeM(:,I),         !Output
+     &     RLVM(:,I), RWUMXM(I), SENESCE, STGDOYM(:,I),              !Output
+     &     FracRtsM(:,I), UNH4M(:,I), UNO3M(:,I), XLAIM(I),          !Output
+     &     XHLAIM(I))                                                !Output
 
         IF (DYNAMIC < RATE) THEN
 !          KTRANS = KCAN + 0.15        !Or use KEP here??
-          KTRANSM(1) = KEPM(1)        !KJB/WDB/CHP 10/22/2003
-          KSEVAPM(1) = KEPM(1)
+          KTRANSM(I) = KEPM(I)        !KJB/WDB/CHP 10/22/2003
+          KSEVAPM(I) = KEPM(I)
         ENDIF
 
 !     -------------------------------------------------
-      END SELECT
-      
-      CONTROL % CROP = 'SB'
-      CONTROL % FILEIO = 'DSSAT48_SB.INP'
+        END SELECT
+        END DO
 
-      SELECT CASE (MODELS(2)(1:5))
-!-----------------------------------------------------------------------
-!     CROPGRO model
-      CASE('CRGRO')
-        CALL CROPGRO(CONTROL, ISWITCH,
-     &    EOP, HARVFRAC, NH4, NO3, SOILPROP, SPi_AVAIL,   !Input
-     &    ST, SW, TRWUP, WEATHER, YREND, YRPLT,           !Input
-     &    CANHT, EORATIO, HARVRES, KSEVAP, KTRANS, MDATE, !Output
-     &    NSTRES, PSTRES1,                                !Output
-     &    PUptake, PORMIN, RLV, RWUMX, SENESCE,           !Output
-     &    STGDOY, FracRts, UNH4, UNO3, XHLAI, XLAI)       !Output
 
-!     -------------------------------------------------
-!     Maize, Sweetcorn
-      CASE('MZCER','MZIXM','SWCER')
-        CALL MZ_CERES (CONTROL, ISWITCH,                  !Input
-     &     EOP, HARVFRAC, NH4, NO3, SKi_Avail,            !Input
-     &     SPi_AVAIL, SNOW,                               !Input
-     &     SOILPROP, SW, TRWUP, WEATHER, YREND, YRPLT,    !Input
-     &     CANHT, HARVRES, KCAN, KEP, KUptake, MDATE,     !Output
-     &     NSTRES, PORMIN, PUptake, RLV, RWUMX, SENESCE,  !Output
-     &     STGDOY, FracRts, UNH4, UNO3, XLAI, XHLAI)      !Output
-
-        IF (DYNAMIC < RATE) THEN
-!          KTRANS = KCAN + 0.15        !Or use KEP here??
-          KTRANS = KEP        !KJB/WDB/CHP 10/22/2003
-          KSEVAP = KEP
-        ENDIF
-
-!     -------------------------------------------------
-      END SELECT
 !***********************************************************************
 !***********************************************************************
 !     Processing after calls to crop models:
