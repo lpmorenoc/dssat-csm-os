@@ -119,7 +119,7 @@ C         Variables to run CASUPRO from Alt_PLANT.  FSR 07-23-03
       REAL, DIMENSION(2)  :: CANHTM, EORATIOM, KCANM, KEPM, KSEVAPM
       REAL, DIMENSION(2)  :: KTRANSM
       REAL, DIMENSION(2)  :: NSTRESM, PORMINM, PSTRES1M, RWUMXM
-      REAL, DIMENSION(2)  :: XLAIM, XHLAIM
+      REAL, DIMENSION(2)  :: XLAIM, XHLAIM, IPARM
       
       REAL, DIMENSION(NL,2) :: PUptakeM, FracRtsM, RLVM, UNO3M, UNH4M
       REAL, DIMENSION(NL,2) :: KUptakeM
@@ -356,7 +356,12 @@ C         Variables to run CASUPRO from Alt_PLANT.  FSR 07-23-03
 
 !***********************************************************************
 !***********************************************************************
-!     Call crop models for all values of DYNAMIC:
+!     Call subroutine to define intercepted radiation by each crop:
+       CALL PHOTOINTER(CONTROL,                      
+     &    CROPS, KCANM, XLAIM, CANHTM, PAR,                 !Input
+     &    IPARM )                                           !Output
+
+!     Call crop models for all values of DYNAMIC:         
       DO I=1, 2
         CONTROL % CROP = CROPS(I)
         CONTROL % FILEIO = FILEIOM(I) 
