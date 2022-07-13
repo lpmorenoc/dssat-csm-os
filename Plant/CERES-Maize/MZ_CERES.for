@@ -333,7 +333,7 @@ C----------------------------------------------------------------------
           !-------------------------------------------------------------
           SELECT CASE(MODEL(1:5))
           CASE ('MZCER')  !CERES-Maize
-          CALL MZ_GROSUB (DYNAMIC, ISWITCH, 
+          CALL MZ_GROSUB (DYNAMIC, ISWITCH, RNMODE, 
      &      ASMDOT, CDAY, CO2, DLAYR, DS, DTT, EOP, FILEIO,   !Input
      &      FracRts, ISTAGE, KG2PPM, LL, NLAYR, NH4, NO3, P3, !Input
      &      PLTPOP, PPLTD, RLV, RTDEP, RUE, SAT, SeedFrac,    !Input
@@ -486,7 +486,7 @@ C-----------------------------------------------------------------------
 
           SELECT CASE(MODEL(1:5))
           CASE ('MZCER')  !CERES-Maize
-          CALL MZ_GROSUB (DYNAMIC, ISWITCH, 
+          CALL MZ_GROSUB (DYNAMIC, ISWITCH, RNMODE,
      &      ASMDOT, CDAY, CO2, DLAYR, DS, DTT, EOP, FILEIO,   !Input
      &      FracRts, ISTAGE, KG2PPM, LL, NLAYR, NH4, NO3, P3, !Input
      &      PLTPOP, PPLTD, RLV, RTDEP, RUE, SAT, SeedFrac,    !Input
@@ -650,7 +650,7 @@ C----------------------------------------------------------------------
         IF (ISTAGE .GT. 0 .AND. ISTAGE .LE. 6) THEN  
           SELECT CASE(MODEL(1:5))
           CASE ('MZCER')  !CERES-Maize
-          CALL MZ_GROSUB (DYNAMIC, ISWITCH, 
+          CALL MZ_GROSUB (DYNAMIC, ISWITCH, RNMODE, 
      &      ASMDOT, CDAY, CO2, DLAYR, DS, DTT, EOP, FILEIO,   !Input
      &      FracRts, ISTAGE, KG2PPM, LL, NLAYR, NH4, NO3, P3, !Input
      &      PLTPOP, PPLTD, RLV, RTDEP, RUE, SAT, SeedFrac,    !Input
@@ -751,7 +751,7 @@ C----------------------------------------------------------------------
         IF (YRDOY .GE. YRPLT) THEN
           SELECT CASE(MODEL(1:5))
           CASE ('MZCER')  !CERES-Maize
-          CALL MZ_GROSUB (DYNAMIC, ISWITCH, 
+          CALL MZ_GROSUB (DYNAMIC, ISWITCH, RNMODE, 
      &      ASMDOT, CDAY, CO2, DLAYR, DS, DTT, EOP, FILEIO,   !Input
      &      FracRts, ISTAGE, KG2PPM, LL, NLAYR, NH4, NO3, P3, !Input
      &      PLTPOP, PPLTD, RLV, RTDEP, RUE, SAT, SeedFrac,    !Input
@@ -859,7 +859,7 @@ C----------------------------------------------------------------------
 
           SELECT CASE(MODEL(1:5))
           CASE ('MZCER')  !CERES-Maize
-          CALL MZ_GROSUB (DYNAMIC, ISWITCH, 
+          CALL MZ_GROSUB (DYNAMIC, ISWITCH, RNMODE, 
      &      ASMDOT, CDAY, CO2, DLAYR, DS, DTT, EOP, FILEIO,   !Input
      &      FracRts, ISTAGE, KG2PPM, LL, NLAYR, NH4, NO3, P3, !Input
      &      PLTPOP, PPLTD, RLV, RTDEP, RUE, SAT, SeedFrac,    !Input

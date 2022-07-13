@@ -31,29 +31,7 @@ C=======================================================================
 C-----------------------------------------------------------------------
 !     The following models are currently supported:
 !         'CRGRO' - CROPGRO
-!         'CSCER' - CERES Wheat, Barley
-!         'CSCRP' - CropSim Wheat, Barley
-!         'CSCAS' - CropSim/GumCAS Cassava
-!         'CSYCA' - CIAT Cassava model
-!         'MLCER' - CERES-Millet
 !         'MZCER' - CERES-Maize
-!         'PTSUB' - SUBSTOR-Potato
-!         'RICER' - CERES-Rice
-!         'SCCAN' - CANEGRO Sugarcane
-!         'SCCSP' - CASUPRO Sugarcane
-!         'SCSAM' - SAMUCA Sugarcane
-!         'SGCER' - CERES-Sorghum
-!         'SWCER' - CERES-Sweet corn
-!         'MZIXM' - IXIM Maize
-!         'TNARO' - Aroids - Tanier
-!         'TRARO' - Aroids - Taro
-!         'RIORZ' - IRRI ORYZA Rice model
-!         'WHAPS' - APSIM N-wheat
-!         'TFAPS' - APSIM Tef
-!         'TFCER' - CERES Teff
-!         'PRFRM' - Perennial forage model
-!         'BSCER' - Sugarbeet
-!         'SUOIL' - Sunflower (OilcropSun)
 C-----------------------------------------------------------------------
 
 C-----------------------------------------------------------------------
@@ -119,7 +97,7 @@ C         Variables to run CASUPRO from Alt_PLANT.  FSR 07-23-03
       REAL, DIMENSION(2)  :: CANHTM, EORATIOM, KCANM, KEPM, KSEVAPM
       REAL, DIMENSION(2)  :: KTRANSM
       REAL, DIMENSION(2)  :: NSTRESM, PORMINM, PSTRES1M, RWUMXM
-      REAL, DIMENSION(2)  :: XLAIM, XHLAIM, IPARM
+      REAL, DIMENSION(2)  :: XLAIM, XHLAIM, IPARM, FracIntRadM
       
       REAL, DIMENSION(NL,2) :: PUptakeM, FracRtsM, RLVM, UNO3M, UNH4M
       REAL, DIMENSION(NL,2) :: KUptakeM
@@ -235,6 +213,7 @@ C         Variables to run CASUPRO from Alt_PLANT.  FSR 07-23-03
       CANHTM    = 0.0
       EORATIO  = 1.0
       EORATIOM  = 1.0
+      FracIntRadM = 0.0 
       KCAN     = 0.85
       KCANM     = 0.85
       KEP      = 1.0
@@ -297,6 +276,7 @@ C         Variables to run CASUPRO from Alt_PLANT.  FSR 07-23-03
 !      EORATIO  = 1.0
       FracRts  = 0.0
       FracRtsM  = 0.0
+      FracIntRadM = 0.0
 !      KCAN     = 0.85
 !      KEP      = 1.0
 !      KSEVAP   = -99.
@@ -359,12 +339,14 @@ C         Variables to run CASUPRO from Alt_PLANT.  FSR 07-23-03
 !     Call subroutine to define intercepted radiation by each crop:
        CALL PHOTOINTER(CONTROL,                      
      &    CROPS, KCANM, XLAIM, CANHTM, PAR,                 !Input
-     &    IPARM )                                           !Output
+     &    FracIntRadM )                                     !Output
+       
 
 !     Call crop models for all values of DYNAMIC:         
       DO I=1, 2
         CONTROL % CROP = CROPS(I)
         CONTROL % FILEIO = FILEIOM(I) 
+        Call PUT('PLANT', 'FracIntRadM',  FracIntRadM(I))
       SELECT CASE (MODELS(I)(1:5))
 !-----------------------------------------------------------------------
 !     CROPGRO model
@@ -380,7 +362,7 @@ C         Variables to run CASUPRO from Alt_PLANT.  FSR 07-23-03
 
 !     -------------------------------------------------
 !     Maize, Sweetcorn
-      CASE('MZCER','MZIXM','SWCER')
+      CASE('MZCER')
         CALL MZ_CERES (CONTROL, ISWITCH,                             !Input
      &     EOP, HARVFRAC, NH4, NO3, SKi_Avail,                       !Input
      &     SPi_AVAIL, SNOW,                                          !Input

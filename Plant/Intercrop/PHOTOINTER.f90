@@ -11,12 +11,13 @@
 
       SUBROUTINE PHOTOINTER(CONTROL,                      &
          CROPS, KCANM, XLAIM, CANHTM, PAR,                & !Input
-         IPARM )                                            !Output
+         FracIntRadM )                                      !Output
 
 !-----------------------------------------------------------------------
       USE ModuleDefs     !Definitions of constructed variable types, 
                          ! which contain control information, soil
                          ! parameters, hourly weather data.
+      USE ModuleData
       IMPLICIT NONE
       SAVE
 
@@ -28,9 +29,9 @@
       REAL PAR, CANHTMAX, LAITemp,BaseHeightLayer, TopHeightLayer
 
       
-      REAL, DIMENSION(2)  :: PREFCM, CANHTM, KCANM, XLAIM, IPARM
+      REAL, DIMENSION(2)  :: PREFCM, CANHTM, KCANM, XLAIM, IPARM, FracIntRadM
       REAL, DIMENSION(20,2) :: IPARML, LAIByLayer, CumLAIByLayer
-      REAL, DIMENSION(20)   ::KLAIProd
+      REAL, DIMENSION(20)   ::KLAIProd, KCumLAIProd
       CHARACTER*2, CROPS(2)
 
 !-----------------------------------------------------------------------
@@ -89,6 +90,7 @@
       Canopylayers = MIN(20, MAX(1,(INT(CANHTMAX * 10.0)+1)))
       LAIByLayer = 0.0
       KLAIProd = 0.0
+      KCumLAIProd = 0.0
       CumLAIByLayer = 0.0
       DO I=1,2
           LAITemp = 0.0
@@ -107,7 +109,8 @@
                    CumLAIByLayer(J,I) = LAITemp + LAIByLayer(J,I)
                    LAITemp = CumLAIByLayer(J,I)
                ENDIF
-              KLAIProd(J) = KLAIProd(J) +(KCANM(I) * CumLAIByLayer(J,I))
+              KCumLAIProd(J) = KCumLAIProd(J) +(KCANM(I) * CumLAIByLayer(J,I))
+              KLAIProd(J) = KLAIProd(J) +(KCANM(I) * LAIByLayer(J,I))
           ENDDO  
       ENDDO
       
@@ -119,17 +122,17 @@
               J= Canopylayers - Lcount
               BaseHeightLayer = MAX(0.0 ,((J * 0.1) - 0.1))
                IF (BaseHeightLayer < CANHTM(I) .AND. CANHTM(I) > 0.0 .AND. KLAIProd(J) > 0.0) THEN
-                   IF (J = Canopylayers) THEN
-                       IPARML(J,I) = (KCANM(I) * CumLAIByLayer(J,I) / KLAIProd(J)) * (1.0 - PREFCM(I)) * PAR * (1 - EXP(-KLAIProd(J)))
+                   IF (J == Canopylayers) THEN
+                       IPARML(J,I) = (KCANM(I) * LAIByLayer(J,I) / KLAIProd(J)) * (1.0 - PREFCM(I)) * PAR * (1 - EXP(-KLAIProd(J)))
                    ELSE
-                       IPARML(J,I) = (KCANM(I) * CumLAIByLayer(J,I) / KLAIProd(J)) * (1.0 - PREFCM(I)) * PAR * (1 - EXP(-KLAIProd(J))) * EXP(-KLAIProd(J+1))
+                       IPARML(J,I) = (KCANM(I) * LAIByLayer(J,I) / KLAIProd(J)) * (1.0 - PREFCM(I)) * PAR * (1 - EXP(-KLAIProd(J))) * EXP(-KCumLAIProd(J+1))
                    ENDIF
                    
                    IPARM(I) = IPARM(I) + IPARML(J,I)
                ENDIF
           ENDDO
+          IF (PAR > 0.0) FracIntRadM(I) = MIN(1.0, IPARM(I)/PAR)
       ENDDO
-
 !***********************************************************************
 !***********************************************************************
 !     END OF DYNAMIC IF CONSTRUCT
@@ -142,25 +145,11 @@
 !=======================================================================
 ! Variable definitions for PHOTOINTER
 !=======================================================================
-! DXR57    Relative time between first seed (NR5) and physiological 
-!            maturity (NR7) 
 ! ERR      Error code for file operation 
 ! ERRKEY   Subroutine name for error file 
-! EXCESS   Factor based on excess PG used to affect tomorrow's PG 
-!            calculation 
 ! FILEC    Filename for SPE file (e.g., SBGRO980.SPE) 
 ! FILECC   Path plus filename for species file (*.spe) 
 ! FILEIO   Filename for input file (e.g., IBSNAT35.INP) 
-! FNPGN(I) Critical leaf N concentration for function to reduce 
-!            photosynthesis due to low leaf N levels (4 values for function 
-!            CURV) 
-! FNPGT(I) Critical values of temperature for the functions to reduce 
-!            canopy PG under non-optimal temperatures (in function CURV) 
-! FOUND    Indicator that good data was read from file by subroutine FIND 
-!            (0 - End-of-file encountered, 1 - NAME was found) 
-! ISECT    Indicator of completion of IGNORE routine: 0 - End of file 
-!            encountered, 1 - Found a good line to read, 2 - End of Section 
-!            in file encountered denoted by * in column 1.  
 ! KCAN     Canopy light extinction coefficient for daily PAR, for 
 !            equidistant plant spacing, modified when in-row and between 
 !            row spacing are not equal 
@@ -172,7 +161,6 @@
 ! LNUM     Current line number of input file 
 ! LUNCRP   Logical unit number for FILEC (*.spe file) 
 ! LUNIO    Logical unit number for FILEIO 
-! NR5      Day when 50% of plants have pods with beginning seeds (days)
 ! PAR      Daily photosynthetically active radiation or photon flux density
 !            (moles[quanta]/m2-d)
 

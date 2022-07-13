@@ -431,7 +431,7 @@ C             CHP Added TRTNUM to CONTROL variable.
       TYPE PlantType
         REAL CANHT, CANWH, DXR57, EXCESS,
      &    PLTPOP, RNITP, SLAAD, XPOD
-        REAL BIOMAS
+        REAL BIOMAS, FracIntRadM
         INTEGER NR5, iSTAGE, iSTGDOY
         CHARACTER*10 iSTNAME
       END TYPE PlantType
@@ -676,6 +676,7 @@ C             CHP Added TRTNUM to CONTROL variable.
         Case ('CANWH') ; Value = SAVE_data % PLANT % CANWH
         Case ('DXR57') ; Value = SAVE_data % PLANT % DXR57
         Case ('EXCESS'); Value = SAVE_data % PLANT % EXCESS
+        Case ('FracIntRadM'); Value = SAVE_data % PLANT % FracIntRadM
         Case ('PLTPOP'); Value = SAVE_data % PLANT % PLTPOP
         Case ('RNITP') ; Value = SAVE_data % PLANT % RNITP
         Case ('SLAAD') ; Value = SAVE_data % PLANT % SLAAD
@@ -808,6 +809,7 @@ C             CHP Added TRTNUM to CONTROL variable.
         Case ('CANWH');  SAVE_data % PLANT % CANWH  = Value
         Case ('DXR57');  SAVE_data % PLANT % DXR57  = Value
         Case ('EXCESS'); SAVE_data % PLANT % EXCESS = Value
+        Case ('FracIntRadM'); SAVE_data % PLANT % FracIntRadM = Value
         Case ('PLTPOP'); SAVE_data % PLANT % PLTPOP = Value
         Case ('RNITP');  SAVE_data % PLANT % RNITP  = Value
         Case ('SLAAD');  SAVE_data % PLANT % SLAAD  = Value

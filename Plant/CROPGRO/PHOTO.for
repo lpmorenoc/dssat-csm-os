@@ -31,11 +31,13 @@ C=======================================================================
       USE ModuleDefs     !Definitions of constructed variable types, 
                          ! which contain control information, soil
                          ! parameters, hourly weather data.
+      USE ModuleData
       IMPLICIT NONE
       SAVE
 
       CHARACTER*3  TYPPGN, TYPPGT
       CHARACTER*30 FILEIO
+      CHARACTER*1   RNMODE
 
       INTEGER DYNAMIC
       INTEGER DAS, NR5
@@ -46,7 +48,7 @@ C=======================================================================
      &  SLPF, PGLFMX, PGREF, PGSLW, PHTHRS10, PHTMAX, PRATIO, 
      &  PTSMAX, RNITP, ROWSPC, SLAAD, SLW, SPACNG, SWFAC, 
      &  TABEX, TDAY, TPGFAC, XHLAI, XPOD
-      REAL E_FAC
+      REAL E_FAC, FracIntRadM
 
       REAL FNPGN(4), FNPGT(4) 
       REAL XPGSLW(15), YPGSLW(15) 
@@ -65,6 +67,7 @@ C=======================================================================
       DAS     = CONTROL % DAS
       DYNAMIC = CONTROL % DYNAMIC
       FILEIO  = CONTROL % FILEIO
+      RNMODE  = CONTROL % RNMODE
 
 C***********************************************************************
 C***********************************************************************
@@ -118,7 +121,13 @@ C-----------------------------------------------------------------------
       ENDIF
 !chp per CDM:      KCANR = KCAN - (1. - SPACNG) * 0.1
       KCANR = KCAN - (1. - SPACNG) * KC_SLOPE
-      PGFAC = 1. - EXP(-KCANR * XHLAI)
+      
+      IF (RNMODE == 'M') THEN
+          CALL GET('PLANT', 'FracIntRadM',  FracIntRadM)
+          PGFAC =  FracIntRadM
+      ELSE
+          PGFAC = 1. - EXP(-KCANR * XHLAI)
+      ENDIF
 
 C-----------------------------------------------------------------------
 C     Compute reduction in PG based on the average daylight temperature.

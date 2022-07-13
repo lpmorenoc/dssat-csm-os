@@ -38,7 +38,7 @@
 !  Calls  : NFACTO NUPTAK
 !----------------------------------------------------------------------
 
-      SUBROUTINE MZ_GROSUB (DYNAMIC, ISWITCH, 
+      SUBROUTINE MZ_GROSUB (DYNAMIC, ISWITCH, RNMODE,
      &      ASMDOT, CDAY, CO2, DLAYR, DS, DTT, EOP, FILEIO,   !Input
      &      FracRts, ISTAGE, KG2PPM, LL, NLAYR, NH4, NO3, P3, !Input
      &      PLTPOP, PPLTD, RLV, RTDEP, RUE, SAT, SeedFrac,    !Input
@@ -61,6 +61,7 @@
      &      KUptake, KSTRES)                                  !Output
 
       USE ModuleDefs
+      USE ModuleData
       USE Interface_SenLig_Ceres
       IMPLICIT  NONE
       SAVE
@@ -359,6 +360,10 @@
        
       TYPE (ResidueType) SENESCE 
       TYPE (SwitchType)  ISWITCH
+!     LPM 07/12/2022 Added to allow different intercepted PAR when
+!     intercropping
+      CHARACTER*1     RNMODE
+      REAL  FracIntRadM
   
 !----------------------------------------------------------------------
 !     CHP 3/31/2006
@@ -1115,9 +1120,14 @@ C-GH 60     FORMAT(25X,F5.2,13X,F5.2,7X,F5.2)
 
           LIFAC  = 1.5 - 0.768 * ((ROWSPC * 0.01)**2 * PLTPOP)**0.1 
           PCO2  = TABEX (CO2Y,CO2X,CO2,10)
-
+          
+          IF (RNMODE == 'M') THEN
+              CALL GET('PLANT', 'FracIntRadM',  FracIntRadM)
+              IPAR = PAR/PLTPOP * FracIntRadM
+          ELSE
 ! JIL 08/01/2006 Intercepted PAR (MJ/plant d)
-          IPAR = PAR/PLTPOP * (1.0 - EXP(-LIFAC * LAI))
+              IPAR = PAR/PLTPOP * (1.0 - EXP(-LIFAC * LAI))
+          ENDIF
           PCARB = IPAR * RUE * PCO2
 
 !-SPE     PRFT= AMIN1(1.25 - 0.0035*((0.25*TMIN+0.75*TMAX)-25.0)**2,1.0) 
