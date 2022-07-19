@@ -43,6 +43,7 @@
 
       ! For CSM
       SUBROUTINE CSCER (FILEIOIN, RUN, TN, RN, RNMODE,     !Command line
+     &  FracIntRadM,                                       !Frac rad (intercrop)
      & ISWWAT, ISWNIT, IDETS, IDETO, IDETG, IDETL, FROP,   !Controls
      & SN, ON, RUNI, REP, YEAR, DOY, STEP, CN,             !Run+loop
      & SRAD, TMAX, TMIN, CO2, RAIN, TOTIR,                 !Weather
@@ -224,9 +225,9 @@
       CHARACTER*1   BLANK         ! Blank character                text
       REAL          BLAYER        ! Depth at base of layer         cm
       REAL          CANANC        ! Canopy N concentration         %
-      REAL          CANHT         ! Canopy height                  cm
-      CHARACTER*6   CANHTC        ! Canopy height                  cm
-      REAL          CANHTG        ! Canopy height growth           cm
+      REAL          CANHT         ! Canopy height                  m !LPM 07/14/2022 Modified to m for intercroppping
+      CHARACTER*6   CANHTC        ! Canopy height                  m
+      REAL          CANHTG        ! Canopy height growth           m
       REAL          CANHTS        ! Canopy height standard         cm
       REAL          CARBO         ! Carbohydrate available,phs     g/p
       REAL          CARBOACM      ! Carbohydrate assimilated,cum,m kg/ha
@@ -1384,6 +1385,7 @@
       REAL          VWAD          ! Vegetative canopy weight       kg/ha
       REAL          VRNSTAGE      ! Vernalization stage            #
 
+      REAL  FracIntRadM
 !!     2021-02-14 chp
 !      REAL          Nuptake_daily !Daily N uptake (kg [N]/ha)
 !      REAL          NUAD_Y        !Yesterday's cumulative N uptake
@@ -4375,10 +4377,11 @@ C-GH      IF (snow.GT.0) THEN
           IF (XSTAGE.LT.7) THEN
             IF (XSTAGE.GT.1.0) THEN
               CANHTG =
-     &         AMAX1(0.0,(CANHTS*AMIN1(1.0,(XSTAGE-1.0)/4.0)-CANHT))
+     &         AMAX1(0.0,((CANHTS/100.)*AMIN1(1.0,(XSTAGE-1.0)/4.0)-
+     &        CANHT))
             ELSEIF (XSTAGE.EQ.1.0 .AND. PLAGT(1).GT.0.0) THEN
               ! Height growth on day of emergence or if no development
-              CANHTG = 0.5
+              CANHTG = 0.5/100.
             ENDIF
           ENDIF
           
@@ -5147,7 +5150,8 @@ C-GH      IF (snow.GT.0) THEN
               IF (PLASTMP.LE.0.0) EXIT
             ENDDO
           ENDIF
-
+!         LPM 07/14/2022 This subroutine is not used by DSSAT but 
+!         needs canht in cm 
           IF (fileiot(1:2).NE.'DS') THEN
           IF (LNUMSG.GT.0) CALL Cslayers
      X     (chtpc,clapc,               ! Canopy characteristics
@@ -5157,15 +5161,19 @@ C-GH      IF (snow.GT.0) THEN
           ENDIF
 
           ! PAR interception
-          IF (PARIP.LT.0.0.AND.LAI.GT.0.0) THEN
-            PARI = (1.0 - EXP(-KCAN*(LAI+AWNAI)))
-            !WRITE(fnumwrk,'(A28,F5.3)')
-     X      ! '  PARI from one-crop model: ',PARI
-            ! For maize, kcan is calculated as:
-            ! 1.5 - 0.768*((rowspc*0.01)**2*pltpop)**0.1
-            ! eg. 1.5 - 0.768*((75*0.01)**2*6.0)**0.1  =  0.63
+          IF (RNMODE == 'M') THEN
+              PARI =  FracIntRadM
           ELSE
-            PARI = 0.0
+            IF (PARIP.LT.0.0.AND.LAI.GT.0.0) THEN
+              PARI = (1.0 - EXP(-KCAN*(LAI+AWNAI)))
+              !WRITE(fnumwrk,'(A28,F5.3)')
+     X        ! '  PARI from one-crop model: ',PARI
+              ! For maize, kcan is calculated as:
+              ! 1.5 - 0.768*((rowspc*0.01)**2*pltpop)**0.1
+              ! eg. 1.5 - 0.768*((75*0.01)**2*6.0)**0.1  =  0.63
+            ELSE
+              PARI = 0.0
+            ENDIF
           ENDIF
 
           ! Specific leaf area
@@ -7955,8 +7963,15 @@ C  FO - 07/16/2021 Added more characters for H#AMS and H#GMS because of GLUE err
               
               IF (FILEIOT(1:2).EQ.'DS') THEN
                 IF (RUN.EQ.1 .AND. RUNI.EQ.1) THEN
-                  OPEN (UNIT = FNUMTMP, FILE = FNAMETMP)
-                  WRITE(FNUMTMP,'("*SIMULATION OVERVIEW FILE")')
+                  IF (FEXIST) THEN
+                    INQUIRE (FILE = 'OVERVIEW.OUT',OPENED = fopen)
+                    IF (.NOT.fopen) THEN
+                      OPEN (UNIT = FNUMTMP,FILE = FNAMETMP,
+     &                 POSITION = 'APPEND')
+                      !OPEN (UNIT = FNUMTMP, FILE = FNAMETMP)
+                      WRITE(FNUMTMP,'("*SIMULATION OVERVIEW FILE")')
+                    ENDIF
+                  ENDIF
                 ELSE
                   INQUIRE (FILE = FNAMETMP, EXIST = FEXIST)
                   IF (FEXIST) THEN

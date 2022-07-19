@@ -35,6 +35,7 @@ C=======================================================================
       REAL NSTRES, XLAI, LAI, NFP, SLPF
       REAL DAYL, TWILEN, PORMIN, RAIN, RWUMX, SRFTEMP
       REAL CANHT, EO, TOTIR, WINDSP
+      REAL  FracIntRadM
 
       REAL, DIMENSION(NL) :: BD, DLAYR, DS, DUL, LL
       REAL, DIMENSION(NL) :: NH4, NO3, RLV, SAT, SHF
@@ -102,6 +103,9 @@ C=======================================================================
         CALL GET('SPAM','EO',  EO)
         CALL GET('SPAM','EP',  EP)
         CALL GET('SPAM','UH2O',UH2O)
+         IF (RNMODE == 'M') THEN
+              CALL GET('PLANT', 'FracIntRadM',  FracIntRadM)
+         ENDIF
       ELSEIF (DYNAMIC == INTEGR) THEN
         CALL GET('SPAM','ET',  ET)
         CALL Get('MGMT','TOTIR', TOTIR)
@@ -123,6 +127,7 @@ C=======================================================================
 
 C-----------------------------------------------------------------------
       CALL CSCER (FILEIOCS, RUN, TN, RN, RNMODE,           !Command line
+     & FracIntRadM,                                        !Frac rad (intercrop)
      & ISWWAT, ISWNIT, IDETS, IDETO, IDETG, IDETL, FROP,   !Controls
      & SN, ON, RUNI, REP, YEAR, DOY, STEP, CN,             !Run+loop
      & SRAD, TMAX, TMIN, CO2, RAIN, TOTIR,                 !Weather
