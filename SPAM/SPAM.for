@@ -53,6 +53,7 @@ C=======================================================================
       CHARACTER*2  CROP
       CHARACTER*6, PARAMETER :: ERRKEY = "SPAM  "
 !      CHARACTER*78 MSG(2)
+      CHARACTER*1   RNMODE
 
       INTEGER DYNAMIC, L, NLAYR
 
@@ -99,6 +100,7 @@ C=======================================================================
 !     Transfer values from constructed data types into local variables.
       CROP    = CONTROL % CROP
       DYNAMIC = CONTROL % DYNAMIC
+      RNMODE  = CONTROL % RNMODE
 
       DLAYR  = SOILPROP % DLAYR
       DUL    = SOILPROP % DUL
@@ -184,6 +186,7 @@ C=======================================================================
         CALL ROOTWU(SEASINIT,
      &      DLAYR, LL, NLAYR, PORMIN, RLV, RWUMX, SAT, SW,!Input
      &      RWU, TRWUP)                           !Output
+        CALL PUT('SPAM','UH2O',RWU)
 
 !       Initialize soil evaporation variables
         SELECT CASE (MESEV)
@@ -201,14 +204,22 @@ C=======================================================================
 
 !     ----------------------------
         END SELECT
-
+        
+        IF (RNMODE == 'M') THEN
+            CALL TRANS_Inter(CONTROL, MEEVP,
+     &    CO2, EO, ET0, EVAP, KTRANS,                     !Input
+     &    WINDSP, XHLAI,                                  !Input
+     &    WEATHER,                                        !Input
+     &    EOP)                                            !Output
+        ELSE
 !       Initialize plant transpiration variables
-        CALL TRANS(DYNAMIC, MEEVP, 
+            CALL TRANS(DYNAMIC, MEEVP, 
      &    CO2, CROP, EO, ET0, EVAP, KTRANS,               !Input
      &    WINDSP, XHLAI,                                  !Input
      &    WEATHER,                                        !Input
      &    EOP)                                            !Output
-      ENDIF
+        ENDIF
+        ENDIF 
 
       CALL MULCH_EVAP(DYNAMIC, MULCH, EOS, EM)
 
@@ -289,6 +300,7 @@ C       and total potential water uptake rate.
             RWU   = 0.0
             TRWUP = 0.0
           ENDIF
+          CALL PUT('SPAM','UH2O',RWU)
 
 !-----------------------------------------------------------------------
 !         POTENTIAL EVAPOTRANSPIRATION
@@ -395,6 +407,13 @@ C       and total potential water uptake rate.
 !              EOP = EOP * TRAT
 
 !            CASE DEFAULT
+           IF (RNMODE == 'M') THEN
+              CALL TRANS_Inter(CONTROL, MEEVP,
+     &        CO2, EO, ET0, EVAP, KTRANS,                     !Input
+     &        WINDSP, XHLAI,                                  !Input
+     &        WEATHER,                                        !Input
+     &        EOP)                                            !Output
+           ELSE
 !             For all models except ORYZA
               CALL TRANS(RATE, MEEVP, 
      &        CO2, CROP, EO, ET0, EVAP, KTRANS,           !Input
@@ -402,7 +421,7 @@ C       and total potential water uptake rate.
      &        WEATHER,                                    !Input
      &        EOP)                                        !Output
 !            END SELECT
-            
+           ENDIF  
           ELSE
             EOP = 0.0
           ENDIF

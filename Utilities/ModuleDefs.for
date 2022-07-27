@@ -56,7 +56,8 @@ C             CHP Added TRTNUM to CONTROL variable.
      &    NumOfStalks = 42, !Maximum stalks per sugarcane stubble (FSR)
      &    EvaluateNum = 40, !Number of evaluation variables
      &    MaxFiles = 500,   !Maximum number of output files
-     &    MaxPest = 500    !Maximum number of pest operations
+     &    MaxPest = 500,    !Maximum number of pest operations
+     &    NumOfCrops = 2    !Maximum number of crops for intercropping
 
       REAL, PARAMETER :: 
      &    PI = 3.14159265,
@@ -95,7 +96,7 @@ C             CHP Added TRTNUM to CONTROL variable.
 !     Data construct for control variables
       TYPE ControlType
         CHARACTER (len=1)  MESIC, RNMODE
-        CHARACTER (len=2)  CROP
+        CHARACTER (len=2)  CROP, INTERCROP(NumOfCrops)
         CHARACTER (len=8)  MODEL, ENAME
         CHARACTER (len=12) FILEX
         CHARACTER (len=30) FILEIO
@@ -107,7 +108,7 @@ C             CHP Added TRTNUM to CONTROL variable.
         INTEGER   NYRS, REPNO, ROTNUM, RUN, TRTNUM
         INTEGER   YRDIF, YRDOY, YRSIM
         INTEGER   FODAT, ENDYRS  !Forecast start date and ensemble #
-        INTEGER, DIMENSION(2) :: CROPNUM
+        INTEGER, DIMENSION(NumOfCrops) :: CROPNUM
       END TYPE ControlType
 
 !=======================================================================
@@ -431,9 +432,12 @@ C             CHP Added TRTNUM to CONTROL variable.
       TYPE PlantType
         REAL CANHT, CANWH, DXR57, EXCESS,
      &    PLTPOP, RNITP, SLAAD, XPOD
-        REAL BIOMAS, FracIntRadM
+        REAL BIOMAS
         INTEGER NR5, iSTAGE, iSTGDOY
         CHARACTER*10 iSTNAME
+!     LPM 07/21/2022 Add values for intercropping
+        REAL, DIMENSION(2) :: KTRANSM, XHLAIM
+        REAL FracIntRadM
       END TYPE PlantType
 
 !     Data transferred from management routine 
@@ -517,6 +521,7 @@ C             CHP Added TRTNUM to CONTROL variable.
 !     &                  , GET_Weather
      &                  , GET_Real 
      &                  , GET_Real_Array_NL
+     &                  , GET_Real_Array_NumOfCrops
      &                  , GET_Integer
      &                  , GET_Char
       END INTERFACE
@@ -529,6 +534,7 @@ C             CHP Added TRTNUM to CONTROL variable.
 !     &                  , PUT_Weather
      &                  , PUT_Real 
      &                  , PUT_Real_Array_NL
+     &                  , PUT_Real_Array_NumOfCrops
      &                  , PUT_Integer
      &                  , PUT_Char
       END INTERFACE
@@ -901,8 +907,8 @@ C             CHP Added TRTNUM to CONTROL variable.
           CASE ('UH2O'); ; Value = SAVE_data % SPAM % UH2O
           CASE DEFAULT; ERR = .TRUE.
         END SELECT
-
-        CASE DEFAULT; ERR = .TRUE.
+      
+      CASE DEFAULT; ERR = .TRUE.
       END SELECT
 
       IF (ERR) THEN
@@ -932,7 +938,7 @@ C             CHP Added TRTNUM to CONTROL variable.
         Case ('UH2O'); SAVE_data % SPAM % UH2O = Value
         Case DEFAULT; ERR = .TRUE.
         END SELECT
-
+           
       Case DEFAULT; ERR = .TRUE.
       END SELECT
 
@@ -945,6 +951,77 @@ C             CHP Added TRTNUM to CONTROL variable.
 
       RETURN
       END SUBROUTINE PUT_Real_Array_NL
+
+!----------------------------------------------------------------------
+      SUBROUTINE GET_Real_Array_NumOfCrops(ModuleName, VarName, Value,
+     & dim)
+!     Retrieves array of dimension(NumOfCrops) 
+      IMPLICIT NONE
+      Character*(*) ModuleName, VarName
+      Character*78 MSG(2)
+      INTEGER dim
+      REAL, DIMENSION(dim) :: Value
+      Logical ERR
+
+      Value = 0.0
+      ERR = .FALSE.
+
+      SELECT CASE (ModuleName)
+
+      Case ('PLANT')
+        SELECT CASE (VarName)
+          Case ('KTRANSM'); ; Value = SAVE_data % PLANT % KTRANSM
+          Case ('XHLAIM'); ; Value = SAVE_data % PLANT % XHLAIM
+          Case DEFAULT; ERR = .TRUE.
+        END SELECT
+        
+        CASE DEFAULT; ERR = .TRUE.
+      END SELECT
+
+      IF (ERR) THEN
+        WRITE(MSG(1),'("Error transferring variable: ",A, "in ",A)') 
+     &      Trim(VarName), Trim(ModuleName)
+        MSG(2) = 'Value set to zero.'
+        CALL WARNING(2,'GET_Real_Array_NumOfCrops',MSG)
+      ENDIF
+
+      RETURN
+      END SUBROUTINE GET_Real_Array_NumOfCrops
+
+!----------------------------------------------------------------------
+      SUBROUTINE PUT_Real_Array_NumOfCrops(ModuleName, VarName, Value,
+     & dim)
+!     Stores array of dimension NumOfCrops
+      IMPLICIT NONE
+      Character*(*) ModuleName, VarName
+      Character*78 MSG(2)
+      INTEGER dim
+      REAL, DIMENSION(dim) :: Value
+      Logical ERR
+
+      ERR = .FALSE.
+
+      SELECT CASE (ModuleName)
+       
+      Case ('PLANT')
+        SELECT CASE (VarName)
+          Case ('KTRANSM'); SAVE_data % PLANT % KTRANSM = Value
+          Case ('XHLAIM');  SAVE_data % PLANT % XHLAIM = Value
+          Case DEFAULT; ERR = .TRUE.
+        END SELECT
+
+      Case DEFAULT; ERR = .TRUE.
+      END SELECT
+
+      IF (ERR) THEN
+        WRITE(MSG(1),'("Error transferring variable: ",A, "in ",A)') 
+     &      Trim(VarName), Trim(ModuleName)
+        MSG(2) = 'Value not saved! Errors may result.'
+        CALL WARNING(2,'PUT_Real_Array_NumOfCrops',MSG)
+      ENDIF
+
+      RETURN
+      END SUBROUTINE PUT_Real_Array_NumOfCrops
 
 !----------------------------------------------------------------------
       Subroutine GET_Integer(ModuleName, VarName, Value)

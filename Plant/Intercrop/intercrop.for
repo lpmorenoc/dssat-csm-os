@@ -91,19 +91,23 @@ C         Variables to run CASUPRO from Alt_PLANT.  FSR 07-23-03
       LOGICAL, PARAMETER :: OR_OUTPUT = .FALSE.
       
 !     Variables intercrop      
-      INTEGER, DIMENSION(2)  :: MDATEM
-      INTEGER STGDOYM(20,2)
-      INTEGER      I
-      REAL, DIMENSION(2)  :: CANHTM, EORATIOM, KCANM, KEPM, KSEVAPM
-      REAL, DIMENSION(2)  :: KTRANSM
-      REAL, DIMENSION(2)  :: NSTRESM, PORMINM, PSTRES1M, RWUMXM
-      REAL, DIMENSION(2)  :: XLAIM, XHLAIM, IPARM, FracIntRadM
+      INTEGER, DIMENSION(NumOfCrops)  :: MDATEM
+      INTEGER STGDOYM(20,NumOfCrops)
+      INTEGER      I, J
+      REAL TotIntRad
+      REAL, DIMENSION(NL) :: RWU
+      REAL, DIMENSION(NumOfCrops)  :: CANHTM, EORATIOM, KCANM, KEPM
+      REAL, DIMENSION(NumOfCrops)  :: KSEVAPM, KTRANSM, EOPM
+      REAL, DIMENSION(NumOfCrops)  :: NSTRESM, PORMINM, PSTRES1M, RWUMXM
+      REAL, DIMENSION(NumOfCrops)  :: XLAIM, XHLAIM, IPARM, FracIntRadM
+      REAL, DIMENSION(NumOfCrops)  :: TRWUPM
       
-      REAL, DIMENSION(NL,2) :: PUptakeM, FracRtsM, RLVM, UNO3M, UNH4M
-      REAL, DIMENSION(NL,2) :: KUptakeM
-      CHARACTER*2, CROPS(2)
-      CHARACTER*8  MODELS(2)
-      CHARACTER*30 FILEIOM(2)
+      REAL, DIMENSION(NL,NumOfCrops) :: PUptakeM, FracRtsM, RLVM, UNO3M
+      REAL, DIMENSION(NL,NumOfCrops) ::  UNH4M, KUptakeM, RWUM
+      CHARACTER*2, CROPS(NumOfCrops)
+      CHARACTER*8  MODELS(NumOfCrops)
+      CHARACTER*30 FILEIOM(NumOfCrops)
+      INTEGER :: test, DAS
 !-----------------------------------------------------------------------
 !     Constructed variables are defined in ModuleDefs.
       TYPE (ControlType)  CONTROL
@@ -120,11 +124,13 @@ C         Variables to run CASUPRO from Alt_PLANT.  FSR 07-23-03
       DYNAMIC = CONTROL % DYNAMIC
       MODEL   = CONTROL % MODEL
       RNMODE  = CONTROL % RNMODE
+      DAS     = CONTROL % DAS
       RUN     = CONTROL % RUN
       MODELS(1) = MODEL
       MODELS(2) = 'CRGRO'
       CROPS(1) = CROP
       CROPS(2) = 'SB'
+      CONTROL % INTERCROP = CROPS
       FILEIOM(1) = 'DSSAT48.INP'
       FILEIOM(2) = 'DSSAT48_SB.INP'
 
@@ -211,6 +217,7 @@ C         Variables to run CASUPRO from Alt_PLANT.  FSR 07-23-03
 !     Each plant routine may or may not re-compute these values.
       CANHT    = 0.0
       CANHTM    = 0.0
+      EOPM = 0.0
       EORATIO  = 1.0
       EORATIOM  = 1.0
       FracIntRadM = 0.0 
@@ -246,6 +253,7 @@ C         Variables to run CASUPRO from Alt_PLANT.  FSR 07-23-03
       SENESCE % ResWt  = 0.0
       SENESCE % ResLig = 0.0
       SENESCE % ResE   = 0.0
+      TotIntRad = 0.0 
       UNH4     = 0.0
       UNH4M    = 0.0
       UNO3     = 0.0
@@ -273,6 +281,7 @@ C         Variables to run CASUPRO from Alt_PLANT.  FSR 07-23-03
 !     Each plant routine may or may not re-compute these values.
       CANHT    = 0.0
       CANHTM    = 0.0
+      EOPM = 0.0 
 !      EORATIO  = 1.0
       FracRts  = 0.0
       FracRtsM  = 0.0
@@ -294,6 +303,7 @@ C         Variables to run CASUPRO from Alt_PLANT.  FSR 07-23-03
       RLVM     = 0.0
 !      RWUEP1   = 1.5
 !      RWUMX    = 0.03
+      TotIntRad = 0.0
       UH2O     = 0.0
       UNH4     = 0.0
       UNH4M    = 0.0
@@ -340,20 +350,45 @@ C         Variables to run CASUPRO from Alt_PLANT.  FSR 07-23-03
        CALL PHOTOINTER(CONTROL,                      
      &    CROPS, KCANM, XLAIM, CANHTM, PAR,                 !Input
      &    FracIntRadM )                                     !Output
+       !Estimate RWU by species
+       
+       CALL GET('SPAM','UH2O',RWU)
+       
+       TRWUPM = 0.0
+       DO I=1, NumOfCrops
+           DO J=1, NL
+               IF (RLV(J) > 0.0) THEN
+                   RWUM(J,I) = RWU(J) * RLVM(J,I)/RLV(J)
+               ELSE
+                   RWUM(J,I) = 0.0
+               ENDIF
+               TRWUPM(I) = TRWUPM(I) + RWUM(J,I)
+           ENDDO
+       ENDDO
+       
+       XLAI = 0.0
+       XHLAI = 0.0
+       RLV = 0.0
+       TotIntRad = SUM(FracIntRadM)
        
 
 !     Call crop models for all values of DYNAMIC:         
-      DO I=1, 2
+      DO I=1, NumOfCrops
         CONTROL % CROP = CROPS(I)
         CONTROL % FILEIO = FILEIOM(I) 
         Call PUT('PLANT', 'FracIntRadM',  FracIntRadM(I))
+        IF (TotIntRad > 0.0) THEN
+            EOPM(I) = EOP * FracIntRadM(I) / TotIntRad
+        ELSE
+            EOPM(I) = 0.0
+        ENDIF
       SELECT CASE (MODELS(I)(1:5))
 !-----------------------------------------------------------------------
 !     CROPGRO model
       CASE('CRGRO')
         CALL CROPGRO(CONTROL, ISWITCH,
-     &    EOP, HARVFRAC, NH4, NO3, SOILPROP, SPi_AVAIL,              !Input
-     &    ST, SW, TRWUP, WEATHER, YREND, YRPLT,                      !Input
+     &    EOPM(I), HARVFRAC, NH4, NO3, SOILPROP, SPi_AVAIL,          !Input
+     &    ST, SW, TRWUPM(I), WEATHER, YREND, YRPLT,                  !Input
      &    CANHTM(I), EORATIOM(I), HARVRES, KSEVAPM(I), KTRANSM(I),   !Output
      &    MDATEM(I),NSTRESM(I), PSTRES1M(I),                         !Output
      &    PUptakeM(:,I), PORMINM(I), RLVM(:,I), RWUMXM(I),           !Output
@@ -364,9 +399,9 @@ C         Variables to run CASUPRO from Alt_PLANT.  FSR 07-23-03
 !     Maize, Sweetcorn
       CASE('MZCER')
         CALL MZ_CERES (CONTROL, ISWITCH,                             !Input
-     &     EOP, HARVFRAC, NH4, NO3, SKi_Avail,                       !Input
+     &     EOPM(I), HARVFRAC, NH4, NO3, SKi_Avail,                   !Input
      &     SPi_AVAIL, SNOW,                                          !Input
-     &     SOILPROP, SW, TRWUP, WEATHER, YREND, YRPLT,               !Input
+     &     SOILPROP, SW, TRWUPM(I), WEATHER, YREND, YRPLT,           !Input
      &     CANHTM(I), HARVRES, KCANM(I), KEPM(I), KUptakeM(:,I),     !Output
      &     MDATEM(I), NSTRESM(I), PORMINM(I), PUptakeM(:,I),         !Output
      &     RLVM(:,I), RWUMXM(I), SENESCE, STGDOYM(:,I),              !Output
@@ -382,13 +417,13 @@ C         Variables to run CASUPRO from Alt_PLANT.  FSR 07-23-03
 !     -------------------------------------------------
 !     Wheat and Barley CSCER
       CASE('CSCER')
-        CALL CSCERES_Interface (CONTROL, ISWITCH,              !Input
-     &     EOP, YREND, NH4, NO3, SNOW, SOILPROP,               !Input
-     &     SRFTEMP, ST, SW, TRWUP, WEATHER, YRPLT, HARVFRAC,   !Input
-     &     CANHTM(I), HARVRES, KCANM(I), KEPM(I), MDATEM(I),   !Output
-     &     NSTRESM(I),PORMINM(I), RLVM(:,I), RWUMXM(I),        !Output
-     &     SENESCE, STGDOYM(:,I), UNH4M(:,I), UNO3M(:,I),      !Output
-     &     XLAIM(I))                                           !Output
+        CALL CSCERES_Interface (CONTROL, ISWITCH,                !Input
+     &     EOPM(I), YREND, NH4, NO3, SNOW, SOILPROP,             !Input
+     &     SRFTEMP, ST, SW, TRWUPM(I), WEATHER, YRPLT, HARVFRAC, !Input
+     &     CANHTM(I), HARVRES, KCANM(I), KEPM(I), MDATEM(I),     !Output
+     &     NSTRESM(I),PORMINM(I), RLVM(:,I), RWUMXM(I),          !Output
+     &     SENESCE, STGDOYM(:,I), UNH4M(:,I), UNO3M(:,I),        !Output
+     &     XLAIM(I))                                             !Output
 
         IF (DYNAMIC .EQ. SEASINIT) THEN
           KTRANSM(I) = KEPM(I)
@@ -398,8 +433,21 @@ C         Variables to run CASUPRO from Alt_PLANT.  FSR 07-23-03
           XHLAIM(I) = XLAIM(I)
         ENDIF
         
-        END SELECT
-        END DO
+       END SELECT
+      XLAI = XLAI + XLAIM(I) 
+      XHLAI = XHLAI + XHLAIM(I)
+      RLV =  RLV + RLVM(:,I)
+      END DO
+      Call PUT('PLANT', 'KTRANSM',  KTRANSM, NumOfCrops)
+      Call PUT('PLANT', 'XHLAIM',  XHLAIM, NumOfCrops)
+      !Use/transfer maximum RWUMX to estimate total root water uptake (TRWUP)
+      RWUMX = MAXVAL(RWUMXM)
+      
+      OPEN (UNIT = test,FILE = 'water_uptake.txt',POSITION="APPEND")
+       write (test, '(1I,8F8.3)') DAS, TRWUPM, TRWUP, TRWU, EP, EOP,
+     & EOPM 
+            CLOSE (UNIT=test)
+
 
 
 !***********************************************************************
