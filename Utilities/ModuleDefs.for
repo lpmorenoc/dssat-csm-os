@@ -437,7 +437,7 @@ C             CHP Added TRTNUM to CONTROL variable.
         CHARACTER*10 iSTNAME
 !     LPM 07/21/2022 Add values for intercropping
         REAL, DIMENSION(2) :: KTRANSM, XHLAIM
-        REAL FracIntRadM
+        REAL FracIntRadM, TotIntRad
       END TYPE PlantType
 
 !     Data transferred from management routine 
@@ -686,7 +686,9 @@ C             CHP Added TRTNUM to CONTROL variable.
         Case ('PLTPOP'); Value = SAVE_data % PLANT % PLTPOP
         Case ('RNITP') ; Value = SAVE_data % PLANT % RNITP
         Case ('SLAAD') ; Value = SAVE_data % PLANT % SLAAD
+        Case ('TotIntRad'); Value = SAVE_data % PLANT % TotIntRad
         Case ('XPOD')  ; Value = SAVE_data % PLANT % XPOD
+            
         Case DEFAULT; ERR = .TRUE.
         END SELECT
 
@@ -819,6 +821,7 @@ C             CHP Added TRTNUM to CONTROL variable.
         Case ('PLTPOP'); SAVE_data % PLANT % PLTPOP = Value
         Case ('RNITP');  SAVE_data % PLANT % RNITP  = Value
         Case ('SLAAD');  SAVE_data % PLANT % SLAAD  = Value
+        Case ('TotIntRad'); SAVE_data % PLANT % TotIntRad = Value
         Case ('XPOD');   SAVE_data % PLANT % XPOD   = Value
         Case DEFAULT; ERR = .TRUE.
         END SELECT

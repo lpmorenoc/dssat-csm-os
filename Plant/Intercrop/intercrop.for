@@ -100,7 +100,7 @@ C         Variables to run CASUPRO from Alt_PLANT.  FSR 07-23-03
       REAL, DIMENSION(NumOfCrops)  :: KSEVAPM, KTRANSM, EOPM
       REAL, DIMENSION(NumOfCrops)  :: NSTRESM, PORMINM, PSTRES1M, RWUMXM
       REAL, DIMENSION(NumOfCrops)  :: XLAIM, XHLAIM, IPARM, FracIntRadM
-      REAL, DIMENSION(NumOfCrops)  :: TRWUPM
+      REAL, DIMENSION(NumOfCrops)  :: TRWUPM, FracIntRadMTrans
       
       REAL, DIMENSION(NL,NumOfCrops) :: PUptakeM, FracRtsM, RLVM, UNO3M
       REAL, DIMENSION(NL,NumOfCrops) ::  UNH4M, KUptakeM, RWUM
@@ -221,6 +221,7 @@ C         Variables to run CASUPRO from Alt_PLANT.  FSR 07-23-03
       EORATIO  = 1.0
       EORATIOM  = 1.0
       FracIntRadM = 0.0 
+      FracIntRadMTrans = 0.0 
       KCAN     = 0.85
       KCANM     = 0.85
       KEP      = 1.0
@@ -286,6 +287,7 @@ C         Variables to run CASUPRO from Alt_PLANT.  FSR 07-23-03
       FracRts  = 0.0
       FracRtsM  = 0.0
       FracIntRadM = 0.0
+      FracIntRadMTrans = 0.0 
 !      KCAN     = 0.85
 !      KEP      = 1.0
 !      KSEVAP   = -99.
@@ -369,7 +371,7 @@ C         Variables to run CASUPRO from Alt_PLANT.  FSR 07-23-03
        XLAI = 0.0
        XHLAI = 0.0
        RLV = 0.0
-       TotIntRad = SUM(FracIntRadM)
+       !TotIntRad = SUM(FracIntRadM)
        
 
 !     Call crop models for all values of DYNAMIC:         
@@ -378,7 +380,7 @@ C         Variables to run CASUPRO from Alt_PLANT.  FSR 07-23-03
         CONTROL % FILEIO = FILEIOM(I) 
         Call PUT('PLANT', 'FracIntRadM',  FracIntRadM(I))
         IF (TotIntRad > 0.0) THEN
-            EOPM(I) = EOP * FracIntRadM(I) / TotIntRad
+            EOPM(I) = EOP * FracIntRadMTrans(I) / TotIntRad
         ELSE
             EOPM(I) = 0.0
         ENDIF
@@ -440,6 +442,16 @@ C         Variables to run CASUPRO from Alt_PLANT.  FSR 07-23-03
       END DO
       Call PUT('PLANT', 'KTRANSM',  KTRANSM, NumOfCrops)
       Call PUT('PLANT', 'XHLAIM',  XHLAIM, NumOfCrops)
+      
+      !Estimate intercepted total radiation by crop to define transpiration
+      !Use ktrans instead of kcan
+       CALL PHOTOINTER(CONTROL,                      
+     &    CROPS, KTRANSM, XHLAIM, CANHTM, SRAD,             !Input
+     &    FracIntRadMTrans )                                !Output
+      
+       TotIntRad = SUM(FracIntRadMTrans)
+       Call PUT('PLANT', 'TotIntRad',  TotIntRad)
+      
       !Use/transfer maximum RWUMX to estimate total root water uptake (TRWUP)
       RWUMX = MAXVAL(RWUMXM)
       

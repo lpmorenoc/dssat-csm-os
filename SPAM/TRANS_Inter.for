@@ -44,7 +44,7 @@ C=======================================================================
       REAL, DIMENSION(TS)    ::TAIRHR ,ET0
       REAL, DIMENSION(NumOfCrops)  :: KTRANSM, XHLAIM, TRATM
       CHARACTER*2, CROPS(NumOfCrops)
-      REAL KtransbyLAI
+      REAL KtransbyLAI, TotIntRad
 
 !     FUNCTION SUBROUTINES:
       REAL TRATIO
@@ -60,6 +60,7 @@ C=======================================================================
       CALL GET('SPAM', 'REFET', REFET)
       Call GET('PLANT', 'KTRANSM',  KTRANSM, NumOfCrops)
       Call GET('PLANT', 'XHLAIM',  XHLAIM, NumOfCrops)
+      Call GET('PLANT', 'TotIntRad',  TotIntRad)
 
 !***********************************************************************
 !***********************************************************************
@@ -82,7 +83,6 @@ C=======================================================================
             TRATM(I) = TRATIO(CROPS(I), CO2, TAVG, WINDSP, XHLAIM(I))
             TRATM(I) = TRATM(I) * XHLAIM(I) / XHLAI
             TRAT = TRAT + TRATM(I)
-            KtransbyLAI = KtransbyLAI + (KTRANSM(I) * XHLAIM(I))
         ENDDO
 
 !-----------------------------------------------------------------------
@@ -101,7 +101,7 @@ C       soil water balance and predicting measured ET.
           EOP = KCB * REFET !KRT added for ASCE dual Kc ET approach
         ELSE  
           !FDINT = 1.0 - EXP(-(KTRANS) * XHLAI) 
-            FDINT = 1.0 - EXP(-KtransbyLAI)
+            FDINT = TotIntRad
             IF (meevp .NE.'H') THEN 
                 EOP = EO * FDINT
             ELSE
