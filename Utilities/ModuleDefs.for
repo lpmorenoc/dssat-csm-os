@@ -422,6 +422,7 @@ C             CHP Added TRTNUM to CONTROL variable.
         REAL  EF,  EM,  EO,  EP,  ES,  ET !Daily ET - mm/d
         REAL  EOP, EVAP                   !Daily mm/d
         REAL, DIMENSION(NL) :: UH2O       !Root water uptake
+        REAL, DIMENSION(NumOfCrops) :: EOPM !Daily ET intercrops
         !ASCE reference ET with FAO-56 dual crop coefficient (KRT)
         REAL REFET, SKC, KCBMAX, KCB, KE, KC
         !VPD parameters for CSYCA model (LPM)
@@ -436,8 +437,8 @@ C             CHP Added TRTNUM to CONTROL variable.
         INTEGER NR5, iSTAGE, iSTGDOY
         CHARACTER*10 iSTNAME
 !     LPM 07/21/2022 Add values for intercropping
-        REAL, DIMENSION(2) :: KTRANSM, XHLAIM
-        REAL FracIntRadM, TotIntRad
+        REAL, DIMENSION(NumOfCrops) :: KTRANSM, XHLAIM, FracIntRadMTrans
+        REAL FracIntRadM
       END TYPE PlantType
 
 !     Data transferred from management routine 
@@ -686,7 +687,6 @@ C             CHP Added TRTNUM to CONTROL variable.
         Case ('PLTPOP'); Value = SAVE_data % PLANT % PLTPOP
         Case ('RNITP') ; Value = SAVE_data % PLANT % RNITP
         Case ('SLAAD') ; Value = SAVE_data % PLANT % SLAAD
-        Case ('TotIntRad'); Value = SAVE_data % PLANT % TotIntRad
         Case ('XPOD')  ; Value = SAVE_data % PLANT % XPOD
             
         Case DEFAULT; ERR = .TRUE.
@@ -821,7 +821,6 @@ C             CHP Added TRTNUM to CONTROL variable.
         Case ('PLTPOP'); SAVE_data % PLANT % PLTPOP = Value
         Case ('RNITP');  SAVE_data % PLANT % RNITP  = Value
         Case ('SLAAD');  SAVE_data % PLANT % SLAAD  = Value
-        Case ('TotIntRad'); SAVE_data % PLANT % TotIntRad = Value
         Case ('XPOD');   SAVE_data % PLANT % XPOD   = Value
         Case DEFAULT; ERR = .TRUE.
         END SELECT
@@ -973,8 +972,17 @@ C             CHP Added TRTNUM to CONTROL variable.
 
       Case ('PLANT')
         SELECT CASE (VarName)
+            
+        Case ('FracIntRadMTrans'); ; 
+     &        Value = SAVE_data % PLANT % FracIntRadMTrans
           Case ('KTRANSM'); ; Value = SAVE_data % PLANT % KTRANSM
           Case ('XHLAIM'); ; Value = SAVE_data % PLANT % XHLAIM
+          Case DEFAULT; ERR = .TRUE.
+          END SELECT
+          
+      Case ('SPAM')
+        SELECT CASE (VarName)
+          Case ('EOPM'); Value = SAVE_data % SPAM % EOPM
           Case DEFAULT; ERR = .TRUE.
         END SELECT
         
@@ -1008,10 +1016,19 @@ C             CHP Added TRTNUM to CONTROL variable.
        
       Case ('PLANT')
         SELECT CASE (VarName)
+          
+        Case ('FracIntRadMTrans'); 
+     &        SAVE_data % PLANT % FracIntRadMTrans = Value
           Case ('KTRANSM'); SAVE_data % PLANT % KTRANSM = Value
           Case ('XHLAIM');  SAVE_data % PLANT % XHLAIM = Value
           Case DEFAULT; ERR = .TRUE.
         END SELECT
+      
+      Case ('SPAM')
+        SELECT CASE (VarName)
+          Case ('EOPM'); SAVE_data % SPAM % EOPM = vALUE
+          Case DEFAULT; ERR = .TRUE.
+        END SELECT    
 
       Case DEFAULT; ERR = .TRUE.
       END SELECT

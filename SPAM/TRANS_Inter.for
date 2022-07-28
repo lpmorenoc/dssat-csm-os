@@ -43,8 +43,9 @@ C=======================================================================
       REAL PHSV, PHTV, TDEW, TMIN
       REAL, DIMENSION(TS)    ::TAIRHR ,ET0
       REAL, DIMENSION(NumOfCrops)  :: KTRANSM, XHLAIM, TRATM
+      REAL, DIMENSION(NumOfCrops)  :: EOPM, FDINTM, EOP_reducM
+      REAL, DIMENSION(NumOfCrops)  :: FracIntRadMTrans
       CHARACTER*2, CROPS(NumOfCrops)
-      REAL KtransbyLAI, TotIntRad
 
 !     FUNCTION SUBROUTINES:
       REAL TRATIO
@@ -60,7 +61,7 @@ C=======================================================================
       CALL GET('SPAM', 'REFET', REFET)
       Call GET('PLANT', 'KTRANSM',  KTRANSM, NumOfCrops)
       Call GET('PLANT', 'XHLAIM',  XHLAIM, NumOfCrops)
-      Call GET('PLANT', 'TotIntRad',  TotIntRad)
+      Call GET('PLANT', 'FracIntRadMTrans',FracIntRadMTrans, NumOfCrops)
 
 !***********************************************************************
 !***********************************************************************
@@ -69,6 +70,7 @@ C=======================================================================
       IF (DYNAMIC .EQ. SEASINIT) THEN
 !-----------------------------------------------------------------------
         EOP = 0.0
+        EOPM = 0.0
 
 !***********************************************************************
 !***********************************************************************
@@ -77,13 +79,11 @@ C=======================================================================
       ELSEIF (DYNAMIC .EQ. RATE) THEN
 !-----------------------------------------------------------------------
         EOP = 0.0
-        TRAT = 0.0 
-        KtransbyLAI = 0.0 
-        DO I=1, NumOfCrops
-            TRATM(I) = TRATIO(CROPS(I), CO2, TAVG, WINDSP, XHLAIM(I))
-            TRATM(I) = TRATM(I) * XHLAIM(I) / XHLAI
-            TRAT = TRAT + TRATM(I)
-        ENDDO
+        EOPM = 0.0
+        TRATM = 0.0 
+        EOP_reduc = 0.0
+       DO I=1, NumOfCrops
+            TRATM(I) = TRATIO(CROPS(I), CO2, TAVG, WINDSP, XHLAIM(I)) 
 
 !-----------------------------------------------------------------------
 C       Estimate light interception.  NOTE 01/15/03 We don't want PAR
@@ -97,13 +97,16 @@ C       01/15/03 - Work of Sau et al, shows that a K of 0.5 was better in
 C       all cases, for PT form as well as the Dynamic form for predicting
 C       soil water balance and predicting measured ET.
 
-        IF (KCB .GE. 0.0) THEN
-          EOP = KCB * REFET !KRT added for ASCE dual Kc ET approach
+!       LPM 07/27/2022 Currently KCB is a species coefficient and we would
+!       need to modify the ASCE method so it can work for intercropping
+
+        IF (KCB .GE. 0.0) THEN 
+          EOPM(I) = KCB * REFET !KRT added for ASCE dual Kc ET approach
         ELSE  
           !FDINT = 1.0 - EXP(-(KTRANS) * XHLAI) 
-            FDINT = TotIntRad
+            FDINTM(I) = FracIntRadMTrans(I)
             IF (meevp .NE.'H') THEN 
-                EOP = EO * FDINT
+                EOPM(I) = EO * FDINTM(I)
             ELSE
               CALL GET('SPAM', 'PHSV' ,phsv)
               CALL GET('SPAM', 'PHTV' ,phtv)
@@ -125,12 +128,16 @@ C       soil water balance and predicting measured ET.
               DO hour = 1,TS 
                   VPDFPHR(hour) =  get_Growth_VPDFPHR(PHSV, PHTV, TDEW, 
      &                     TMIN, TAIRHR, hour)
-                  EOPH(hour) = (ET0(hour) * FDINT) * VPDFPHR(hour)
-                  EOP = EOP + EOPH(hour)
+                  EOPH(hour) = (ET0(hour) * FDINTM(I)) * VPDFPHR(hour)
+                  EOPM = EOPM + EOPH(hour)
               ENDDO
           ENDIF
-          EOP_reduc = EOP * (1. - TRAT)  
-          EOP = EOP * TRAT
+          EOP_reducM(I) = EOPM(I) * (1. - TRATM(I))  
+          EOPM(I) = EOPM(I) * TRATM(I)
+          EOP_reduc = EOP_reduc + EOP_reducM(I) 
+          ENDIF
+          EOP = EOP + EOPM(I)
+       ENDDO
 
 C         01/15/03 KJB  I think the change to "Same" K for EOS and EOP
 C         may cause next function to be less driving, but below still
@@ -140,11 +147,22 @@ C         will depend on whether actual soil evapo (EVAP) meets EOS
 
 !         Need to limit EOP to no more than EO (reduced by TRAT effect on EOP) 
 !         minus actual evaporation from soil, mulch and flood
+        IF (KCB .GE. 0.0) THEN 
+          EOP = EOP
+        ELSE
           EOP_max = EO - EOP_reduc - EVAP
           EOP = MIN(EOP, EOP_max)
-        ENDIF  
-
+        ENDIF 
+        
         EOP = MAX(EOP,0.0)
+        
+        IF (EOP < SUM(EOPM) .AND. SUM(EOPM) > 0.0) THEN
+            DO I=1, NumOfCrops
+                EOPM(I) = (EOPM(I)/SUM(EOPM)) * EOP
+            ENDDO
+        ENDIF
+        Call PUT('SPAM', 'EOPM',  EOPM, NumOfCrops)
+        
 
 !***********************************************************************
 !***********************************************************************

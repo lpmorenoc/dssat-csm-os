@@ -355,6 +355,7 @@ C         Variables to run CASUPRO from Alt_PLANT.  FSR 07-23-03
        !Estimate RWU by species
        
        CALL GET('SPAM','UH2O',RWU)
+       Call GET('SPAM', 'EOPM',  EOPM, NumOfCrops)
        
        TRWUPM = 0.0
        DO I=1, NumOfCrops
@@ -371,7 +372,6 @@ C         Variables to run CASUPRO from Alt_PLANT.  FSR 07-23-03
        XLAI = 0.0
        XHLAI = 0.0
        RLV = 0.0
-       !TotIntRad = SUM(FracIntRadM)
        
 
 !     Call crop models for all values of DYNAMIC:         
@@ -379,11 +379,7 @@ C         Variables to run CASUPRO from Alt_PLANT.  FSR 07-23-03
         CONTROL % CROP = CROPS(I)
         CONTROL % FILEIO = FILEIOM(I) 
         Call PUT('PLANT', 'FracIntRadM',  FracIntRadM(I))
-        IF (TotIntRad > 0.0) THEN
-            EOPM(I) = EOP * FracIntRadMTrans(I) / TotIntRad
-        ELSE
-            EOPM(I) = 0.0
-        ENDIF
+        
       SELECT CASE (MODELS(I)(1:5))
 !-----------------------------------------------------------------------
 !     CROPGRO model
@@ -450,14 +446,15 @@ C         Variables to run CASUPRO from Alt_PLANT.  FSR 07-23-03
      &    FracIntRadMTrans )                                !Output
       
        TotIntRad = SUM(FracIntRadMTrans)
-       Call PUT('PLANT', 'TotIntRad',  TotIntRad)
+       Call PUT('PLANT', 'FracIntRadMTrans', 
+     &      FracIntRadMTrans, NumOfCrops)
       
       !Use/transfer maximum RWUMX to estimate total root water uptake (TRWUP)
       RWUMX = MAXVAL(RWUMXM)
       
       OPEN (UNIT = test,FILE = 'water_uptake.txt',POSITION="APPEND")
-       write (test, '(1I,8F8.3)') DAS, TRWUPM, TRWUP, TRWU, EP, EOP,
-     & EOPM 
+       write (test, '(1I,8F8.3)') DAS, (TRWUPM/10.), (TRWUP/10.), 
+     & TRWU, (EP/10.), (EOP/10.), (EOPM/10.) 
             CLOSE (UNIT=test)
 
 
