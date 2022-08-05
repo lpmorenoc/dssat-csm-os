@@ -1,10 +1,8 @@
 C=======================================================================
-C  COPYRIGHT 1998-2010 The University of Georgia, Griffin, Georgia
+C  COPYRIGHT 1998-2021 DSSAT Foundation
 C                      University of Florida, Gainesville, Florida
-C                      Iowa State University, Ames, Iowa
-C                      International Center for Soil Fertility and 
-C                       Agricultural Development, Muscle Shoals, Alabama
-C                      University of Guelph, Guelph, Ontario
+C                      International Fertilizer Development Center
+C    
 C  ALL RIGHTS RESERVED
 C=======================================================================
 C=====================================================================
@@ -33,7 +31,7 @@ C  08/01/2002 CHP Merged RUNINIT and SEASINIT into INIT section
 C=====================================================================
 
       SUBROUTINE MGMTOPS(CONTROL, ISWITCH, 
-     &    FLOODWAT, HARVRES, NSTRES, SOILPROP, ST,        !Input 
+     &    FLOODWAT, HARVRES, SOILPROP, ST,                !Input 
      &    STGDOY, SW, WEATHER,                            !Input
      &    YREND, FERTDATA, HARVFRAC, IRRAMT,              !Output
      &    MDATE, OMADATA, TILLVALS, YRPLT)                !Output
@@ -57,9 +55,9 @@ C-----------------------------------------------------------------------
       INTEGER HDATE(3)
       INTEGER STGDOY(20)
 
-      REAL IRRAMT, NSTRES, TOTIR, TIL_IRR
+      REAL IRRAMT, TOTIR, TIL_IRR
       REAL HPC(3), HBPC(3), HARVFRAC(2)
-      REAL, DIMENSION(NL) :: DLAYR, DUL, LL, ST, SW
+      REAL, DIMENSION(NL) :: DLAYR, DUL, DS, LL, ST, SW
 
 !     Variables added for flooded conditions
       INTEGER NBUND
@@ -97,6 +95,7 @@ C-----------------------------------------------------------------------
 
       DLAYR  = SOILPROP % DLAYR  
       DUL    = SOILPROP % DUL    
+      DS     = SOILPROP % DS    
       LL     = SOILPROP % LL     
       NLAYR  = SOILPROP % NLAYR  
       
@@ -162,8 +161,8 @@ C-----------------------------------------------------------------------
       ENDIF
 
       CALL Fert_Place (CONTROL, ISWITCH, 
-     &  DLAYR, FLOOD, NLAYR, NSTRES, YRPLT,               !Input
-     &  FERTDATA)                                         !Output
+     &  DLAYR, DS, FLOOD, NLAYR, YRPLT,           !Input
+     &  FERTDATA)                                 !Output
 
       CALL OM_Place (CONTROL, ISWITCH, 
      &    DLAYR, NLAYR, YRPLT,                            !Input
@@ -186,7 +185,7 @@ C-----------------------------------------------------------------------
      &    FLOOD, FLOODWAT, FLOODN)                        !Output 
 
       CALL OpMgmt(CONTROL, ISWITCH,
-     &    FERTDATA, HARVRES, IIRRI, IRRAMT, MDATE, NAP, OMADATA, 
+     &    FERTDATA, HARVRES, IIRRI, IRRAMT, NAP, OMADATA, 
      &    SOILPROP, TILLNO, TILLVALS, TOTIR, YRPLT)
 
 C***********************************************************************
@@ -211,8 +210,8 @@ C-----------------------------------------------------------------------
       ENDIF
 
       CALL Fert_Place (CONTROL, ISWITCH, 
-     &  DLAYR, FLOOD, NLAYR, NSTRES, YRPLT,               !Input
-     &  FERTDATA)                                         !Output
+     &  DLAYR, DS, FLOOD, NLAYR, YRPLT,           !Input
+     &  FERTDATA)                                 !Output
 
       CALL OM_Place (CONTROL, ISWITCH, 
      &    DLAYR, NLAYR, YRPLT,                            !Input
@@ -273,7 +272,7 @@ C-----------------------------------------------------------------------
       ELSEIF (DYNAMIC .EQ. OUTPUT) THEN
 !-----------------------------------------------------------------------
       CALL OpMgmt(CONTROL, ISWITCH,
-     &    FERTDATA, HARVRES, IIRRI, IRRAMT, MDATE, NAP, OMADATA, 
+     &    FERTDATA, HARVRES, IIRRI, IRRAMT, NAP, OMADATA, 
      &    SOILPROP, TILLNO, TILLVALS, TOTIR, YRPLT)
 
       IF (NBUND .GT. 0) THEN
@@ -294,7 +293,7 @@ C-----------------------------------------------------------------------
      &    OMAData)                                !Output
 
       CALL OpMgmt(CONTROL, ISWITCH,
-     &    FERTDATA, HARVRES, IIRRI, IRRAMT, MDATE, NAP, OMADATA, 
+     &    FERTDATA, HARVRES, IIRRI, IRRAMT, NAP, OMADATA, 
      &    SOILPROP, TILLNO, TILLVALS, TOTIR, YRPLT)
 
       IF (NBUND .GT. 0) THEN
@@ -342,7 +341,7 @@ C  Called from:   MgmtOps
 C  Calls:         None
 C=======================================================================
       SUBROUTINE OpMgmt(CONTROL, ISWITCH,
-     &    FERTDATA, HARVRES, IIRRI, IRRAMT, MDATE, NAP, OMADATA, 
+     &    FERTDATA, HARVRES, IIRRI, IRRAMT, NAP, OMADATA, 
      &    SOILPROP, TILLNO, TILLVALS, TOTIR, YRPLT)
 
 !-----------------------------------------------------------------------
@@ -363,7 +362,7 @@ C=======================================================================
       CHARACTER*13, PARAMETER :: OUTM2= 'MgmtEvent.OUT'
 
       INTEGER DAP, DAS, DLUN, DLUN2, DOY, DYNAMIC, ERRNUM, FROP, I
-      INTEGER MDATE, NDAY, RUN, YEAR, YRDOY, YRPLT
+      INTEGER NDAY, RUN, YEAR, YRDOY, YRPLT
       INTEGER L, NAP, TIMDIF, NAPFER(NELEM), NAPRes
       INTEGER TILLNO, TILDATE
       INTEGER iSTAGE, iSTGDOY
@@ -512,7 +511,7 @@ C-----------------------------------------------------------------------
           WRITE(DLUN2,'("*MANAGEMENT OPERATIONS EVENT SUMMARY")')
         ENDIF
 
-        IF (INDEX('FQN',RNMODE) <= 0 .OR. RUN == 1) THEN
+        IF (INDEX('FQNY',RNMODE) <= 0 .OR. RUN == 1) THEN
           CALL HEADER(SEASINIT, DLUN2, RUN)  
         ENDIF
 
@@ -693,7 +692,8 @@ C-----------------------------------------------------------------------
 
 !       Irrigation
         IF (IRRAMT > 1.E-6) THEN
-          CALL Get('MGMT','DEPIR', DEPIR)   !Total irrig amt today (mm) (includes losses)
+!         Total irrig amt today (mm) (includes losses)
+          CALL Get('MGMT','DEPIR', DEPIR)   
           WRITE(DLUN2,110) RUN, Date_Txt, DOY, DAS, DAP, CROP, 
      &          "Irrigation     ",
      &        DEPIR, " mm"
