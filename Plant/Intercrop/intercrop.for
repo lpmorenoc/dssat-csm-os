@@ -94,7 +94,7 @@ C         Variables to run CASUPRO from Alt_PLANT.  FSR 07-23-03
       INTEGER, DIMENSION(NumOfCrops)  :: MDATEM
       INTEGER STGDOYM(20,NumOfCrops)
       INTEGER      I, J
-      REAL TotIntRad
+      REAL TotIntRad, EORATIOC
       REAL, DIMENSION(NL) :: RWU
       REAL, DIMENSION(NumOfCrops)  :: CANHTM, EORATIOM, KCANM, KEPM
       REAL, DIMENSION(NumOfCrops)  :: KSEVAPM, KTRANSM, EOPM
@@ -114,7 +114,9 @@ C         Variables to run CASUPRO from Alt_PLANT.  FSR 07-23-03
       TYPE (SwitchType)   ISWITCH
       TYPE (SoilType)     SOILPROP
       TYPE (ResidueType)  HARVRES
+      TYPE (ResidueType)  HARVRESM(NumOfCrops)
       TYPE (ResidueType)  SENESCE
+      TYPE (ResidueType)  SENESCEM(NumOfCrops)
       TYPE (FloodWatType) FLOODWAT
       TYPE (FloodNType)   FLOODN
       TYPE (WeatherType)  WEATHER
@@ -219,6 +221,7 @@ C         Variables to run CASUPRO from Alt_PLANT.  FSR 07-23-03
       CANHTM    = 0.0
       EOPM = 0.0
       EORATIO  = 1.0
+      EORATIOC  = 0.0
       EORATIOM  = 1.0
       FracIntRadM = 0.0 
       FracIntRadMTrans = 0.0 
@@ -274,6 +277,11 @@ C         Variables to run CASUPRO from Alt_PLANT.  FSR 07-23-03
         HARVRES % RESWT  = 0.0
         HARVRES % RESLig = 0.0
         HARVRES % RESE   = 0.0
+        DO I=1, NumOfCrops
+          HARVRESM(I) % RESWT  = 0.0
+          HARVRESM(I) % RESLig = 0.0
+          HARVRESM(I) % RESE   = 0.0
+        ENDDO
 !        HARVRES % CumResWt= 0.0
 !        HARVRES % CumResE = 0.0
       ENDIF
@@ -318,6 +326,11 @@ C         Variables to run CASUPRO from Alt_PLANT.  FSR 07-23-03
       SENESCE % ResWt  = 0.0
       SENESCE % ResLig = 0.0
       SENESCE % ResE   = 0.0
+      DO I=1, NumOfCrops
+        SENESCEM(I) % RESWT  = 0.0
+        SENESCEM(I) % RESLig = 0.0
+        SENESCEM(I) % RESE   = 0.0
+      ENDDO
 
 !***********************************************************************
 !***********************************************************************
@@ -329,6 +342,11 @@ C         Variables to run CASUPRO from Alt_PLANT.  FSR 07-23-03
         SENESCE % ResWt  = 0.0
         SENESCE % ResLig = 0.0
         SENESCE % ResE   = 0.0
+      DO I=1, NumOfCrops
+        SENESCEM(I) % RESWT  = 0.0
+        SENESCEM(I) % RESLig = 0.0
+        SENESCEM(I) % RESE   = 0.0
+      ENDDO
 
       ELSE
         CANHT = 0.0
@@ -372,6 +390,14 @@ C         Variables to run CASUPRO from Alt_PLANT.  FSR 07-23-03
        XLAI = 0.0
        XHLAI = 0.0
        RLV = 0.0
+      HARVRES % RESWT  = 0.0
+      HARVRES % RESLig = 0.0
+      HARVRES % RESE   = 0.0
+      SENESCE % ResWt  = 0.0
+      SENESCE % ResLig = 0.0
+      SENESCE % ResE   = 0.0
+      EORATIOC = 0.0
+      KUptake = 0.0
        
 
 !     Call crop models for all values of DYNAMIC:         
@@ -387,24 +413,24 @@ C         Variables to run CASUPRO from Alt_PLANT.  FSR 07-23-03
         CALL CROPGRO(CONTROL, ISWITCH,
      &    EOPM(I), HARVFRAC, NH4, NO3, SOILPROP, SPi_AVAIL,          !Input
      &    ST, SW, TRWUPM(I), WEATHER, YREND, YRPLT,                  !Input
-     &    CANHTM(I), EORATIOM(I), HARVRES, KSEVAPM(I), KTRANSM(I),   !Output
-     &    MDATEM(I),NSTRESM(I), PSTRES1M(I),                         !Output
+     &    CANHTM(I), EORATIOM(I), HARVRESM(I), KSEVAPM(I),           !Output
+     &    KTRANSM(I), MDATEM(I),NSTRESM(I), PSTRES1M(I),             !Output
      &    PUptakeM(:,I), PORMINM(I), RLVM(:,I), RWUMXM(I),           !Output
-     &    SENESCE, STGDOYM(:,I), FracRtsM(:,I), UNH4M(:,I),          !Output
+     &    SENESCEM(I), STGDOYM(:,I), FracRtsM(:,I), UNH4M(:,I),      !Output
      &    UNO3M(:,I), XHLAIM(I), XLAIM(I))                           !Output
 
 !     -------------------------------------------------
 !     Maize, Sweetcorn
       CASE('MZCER')
-        CALL MZ_CERES (CONTROL, ISWITCH,                             !Input
-     &     EOPM(I), HARVFRAC, NH4, NO3, SKi_Avail,                   !Input
-     &     SPi_AVAIL, SNOW,                                          !Input
-     &     SOILPROP, SW, TRWUPM(I), WEATHER, YREND, YRPLT,           !Input
-     &     CANHTM(I), HARVRES, KCANM(I), KEPM(I), KUptakeM(:,I),     !Output
-     &     MDATEM(I), NSTRESM(I), PORMINM(I), PUptakeM(:,I),         !Output
-     &     RLVM(:,I), RWUMXM(I), SENESCE, STGDOYM(:,I),              !Output
-     &     FracRtsM(:,I), UNH4M(:,I), UNO3M(:,I), XLAIM(I),          !Output
-     &     XHLAIM(I))                                                !Output
+        CALL MZ_CERES (CONTROL, ISWITCH,                         !Input
+     &     EOPM(I), HARVFRAC, NH4, NO3, SKi_Avail,               !Input
+     &     SPi_AVAIL, SNOW,                                      !Input
+     &     SOILPROP, SW, TRWUPM(I), WEATHER, YREND, YRPLT,       !Input
+     &     CANHTM(I), HARVRESM(I), KCANM(I), KEPM(I),            !Output
+     &     KUptakeM(:,I), MDATEM(I), NSTRESM(I), PORMINM(I),     !Output
+     &     PUptakeM(:,I),RLVM(:,I), RWUMXM(I), SENESCEM(I),      !Output
+     &     STGDOYM(:,I),FracRtsM(:,I), UNH4M(:,I), UNO3M(:,I),   !Output
+     &     XLAIM(I), XHLAIM(I))                                  !Output
 
         IF (DYNAMIC < RATE) THEN
 !          KTRANS = KCAN + 0.15        !Or use KEP here??
@@ -418,9 +444,9 @@ C         Variables to run CASUPRO from Alt_PLANT.  FSR 07-23-03
         CALL CSCERES_Interface (CONTROL, ISWITCH,                !Input
      &     EOPM(I), YREND, NH4, NO3, SNOW, SOILPROP,             !Input
      &     SRFTEMP, ST, SW, TRWUPM(I), WEATHER, YRPLT, HARVFRAC, !Input
-     &     CANHTM(I), HARVRES, KCANM(I), KEPM(I), MDATEM(I),     !Output
+     &     CANHTM(I), HARVRESM(I), KCANM(I), KEPM(I), MDATEM(I), !Output
      &     NSTRESM(I),PORMINM(I), RLVM(:,I), RWUMXM(I),          !Output
-     &     SENESCE, STGDOYM(:,I), UNH4M(:,I), UNO3M(:,I),        !Output
+     &     SENESCEM(I), STGDOYM(:,I), UNH4M(:,I), UNO3M(:,I),    !Output
      &     XLAIM(I))                                             !Output
 
         IF (DYNAMIC .EQ. SEASINIT) THEN
@@ -432,15 +458,23 @@ C         Variables to run CASUPRO from Alt_PLANT.  FSR 07-23-03
         ENDIF
         
        END SELECT
-      XLAI = XLAI + XLAIM(I) 
-      XHLAI = XHLAI + XHLAIM(I)
-      RLV =  RLV + RLVM(:,I)
+       XLAI = XLAI + XLAIM(I) 
+       XHLAI = XHLAI + XHLAIM(I)
+       RLV =  RLV + RLVM(:,I)
+       KUptake = KUptake + KUptakeM(:,I)
+       EORATIOC = (EORATIOC + EORATIOM(I) * XHLAIM(I)) 
+       HARVRES % RESWT  = HARVRES % RESWT + HARVRESM(I) % RESWT
+       HARVRES % RESLig = HARVRES % RESLig + HARVRESM(I) % RESLig
+       HARVRES % RESE   = HARVRES % RESE + HARVRESM(I) % RESE
+       SENESCE % ResWt  = SENESCE % ResWt +  SENESCEM(I) % ResWt 
+       SENESCE % ResLig = SENESCE % ResLig + SENESCEM(I) % ResLig
+       SENESCE % ResE   = SENESCE % ResE  +  SENESCEM(I) % ResE  
       END DO
       Call PUT('PLANT', 'KTRANSM',  KTRANSM, NumOfCrops)
       Call PUT('PLANT', 'XHLAIM',  XHLAIM, NumOfCrops)
       
-      !Estimate intercepted total radiation by crop to define transpiration
-      !Use ktrans instead of kcan
+      !Estimate intercepted total radiation by crop to define 
+      !transpiration. Use ktrans instead of kcan
        CALL PHOTOINTER(CONTROL,                      
      &    CROPS, KTRANSM, XHLAIM, CANHTM, SRAD,             !Input
      &    FracIntRadMTrans )                                !Output
@@ -449,8 +483,23 @@ C         Variables to run CASUPRO from Alt_PLANT.  FSR 07-23-03
        Call PUT('PLANT', 'FracIntRadMTrans', 
      &      FracIntRadMTrans, NumOfCrops)
       
-      !Use/transfer maximum RWUMX to estimate total root water uptake (TRWUP)
+      !Use/transfer maximum RWUMX to estimate total 
+      !root water uptake (TRWUP)
       RWUMX = MAXVAL(RWUMXM)
+      !Transfer maximum CANHT for LAND/SPAM
+      CANHT = MAXVAL(CANHTM)
+      !LPM 07/29/2022 Transfer maximum values of KTRANS, KSEVAP for LAND/SPAM. 
+      !KTRANS is not used for intercropping in TRANS_Inter. 
+      !KSEVAP is defined as -99 for CROPGRO and it is used in subroutine PSE
+      !Should we change to the average or weighted average (by LAI) per species?
+      KTRANS = MAXVAL(KTRANSM)
+      KSEVAP = MAXVAL(KSEVAPM)
+      IF (XHLAI> 0.0) EORATIO = EORATIOC/XHLAI
+      
+      !LPM 08/04/2022 Keep maximum value for N stress
+      NSTRES = MAXVAL(NSTRESM)
+      !LPM 08/04/2022 Keep maximum value for PORMIN
+      PORMIN = MAXVAL(PORMINM)
       
       OPEN (UNIT = test,FILE = 'water_uptake.txt',POSITION="APPEND")
        write (test, '(1I,8F8.3)') DAS, (TRWUPM/10.), (TRWUP/10.), 

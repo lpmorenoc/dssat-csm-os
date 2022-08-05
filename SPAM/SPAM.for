@@ -207,7 +207,7 @@ C=======================================================================
         
         IF (RNMODE == 'M') THEN
             CALL TRANS_Inter(CONTROL, MEEVP,
-     &    CO2, EO, ET0, EVAP, KTRANS,                     !Input
+     &    CO2, EO, ET0, EVAP,                             !Input
      &    WINDSP, XHLAI,                                  !Input
      &    WEATHER,                                        !Input
      &    EOP)                                            !Output
@@ -409,7 +409,7 @@ C       and total potential water uptake rate.
 !            CASE DEFAULT
            IF (RNMODE == 'M') THEN
               CALL TRANS_Inter(CONTROL, MEEVP,
-     &        CO2, EO, ET0, EVAP, KTRANS,                     !Input
+     &        CO2, EO, ET0, EVAP,                             !Input
      &        WINDSP, XHLAI,                                  !Input
      &        WEATHER,                                        !Input
      &        EOP)                                            !Output

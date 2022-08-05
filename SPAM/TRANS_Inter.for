@@ -16,7 +16,7 @@ C  REVISION HISTORY
 !  Calls:     None
 C=======================================================================
       SUBROUTINE TRANS_Inter(CONTROL, MEEVP,
-     &    CO2, EO, ET0, EVAP, KTRANS,                     !Input
+     &    CO2, EO, ET0, EVAP,                             !Input
      &    WINDSP, XHLAI,                                  !Input
      &    WEATHER,                                        !Input
      &    EOP)                                            !Output
@@ -37,7 +37,7 @@ C=======================================================================
       INTEGER DYNAMIC
       INTEGER hour, I
 
-      REAL CO2, EO, EVAP, FDINT, KTRANS, TAVG, WINDSP, XHLAI
+      REAL CO2, EO, EVAP, FDINT, TAVG, WINDSP, XHLAI
       REAL EOP, TRAT, EOP_reduc, EOP_max
       REAL KCB, REFET
       REAL PHSV, PHTV, TDEW, TMIN
