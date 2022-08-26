@@ -427,6 +427,8 @@ C             CHP Added TRTNUM to CONTROL variable.
         REAL REFET, SKC, KCBMAX, KCB, KE, KC
         !VPD parameters for CSYCA model (LPM)
         REAL PHSV, PHTV
+        ! Potential N uptake for intercropping
+        REAL, DIMENSION(NL) :: UNO3M, UNH4M
       End Type SPAMType
 
 !     Data transferred from CROPGRO routine 
@@ -819,7 +821,7 @@ C             CHP Added TRTNUM to CONTROL variable.
         Case ('EXCESS'); SAVE_data % PLANT % EXCESS = Value
         Case ('FracIntRadM'); SAVE_data % PLANT % FracIntRadM = Value
         Case ('PLTPOP'); SAVE_data % PLANT % PLTPOP = Value
-        Case ('RNITP');  SAVE_data % PLANT % RNITP  = Value
+        Case ('RNITP') ; SAVE_data % PLANT % RNITP = Value
         Case ('SLAAD');  SAVE_data % PLANT % SLAAD  = Value
         Case ('XPOD');   SAVE_data % PLANT % XPOD   = Value
         Case DEFAULT; ERR = .TRUE.
@@ -906,7 +908,9 @@ C             CHP Added TRTNUM to CONTROL variable.
 
       CASE ('SPAM')
         SELECT CASE (VarName)
-          CASE ('UH2O'); ; Value = SAVE_data % SPAM % UH2O
+        CASE ('UH2O'); Value = SAVE_data % SPAM % UH2O
+        CASE ('UNO3M'); Value = SAVE_data % SPAM % UNO3M    
+        CASE ('UNH4M'); Value = SAVE_data % SPAM % UNH4M    
           CASE DEFAULT; ERR = .TRUE.
         END SELECT
       
@@ -938,6 +942,8 @@ C             CHP Added TRTNUM to CONTROL variable.
       Case ('SPAM')
         SELECT CASE (VarName)
         Case ('UH2O'); SAVE_data % SPAM % UH2O = Value
+        CASE ('UNO3M'); SAVE_data % SPAM % UNO3M = Value  
+        CASE ('UNH4M'); SAVE_data % SPAM % UNH4M = Value   
         Case DEFAULT; ERR = .TRUE.
         END SELECT
            

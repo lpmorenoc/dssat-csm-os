@@ -8,24 +8,24 @@ C  03/01/1993 WTB Modified.
 C  01/20/1997 GH  Modified.
 C  07/10/1998 CHP modified for modular format.
 C  05/11/1998 GH  Incorporated in CROPGRO
+C  08/16/2022 LPM Modified for intercropping.
 C-----------------------------------------------------------------------
-C  Called from:  PLANT
+C  Called from:  INTERCROP
 C  Calls:        ERROR, FIND, IGNORE
 C=======================================================================
 
-      SUBROUTINE NUPTAK(DYNAMIC,
-     &  DLAYR, DUL, FILECC, KG2PPM, LL, NDMSDR, NDMTOT,   !Input
-     &  NH4, NO3, NLAYR, RLV, SAT, SW,                    !Input
-     &  TRNH4U, TRNO3U, TRNU, UNH4, UNO3)                 !Output
+      SUBROUTINE NUPTAKINTER(DYNAMIC, SOILPROP,
+!     &  NDMSDR, NDMTOT,                                  !Input
+     &  NH4, NO3, RLV,RLVM, SW, !RTNH4M, RTNO3M,          !Input
+     &  TRNUM, UNH4M, UNO3M)                              !Output
 
 !-----------------------------------------------------------------------
       USE ModuleDefs
-      USE ModuleData
       IMPLICIT NONE
       SAVE
 
-      CHARACTER*6 ERRKEY
-      PARAMETER (ERRKEY = 'NUPTAK')
+      CHARACTER*7 ERRKEY
+      PARAMETER (ERRKEY = 'NUPTAKI')
       CHARACTER*6 SECTION
       CHARACTER*80 CHAR
       CHARACTER*92 FILECC
@@ -40,51 +40,25 @@ C=======================================================================
       REAL TRNO3U, TRNH4U, TRNU
       REAL NDMTOT, NDMSDR, ANDEM, FNH4, FNO3, SMDFR, RFAC
       REAL RTNO3, RTNH4, MXNH4U, MXNO3U
+      
+      REAL, DIMENSION(NL,NumOfCrops) :: RLVM, UNO3M, UNH4M
+      REAL, DIMENSION(NumOfCrops) :: TRNO3UM, TRNH4UM, TRNUM
+      
+      TYPE (SoilType) SOILPROP
+      
+      DLAYR  = SOILPROP % DLAYR
+      DUL    = SOILPROP % DUL
+      KG2PPM = SOILPROP % KG2PPM
+      LL     = SOILPROP % LL
+      NLAYR  = SOILPROP % NLAYR
+      SAT    = SOILPROP % SAT
 
-!***********************************************************************
-!***********************************************************************
-!     Run Initialization - Called once per simulation
-!***********************************************************************
-      IF (DYNAMIC .EQ. RUNINIT) THEN
-!-----------------------------------------------------------------------
-!     ***** READ ROOT GROWTH PARAMETERS *****************
-!-----------------------------------------------------------------------
-!     Read in values from input file, which were previously input
-!       in Subroutine IPCROP.
-!-----------------------------------------------------------------------
-      CALL GETLUN('FILEC', LUNCRP)
-      OPEN (LUNCRP,FILE = FILECC, STATUS = 'OLD',IOSTAT=ERR)
-      IF (ERR .NE. 0) CALL ERROR(ERRKEY,ERR,FILECC,0)
-
-!-----------------------------------------------------------------------
-!    Find and Read Photosynthesis Section
-!-----------------------------------------------------------------------
-!     Subroutine FIND finds appropriate SECTION in a file by
-!     searching for the specified 6-character string at beginning
-!     of each line.
-!-----------------------------------------------------------------------
-      SECTION = '!*ROOT'
-      CALL FIND(LUNCRP, SECTION, LNUM, FOUND)
-      IF (FOUND .EQ. 0) THEN
-        CALL ERROR(SECTION, 42, FILECC, LNUM)
-      ELSE
-        DO I = 1, 3
-          CALL IGNORE(LUNCRP,LNUM,ISECT,CHAR)
-          IF (ISECT .EQ. 0) CALL ERROR(ERRKEY,ERR,FILECC,LNUM)
-        ENDDO
-        READ(CHAR,'(2F6.0)',IOSTAT=ERR) RTNO3, RTNH4
-        IF (ERR .NE. 0) CALL ERROR(ERRKEY,ERR,FILECC,LNUM)
-      ENDIF
-
-      CLOSE (LUNCRP)
-      Call PUT('PLANT', 'RTNO3',  RTNO3)
-      Call PUT('PLANT', 'RTNH4',  RTNH4)
 
 !***********************************************************************
 !***********************************************************************
 !     Seasonal initialization - run once per season
 !***********************************************************************
-      ELSEIF (DYNAMIC .EQ. SEASINIT) THEN
+      IF (DYNAMIC .EQ. SEASINIT) THEN
 !-----------------------------------------------------------------------
       TRNO3U = 0.0 
       TRNH4U = 0.0 
@@ -100,11 +74,19 @@ C=======================================================================
 !-----------------------------------------------------------------------
 C   Initialize variables
 C-----------------------------------------------------------------------
+      !RTNO3 = MAXVAL(RTNO3M)
+      !RTNH4 = MAXVAL(RTNH4M)
       TRNU   = 0.0
       TRNO3U = 0.0
       TRNH4U = 0.0
       NUF    = 0.0
       XMIN   = 0.0
+      TRNO3UM = 0.0
+      TRNH4UM = 0.0
+      TRNUM = 0.0
+      UNH4M  = 0.0
+      UNO3M  = 0.0
+      
       DO L=1,NLAYR
         RNO3U(L) = 0.0
         RNH4U(L) = 0.0
@@ -117,8 +99,8 @@ C-----------------------------------------------------------------------
 C-----------------------------------------------------------------------
 C   Determine crop N demand (kg N/ha), after subtracting mobilized N
 C-----------------------------------------------------------------------
-      ANDEM = (NDMTOT - NDMSDR) * 10.0
-      IF (ANDEM .GT. 1.E-9) THEN
+!      ANDEM = (NDMTOT - NDMSDR) * 10.0
+!      IF (ANDEM .GT. 1.E-9) THEN
 C-----------------------------------------------------------------------
 C   Calculate potential N uptake in soil layers with roots
 C-----------------------------------------------------------------------
@@ -131,22 +113,24 @@ C-----------------------------------------------------------------------
             IF (FNH4 .LT. 0.04) FNH4 = 0.0  
             IF (FNH4 .GT. 1.0)  FNH4 = 1.0
 
-            SMDFR = (SW(L) - LL(L)) / (DUL(L) - LL(L))
-            IF (SMDFR .LT. 0.0) THEN
-              SMDFR = 0.0
-            ENDIF
-
-            IF (SW(L) .GT. DUL(L)) THEN
-              SMDFR = 1.0 - (SW(L) - DUL(L)) / (SAT(L) - DUL(L))
-            ENDIF
-            RFAC = RLV(L) * SMDFR * SMDFR * DLAYR(L) * 100.0
+! LPM 08/25/2022 follow advice from KJB and use SMDFR, RFAC and RNH4U 
+! from Ceres-Maize. 
+            SMDFR    = 1.5-6.0*((SW(L)-LL(L))/(SAT(L)-LL(L))-0.5)**2
+            SMDFR    = AMAX1 (SMDFR,0.0)
+            SMDFR    = AMIN1 (SMDFR,1.0)
+            RFAC     = 1.0-EXP(-8.0*RLV(L))
+            
+            !RFAC = RLV(L) * SMDFR * SMDFR * DLAYR(L) * 100.0
 C-----------------------------------------------------------------------
 C  RLV = Rootlength density (cm/cm3);SMDFR = relative drought factor
 C  RTNO3 + RTNH4 = Nitrogen uptake / root length (mg N/cm)
 C  RNO3U + RNH4  = Nitrogen uptake (kg N/ha)
 C-----------------------------------------------------------------------
-            RNO3U(L) = RFAC * FNO3 * RTNO3
-            RNH4U(L) = RFAC * FNH4 * RTNH4
+            !RNO3U(L) = RFAC * FNO3 * RTNO3 
+            !RNH4U(L) = RFAC * FNH4 * RTNH4
+            
+            RNH4U(L) = RFAC*SMDFR*FNH4*(NH4(L)-0.5)*DLAYR(L)
+            RNO3U(L) = RFAC*SMDFR*FNO3*NO3(L)*DLAYR(L)      
             RNO3U(L) = MAX(0.0,RNO3U(L))
             RNH4U(L) = MAX(0.0,RNH4U(L))
             TRNU = TRNU + RNO3U(L) + RNH4U(L) !kg[N]/ha
@@ -155,12 +139,14 @@ C-----------------------------------------------------------------------
 C-----------------------------------------------------------------------
 C   Calculate N uptake in soil layers with roots based on demand (kg/ha)
 C-----------------------------------------------------------------------
-        IF (ANDEM .GT. TRNU) THEN
-          ANDEM = TRNU
-        ENDIF
+!        IF (ANDEM .GT. TRNU) THEN
+!          ANDEM = TRNU
+!        ENDIF
 !        IF (TRNU .EQ. 0.0) GO TO 600
         IF (TRNU .GT. 0.001) THEN
-          NUF = ANDEM / TRNU
+!       LPM 08/16/2022 Estimate potential uptake without consider demand
+!          NUF = ANDEM / TRNU
+            NUF = 1.
           DO L=1,NLAYR
             IF (RLV(L) .GT. 0.0) THEN
               UNO3(L) = RNO3U(L) * NUF
@@ -180,12 +166,29 @@ C-----------------------------------------------------------------------
 C-----------------------------------------------------------------------
 C   Convert uptake to g/m^2
 C-----------------------------------------------------------------------
-          TRNO3U = TRNO3U / 10.0
-          TRNH4U = TRNH4U / 10.0
-          TRNU   = TRNO3U + TRNH4U
+          !TRNO3U = TRNO3U / 10.0
+          !TRNH4U = TRNH4U / 10.0
+          !TRNU   = TRNO3U + TRNH4U
 C-----------------------------------------------------------------------
-        ENDIF
+          DO I=1, NumOfCrops
+             DO L=1,NLAYR
+                 IF (RLV(L) > 0.0) THEN
+                     UNO3M(L,I) = UNO3(L) * RLVM(L,I)/RLV(L)
+                     UNH4M(L,I) = UNH4(L) * RLVM(L,I)/RLV(L)
+                 ELSE
+                     UNO3M(L,I) = 0.0
+                     UNH4M(L,I) = 0.0 
+                 ENDIF
+              TRNO3UM(I)  = TRNO3UM(I) + UNO3M(L,I)
+              TRNH4UM(I)  = TRNH4UM(I) + UNH4M(L,I)
+             ENDDO
+             TRNUM(I) = TRNUM(I) + TRNO3UM(I) + TRNH4UM(I)
+         ENDDO
       ENDIF
+      
+
+      
+!      ENDIF
 
 !***********************************************************************
 !***********************************************************************
@@ -194,7 +197,7 @@ C-----------------------------------------------------------------------
       ENDIF
 !***********************************************************************
       RETURN
-      END ! SUBROUTINE NUPTAK
+      END ! SUBROUTINE NUPTAKINTER
 C=======================================================================
 
 !-----------------------------------------------------------------------
@@ -247,5 +250,5 @@ C=======================================================================
 !            soil as NH4; Also, Amount of NO3 that cannot denitrify but 
 !            stays behind in the soil as NO3 (kg [N] / ha)
 !-----------------------------------------------------------------------
-!       END SUBROUTINE NUPTAK
+!       END SUBROUTINE NUPTAKINTER
 !=======================================================================

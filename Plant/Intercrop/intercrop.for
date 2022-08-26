@@ -13,7 +13,7 @@ C  This routine calls intercropping growth routines.
 C-----------------------------------------------------------------------
 C  Revision history
 C
-!  06/24/2022 LPM Create subroutine
+!  06/24/2022 LPM Create subroutine based on PLANT
 C=======================================================================
 
       SUBROUTINE INTERCROP(CONTROL, ISWITCH,
@@ -42,6 +42,7 @@ C-----------------------------------------------------------------------
       USE FloodModule
 
       IMPLICIT NONE
+      EXTERNAL WARNING
       SAVE
 
       CHARACTER*1  MEEVP, RNMODE
@@ -93,14 +94,16 @@ C         Variables to run CASUPRO from Alt_PLANT.  FSR 07-23-03
 !     Variables intercrop      
       INTEGER, DIMENSION(NumOfCrops)  :: MDATEM
       INTEGER STGDOYM(20,NumOfCrops)
-      INTEGER      I, J
+      INTEGER      I, J, L
       REAL TotIntRad, EORATIOC
-      REAL, DIMENSION(NL) :: RWU
+      REAL RTNO3, RTNH4
+      REAL, DIMENSION(NL) :: RWU, KG2PPM
       REAL, DIMENSION(NumOfCrops)  :: CANHTM, EORATIOM, KCANM, KEPM
       REAL, DIMENSION(NumOfCrops)  :: KSEVAPM, KTRANSM, EOPM
       REAL, DIMENSION(NumOfCrops)  :: NSTRESM, PORMINM, PSTRES1M, RWUMXM
       REAL, DIMENSION(NumOfCrops)  :: XLAIM, XHLAIM, IPARM, FracIntRadM
       REAL, DIMENSION(NumOfCrops)  :: TRWUPM, FracIntRadMTrans
+      REAL, DIMENSION(NumOfCrops)  :: TRNUM
       
       REAL, DIMENSION(NL,NumOfCrops) :: PUptakeM, FracRtsM, RLVM, UNO3M
       REAL, DIMENSION(NL,NumOfCrops) ::  UNH4M, KUptakeM, RWUM
@@ -242,6 +245,8 @@ C         Variables to run CASUPRO from Alt_PLANT.  FSR 07-23-03
       PORMINM   = 0.02
       RLV      = 0.0
       RLVM     = 0.0
+      RTNH4   = 0.0
+      RTNO3    = 0.0 
       RWUEP1   = 1.5
       RWUMX    = 0.03
       RWUMXM    = 0.03
@@ -387,6 +392,11 @@ C         Variables to run CASUPRO from Alt_PLANT.  FSR 07-23-03
            ENDDO
        ENDDO
        
+      CALL NUPTAKINTER(DYNAMIC, SOILPROP,
+!     &  NDMSDR, NDMTOT,                                  !Input
+     &  NH4, NO3, RLV,RLVM, SW, !RTNH4M, RTNO3M,          !Input
+     &  TRNUM, UNH4M, UNO3M)                              !Output
+       
        XLAI = 0.0
        XHLAI = 0.0
        RLV = 0.0
@@ -398,6 +408,7 @@ C         Variables to run CASUPRO from Alt_PLANT.  FSR 07-23-03
       SENESCE % ResE   = 0.0
       EORATIOC = 0.0
       KUptake = 0.0
+      UNH4 = 0.0
        
 
 !     Call crop models for all values of DYNAMIC:         
@@ -405,6 +416,8 @@ C         Variables to run CASUPRO from Alt_PLANT.  FSR 07-23-03
         CONTROL % CROP = CROPS(I)
         CONTROL % FILEIO = FILEIOM(I) 
         Call PUT('PLANT', 'FracIntRadM',  FracIntRadM(I))
+        Call PUT('SPAM', 'UNO3M',  UNO3M(:,I))
+        Call PUT('SPAM', 'UNH4M',  UNH4M(:,I))
         
       SELECT CASE (MODELS(I)(1:5))
 !-----------------------------------------------------------------------
@@ -457,11 +470,14 @@ C         Variables to run CASUPRO from Alt_PLANT.  FSR 07-23-03
           XHLAIM(I) = XLAIM(I)
         ENDIF
         
-       END SELECT
+      END SELECT
+      
        XLAI = XLAI + XLAIM(I) 
        XHLAI = XHLAI + XHLAIM(I)
        RLV =  RLV + RLVM(:,I)
        KUptake = KUptake + KUptakeM(:,I)
+       UNH4 = UNH4 + UNH4M(:,I)
+       UNO3 = UNO3 + UNO3M(:,I)
        EORATIOC = (EORATIOC + EORATIOM(I) * XHLAIM(I)) 
        HARVRES % RESWT  = HARVRES % RESWT + HARVRESM(I) % RESWT
        HARVRES % RESLig = HARVRES % RESLig + HARVRESM(I) % RESLig
@@ -472,7 +488,8 @@ C         Variables to run CASUPRO from Alt_PLANT.  FSR 07-23-03
       END DO
       Call PUT('PLANT', 'KTRANSM',  KTRANSM, NumOfCrops)
       Call PUT('PLANT', 'XHLAIM',  XHLAIM, NumOfCrops)
-      
+      !Call PUT('PLANT', 'RTNH4M', RTNH4M, NumOfCrops)
+      !Call PUT('PLANT', 'RTNO3M', RTNO3M, NumOfCrops)
       !Estimate intercepted total radiation by crop to define 
       !transpiration. Use ktrans instead of kcan
        CALL PHOTOINTER(CONTROL,                      
@@ -500,6 +517,17 @@ C         Variables to run CASUPRO from Alt_PLANT.  FSR 07-23-03
       NSTRES = MAXVAL(NSTRESM)
       !LPM 08/04/2022 Keep maximum value for PORMIN
       PORMIN = MAXVAL(PORMINM)
+      
+      !LPM 08/05/2020 Modify KUptake in case is greater than SKi_Avail
+      ! for both crops
+      DO J = 1, NL
+         IF (KUptake(J) > SKi_Avail(J)) THEN
+          DO I=1, NumOfCrops
+             KUptakeM(J,I) = KUptakeM(J,I) * SKi_Avail(J)/ KUptake(J)
+          ENDDO
+          KUptake(J) = SKi_Avail(J)
+         ENDIF
+      ENDDO
       
       OPEN (UNIT = test,FILE = 'water_uptake.txt',POSITION="APPEND")
        write (test, '(1I,8F8.3)') DAS, (TRWUPM/10.), (TRWUP/10.), 
