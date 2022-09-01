@@ -376,7 +376,7 @@ C----------------------------------------------------------------------
      &      VSTAGE, WTLF, WTNCAN, WTNLF, WTNSD, WTNST, WTNUP,   !Output
      &      WTNVEG, XGNP, XHLAI, XLAI, XN, YIELD)               !Output
           CASE ('SWCER')  !Sweet corn  
-          CALL SW_GROSUB (DYNAMIC, ISWITCH,                   !Input
+          CALL SW_GROSUB (DYNAMIC, ISWITCH,RNMODE,            !Input
      &      ASMDOT, CDAY, CO2, DLAYR, DS, DTT, EOP, FILEIO,   !Input
      &      FracRts, ISTAGE, KG2PPM, LL, NLAYR, NH4, NO3, P3, !Input
      &      PLTPOP, PPLTD, RLV, RTDEP, RUE, SAT, SeedFrac,    !Input
@@ -529,7 +529,7 @@ C-----------------------------------------------------------------------
      &      VSTAGE, WTLF, WTNCAN, WTNLF, WTNSD, WTNST, WTNUP,   !Output
      &      WTNVEG, XGNP, XHLAI, XLAI, XN, YIELD)               !Output
           CASE ('SWCER')  !Sweet corn  
-          CALL SW_GROSUB (DYNAMIC, ISWITCH, 
+          CALL SW_GROSUB (DYNAMIC, ISWITCH, RNMODE,
      &      ASMDOT, CDAY, CO2, DLAYR, DS, DTT, EOP, FILEIO,   !Input
      &      FracRts, ISTAGE, KG2PPM, LL, NLAYR, NH4, NO3, P3, !Input
      &      PLTPOP, PPLTD, RLV, RTDEP, RUE, SAT, SeedFrac,    !Input
@@ -695,7 +695,7 @@ C----------------------------------------------------------------------
      &      WTNVEG, XGNP, XHLAI, XLAI, XN, YIELD)               !Output
 
           CASE ('SWCER')  !Sweet corn  
-          CALL SW_GROSUB (DYNAMIC, ISWITCH, 
+          CALL SW_GROSUB (DYNAMIC, ISWITCH, RNMODE, 
      &      ASMDOT, CDAY, CO2, DLAYR, DS, DTT, EOP, FILEIO,   !Input
      &      FracRts, ISTAGE, KG2PPM, LL, NLAYR, NH4, NO3, P3, !Input
      &      PLTPOP, PPLTD, RLV, RTDEP, RUE, SAT, SeedFrac,    !Input
@@ -794,7 +794,7 @@ C----------------------------------------------------------------------
      &      VSTAGE, WTLF, WTNCAN, WTNLF, WTNSD, WTNST, WTNUP,   !Output
      &      WTNVEG, XGNP, XHLAI, XLAI, XN, YIELD)               !Output
           CASE ('SWCER')  !Sweet corn  
-          CALL SW_GROSUB (DYNAMIC, ISWITCH, 
+          CALL SW_GROSUB (DYNAMIC, ISWITCH, RNMODE, 
      &      ASMDOT, CDAY, CO2, DLAYR, DS, DTT, EOP, FILEIO,   !Input
      &      FracRts, ISTAGE, KG2PPM, LL, NLAYR, NH4, NO3, P3, !Input
      &      PLTPOP, PPLTD, RLV, RTDEP, RUE, SAT, SeedFrac,    !Input
@@ -902,7 +902,7 @@ C----------------------------------------------------------------------
      &      VSTAGE, WTLF, WTNCAN, WTNLF, WTNSD, WTNST, WTNUP,   !Output
      &      WTNVEG, XGNP, XHLAI, XLAI, XN, YIELD)               !Output
           CASE ('SWCER')  !Sweet corn  
-          CALL SW_GROSUB (DYNAMIC, ISWITCH, 
+          CALL SW_GROSUB (DYNAMIC, ISWITCH, RNMODE,
      &      ASMDOT, CDAY, CO2, DLAYR, DS, DTT, EOP, FILEIO,   !Input
      &      FracRts, ISTAGE, KG2PPM, LL, NLAYR, NH4, NO3, P3, !Input
      &      PLTPOP, PPLTD, RLV, RTDEP, RUE, SAT, SeedFrac,    !Input

@@ -13,7 +13,7 @@ C  Called from:  PLANT
 C  Calls:        ERROR, FIND, IGNORE
 C=======================================================================
 
-      SUBROUTINE NUPTAK(DYNAMIC,
+      SUBROUTINE NUPTAK(RNMODE, DYNAMIC,
      &  DLAYR, DUL, FILECC, KG2PPM, LL, NDMSDR, NDMTOT,   !Input
      &  NH4, NO3, NLAYR, RLV, SAT, SW,                    !Input
      &  TRNH4U, TRNO3U, TRNU, UNH4, UNO3)                 !Output
@@ -29,6 +29,7 @@ C=======================================================================
       CHARACTER*6 SECTION
       CHARACTER*80 CHAR
       CHARACTER*92 FILECC
+      CHARACTER*1 RNMODE
 
       INTEGER I, LUNCRP, ERR, LNUM, ISECT, FOUND
       INTEGER L, NLAYR, DYNAMIC
@@ -40,6 +41,8 @@ C=======================================================================
       REAL TRNO3U, TRNH4U, TRNU
       REAL NDMTOT, NDMSDR, ANDEM, FNH4, FNO3, SMDFR, RFAC
       REAL RTNO3, RTNH4, MXNH4U, MXNO3U
+      REAL PUNH4M(NL), PUNO3M(NL), TRNUM
+      INTEGER :: test
 
 !***********************************************************************
 !***********************************************************************
@@ -77,8 +80,6 @@ C=======================================================================
       ENDIF
 
       CLOSE (LUNCRP)
-      Call PUT('PLANT', 'RTNO3',  RTNO3)
-      Call PUT('PLANT', 'RTNH4',  RTNH4)
 
 !***********************************************************************
 !***********************************************************************
@@ -155,6 +156,23 @@ C-----------------------------------------------------------------------
 C-----------------------------------------------------------------------
 C   Calculate N uptake in soil layers with roots based on demand (kg/ha)
 C-----------------------------------------------------------------------
+! LPM Compare potential uptake from intercropping with the monocrop and
+! select the minimum value
+        IF (RNMODE == 'M') THEN
+            CALL GET('SPAM', 'PUNH4M',  PUNH4M)
+            Call GET('SPAM', 'PUNO3M',  PUNO3M)
+            Call GET('SPAM', 'TRNUM',  TRNUM)
+      OPEN (UNIT = test,FILE = 'pot_Nuptake_SB.txt',POSITION="APPEND")
+         write (test, '(27F8.4)') PUNH4M(1:6), PUNO3M(1:6),
+     &          RNH4U(1:6), RNO3U(1:6), TRNUM, TRNU, ANDEM 
+        CLOSE (UNIT=test)
+            IF (TRNU > TRNUM) TRNU = TRNUM
+            DO L=1,NLAYR
+                RNO3U(L) = MIN(RNO3U(L),PUNO3M(L))
+                RNH4U(L) = MIN(RNH4U(L),PUNH4M(L))
+            ENDDO
+        ENDIF
+        
         IF (ANDEM .GT. TRNU) THEN
           ANDEM = TRNU
         ENDIF

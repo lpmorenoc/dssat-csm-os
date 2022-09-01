@@ -37,7 +37,7 @@
 !  Calls  : NFACTO NUPTAK
 !----------------------------------------------------------------------
 
-      SUBROUTINE SW_GROSUB (DYNAMIC, ISWITCH, 
+      SUBROUTINE SW_GROSUB (DYNAMIC, ISWITCH, RNMODE,
      &      ASMDOT, CDAY, CO2, DLAYR, DS, DTT, EOP, FILEIO,   !Input
      &      FracRts, ISTAGE, KG2PPM, LL, NLAYR, NH4, NO3, P3, !Input
      &      PLTPOP, PPLTD, RLV, RTDEP, RUE, SAT, SeedFrac,    !Input
@@ -361,6 +361,8 @@
 
 !!     Added 04/19/07 US/CHP - Optional species coefficients for N conc
 !      REAL CTCNP1, CTCNP2
+! LPM 08/29/2022 add RNMODE for intercropping
+      CHARACTER*1 RNMODE
        
       TYPE (ResidueType) SENESCE 
       TYPE (SwitchType)  ISWITCH
@@ -825,7 +827,7 @@
               NFAC = 1.0
           ENDIF
 
-          CALL MZ_NUPTAK(
+          CALL MZ_NUPTAK(RNMODE,
      %      RANC, ROOTN,RTWT,TANC,STOVN,STOVWT,TRNU,NLAYR,
      %      RLV,NO3,NH4,PDWI,TCNP,UNO3,UNH4,
      %      XSTAGE,RCNP,PGRORT,PLTPOP,SW,LL,SAT,DLAYR,
@@ -1683,7 +1685,7 @@
                 PGRORT = PCARB*GRORT/CARBO
               ENDIF
 
-              CALL MZ_NUPTAK(
+              CALL MZ_NUPTAK(RNMODE,
      %        RANC, ROOTN,RTWT,TANC,STOVN,STOVWT,TRNU,NLAYR,
      %        RLV,NO3,NH4,PDWI,TCNP,UNO3,UNH4,
      %        XSTAGE,RCNP,PGRORT,PLTPOP,SW,LL,SAT,DLAYR,

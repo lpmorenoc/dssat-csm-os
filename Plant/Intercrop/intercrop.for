@@ -45,7 +45,7 @@ C-----------------------------------------------------------------------
       EXTERNAL WARNING
       SAVE
 
-      CHARACTER*1  MEEVP, RNMODE
+      CHARACTER*1  MEEVP, RNMODE, ISWNIT, ISWWAT
       CHARACTER*6  ERRKEY
       PARAMETER (ERRKEY = 'INTERCROP')
       CHARACTER*8  MODEL
@@ -107,6 +107,7 @@ C         Variables to run CASUPRO from Alt_PLANT.  FSR 07-23-03
       
       REAL, DIMENSION(NL,NumOfCrops) :: PUptakeM, FracRtsM, RLVM, UNO3M
       REAL, DIMENSION(NL,NumOfCrops) ::  UNH4M, KUptakeM, RWUM
+      REAL, DIMENSION(NL,NumOfCrops) ::  PUNH4M, PUNO3M
       CHARACTER*2, CROPS(NumOfCrops)
       CHARACTER*8  MODELS(NumOfCrops)
       CHARACTER*30 FILEIOM(NumOfCrops)
@@ -140,6 +141,8 @@ C         Variables to run CASUPRO from Alt_PLANT.  FSR 07-23-03
       FILEIOM(2) = 'DSSAT48_SB.INP'
 
       MEEVP  = ISWITCH % MEEVP
+      ISWNIT = ISWITCH % ISWNIT
+      ISWWAT = ISWITCH % ISWNIT
       BUNDED = FLOODWAT % BUNDED
       CO2    = WEATHER % CO2
       DAYL   = WEATHER % DAYL
@@ -243,6 +246,8 @@ C         Variables to run CASUPRO from Alt_PLANT.  FSR 07-23-03
       !NVALP0   = 10000
       PORMIN   = 0.02
       PORMINM   = 0.02
+      PUNH4M    = 0.0
+      PUNO3M    = 0.0
       RLV      = 0.0
       RLVM     = 0.0
       RTNH4   = 0.0
@@ -310,6 +315,8 @@ C         Variables to run CASUPRO from Alt_PLANT.  FSR 07-23-03
       NSTRES   = 1.0
       NSTRESM   = 1.0
 !      PORMIN   = 0.02
+      PUNH4M    = 0.0
+      PUNO3M    = 0.0
       PSTRES1  = 1.0
       PSTRES1M  = 1.0
       PUPTAKE  = 0.0
@@ -379,27 +386,36 @@ C         Variables to run CASUPRO from Alt_PLANT.  FSR 07-23-03
        
        CALL GET('SPAM','UH2O',RWU)
        Call GET('SPAM', 'EOPM',  EOPM, NumOfCrops)
-       
-       TRWUPM = 0.0
-       DO I=1, NumOfCrops
-           DO J=1, NL
-               IF (RLV(J) > 0.0) THEN
-                   RWUM(J,I) = RWU(J) * RLVM(J,I)/RLV(J)
-               ELSE
-                   RWUM(J,I) = 0.0
-               ENDIF
-               TRWUPM(I) = TRWUPM(I) + RWUM(J,I)
+       IF (ISWWAT .EQ. 'Y') THEN
+           TRWUPM = 0.0
+           DO I=1, NumOfCrops
+               DO J=1, NL
+                   IF (RLV(J) > 0.0) THEN
+                       RWUM(J,I) = RWU(J) * RLVM(J,I)/RLV(J)
+                   ELSE
+                       RWUM(J,I) = 0.0
+                   ENDIF
+                   TRWUPM(I) = TRWUPM(I) + RWUM(J,I)
+               ENDDO
            ENDDO
-       ENDDO
+       ENDIF
        
-      CALL NUPTAKINTER(DYNAMIC, SOILPROP,
+      IF (ISWNIT .EQ. 'Y') THEN
+          CALL NUPTAKINTER(DYNAMIC, SOILPROP,
 !     &  NDMSDR, NDMTOT,                                  !Input
-     &  NH4, NO3, RLV,RLVM, SW, !RTNH4M, RTNO3M,          !Input
-     &  TRNUM, UNH4M, UNO3M)                              !Output
-       
-       XLAI = 0.0
-       XHLAI = 0.0
-       RLV = 0.0
+     &    NH4, NO3, RLV,RLVM, SW, !RTNH4M, RTNO3M,          !Input
+     &   TRNUM, PUNH4M, PUNO3M)                            !Output
+      ENDIF
+      IF (DYNAMIC == INTEGR) THEN
+        OPEN (UNIT = test,FILE = 'pot_Nuptake.txt',POSITION="APPEND")
+         write (test, '(1I,44F8.4)') DAS, RLV(1:6), RLVM(1:6,:), 
+     &          PUNH4M(1:6,:), PUNO3M(1:6,:), TRNUM 
+        CLOSE (UNIT=test)
+      ENDIF
+            
+      XLAI = 0.0
+      XHLAI = 0.0
+      RLV = 0.0
       HARVRES % RESWT  = 0.0
       HARVRES % RESLig = 0.0
       HARVRES % RESE   = 0.0
@@ -409,15 +425,19 @@ C         Variables to run CASUPRO from Alt_PLANT.  FSR 07-23-03
       EORATIOC = 0.0
       KUptake = 0.0
       UNH4 = 0.0
-       
+      UNO3 = 0.0 
 
 !     Call crop models for all values of DYNAMIC:         
       DO I=1, NumOfCrops
         CONTROL % CROP = CROPS(I)
         CONTROL % FILEIO = FILEIOM(I) 
         Call PUT('PLANT', 'FracIntRadM',  FracIntRadM(I))
-        Call PUT('SPAM', 'UNO3M',  UNO3M(:,I))
-        Call PUT('SPAM', 'UNH4M',  UNH4M(:,I))
+        IF (ISWNIT .EQ. 'Y') THEN
+            Call PUT('SPAM', 'PUNO3M',  PUNO3M(:,I))
+            Call PUT('SPAM', 'PUNH4M',  PUNH4M(:,I))
+            Call PUT('SPAM', 'TRNUM',  TRNUM(I))
+        ENDIF
+        
         
       SELECT CASE (MODELS(I)(1:5))
 !-----------------------------------------------------------------------
@@ -471,7 +491,6 @@ C         Variables to run CASUPRO from Alt_PLANT.  FSR 07-23-03
         ENDIF
         
       END SELECT
-      
        XLAI = XLAI + XLAIM(I) 
        XHLAI = XHLAI + XHLAIM(I)
        RLV =  RLV + RLVM(:,I)
@@ -485,6 +504,7 @@ C         Variables to run CASUPRO from Alt_PLANT.  FSR 07-23-03
        SENESCE % ResWt  = SENESCE % ResWt +  SENESCEM(I) % ResWt 
        SENESCE % ResLig = SENESCE % ResLig + SENESCEM(I) % ResLig
        SENESCE % ResE   = SENESCE % ResE  +  SENESCEM(I) % ResE  
+
       END DO
       Call PUT('PLANT', 'KTRANSM',  KTRANSM, NumOfCrops)
       Call PUT('PLANT', 'XHLAIM',  XHLAIM, NumOfCrops)
@@ -520,6 +540,7 @@ C         Variables to run CASUPRO from Alt_PLANT.  FSR 07-23-03
       
       !LPM 08/05/2020 Modify KUptake in case is greater than SKi_Avail
       ! for both crops
+      !LPM 08/30/2022 K uptake needs to be modified as done with N
       DO J = 1, NL
          IF (KUptake(J) > SKi_Avail(J)) THEN
           DO I=1, NumOfCrops
@@ -529,10 +550,10 @@ C         Variables to run CASUPRO from Alt_PLANT.  FSR 07-23-03
          ENDIF
       ENDDO
       
-      OPEN (UNIT = test,FILE = 'water_uptake.txt',POSITION="APPEND")
-       write (test, '(1I,8F8.3)') DAS, (TRWUPM/10.), (TRWUP/10.), 
-     & TRWU, (EP/10.), (EOP/10.), (EOPM/10.) 
-            CLOSE (UNIT=test)
+!      OPEN (UNIT = test,FILE = 'water_uptake.txt',POSITION="APPEND")
+!       write (test, '(1I,8F8.3)') DAS, (TRWUPM/10.), (TRWUP/10.), 
+!     & TRWU, (EP/10.), (EOP/10.), (EOPM/10.) 
+!           CLOSE (UNIT=test)
 
 
 

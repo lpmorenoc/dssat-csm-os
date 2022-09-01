@@ -17,7 +17,7 @@ C=======================================================================
       SUBROUTINE NUPTAKINTER(DYNAMIC, SOILPROP,
 !     &  NDMSDR, NDMTOT,                                  !Input
      &  NH4, NO3, RLV,RLVM, SW, !RTNH4M, RTNO3M,          !Input
-     &  TRNUM, UNH4M, UNO3M)                              !Output
+     &  TRNUM, PUNH4M, PUNO3M)                            !Output
 
 !-----------------------------------------------------------------------
       USE ModuleDefs
@@ -41,7 +41,7 @@ C=======================================================================
       REAL NDMTOT, NDMSDR, ANDEM, FNH4, FNO3, SMDFR, RFAC
       REAL RTNO3, RTNH4, MXNH4U, MXNO3U
       
-      REAL, DIMENSION(NL,NumOfCrops) :: RLVM, UNO3M, UNH4M
+      REAL, DIMENSION(NL,NumOfCrops) :: RLVM, PUNO3M, PUNH4M
       REAL, DIMENSION(NumOfCrops) :: TRNO3UM, TRNH4UM, TRNUM
       
       TYPE (SoilType) SOILPROP
@@ -84,8 +84,8 @@ C-----------------------------------------------------------------------
       TRNO3UM = 0.0
       TRNH4UM = 0.0
       TRNUM = 0.0
-      UNH4M  = 0.0
-      UNO3M  = 0.0
+      PUNH4M  = 0.0
+      PUNO3M  = 0.0
       
       DO L=1,NLAYR
         RNO3U(L) = 0.0
@@ -173,14 +173,14 @@ C-----------------------------------------------------------------------
           DO I=1, NumOfCrops
              DO L=1,NLAYR
                  IF (RLV(L) > 0.0) THEN
-                     UNO3M(L,I) = UNO3(L) * RLVM(L,I)/RLV(L)
-                     UNH4M(L,I) = UNH4(L) * RLVM(L,I)/RLV(L)
+                     PUNO3M(L,I) = UNO3(L) * RLVM(L,I)/RLV(L)
+                     PUNH4M(L,I) = UNH4(L) * RLVM(L,I)/RLV(L)
                  ELSE
-                     UNO3M(L,I) = 0.0
-                     UNH4M(L,I) = 0.0 
+                     PUNO3M(L,I) = 0.0
+                     PUNH4M(L,I) = 0.0 
                  ENDIF
-              TRNO3UM(I)  = TRNO3UM(I) + UNO3M(L,I)
-              TRNH4UM(I)  = TRNH4UM(I) + UNH4M(L,I)
+              TRNO3UM(I)  = TRNO3UM(I) + PUNO3M(L,I)
+              TRNH4UM(I)  = TRNH4UM(I) + PUNH4M(L,I)
              ENDDO
              TRNUM(I) = TRNUM(I) + TRNO3UM(I) + TRNH4UM(I)
          ENDDO

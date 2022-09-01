@@ -23,13 +23,14 @@ C  Called : MZ_GROSUB
 C
 C  Calls  : None
 C----------------------------------------------------------------------
-      SUBROUTINE MZ_NUPTAK(
+      SUBROUTINE MZ_NUPTAK(RNMODE,
      %    RANC, ROOTN,RTWT,TANC,STOVN,STOVWT,TRNU,NLAYR,
      %    RLV,NO3,NH4,PDWI,TCNP,UNO3,UNH4,
      %    XSTAGE,RCNP,PGRORT,PLTPOP,SW,LL,SAT,DLAYR,
      %    SHF,PTF, SENESCE, KG2PPM, PLIGRT)
 
       USE ModuleDefs
+      USE ModuleData
       IMPLICIT  NONE
       SAVE
 C----------------------------------------------------------------------
@@ -86,6 +87,10 @@ C----------------------------------------------------------------------
       REAL        XMIN        
       REAL        XNDEM       
       REAL        XSTAGE      
+! LPM Adding variables for intercropping
+      CHARACTER*1 RNMODE
+      REAL PUNH4M(NL), PUNO3M(NL), TRNUM
+      INTEGER :: test
 
       TYPE (ResidueType) SENESCE
 
@@ -190,7 +195,23 @@ C
 C-----------------------------------------------------------------------
 C     Calculate factor (NUF) to reduce N uptake to level of demand
 C-----------------------------------------------------------------------
-
+! LPM Compare potential uptake from intercropping with the monocrop and
+! select the minimum value       
+        IF (RNMODE == 'M') THEN
+            CALL GET('SPAM', 'PUNH4M',  PUNH4M)
+            Call GET('SPAM', 'PUNO3M',  PUNO3M)
+            Call GET('SPAM', 'TRNUM',  TRNUM)
+       OPEN (UNIT = test,FILE = 'pot_Nuptake_MZ.txt',POSITION="APPEND")
+         write (test, '(27F8.4)') PUNH4M(1:6), PUNO3M(1:6),
+     &          RNH4U(1:6), RNO3U(1:6), TRNUM, TRNU, ANDEM 
+        CLOSE (UNIT=test)
+            IF (TRNU > TRNUM) TRNU = TRNUM
+            DO L=1,NLAYR
+                RNO3U(L) = MIN(RNO3U(L),PUNO3M(L))
+                RNH4U(L) = MIN(RNH4U(L),PUNH4M(L))
+            ENDDO
+        ENDIF
+        
       IF (ANDEM .LE. 0.0) THEN
          TRNU  = 0.0
          NUF   = 0.0

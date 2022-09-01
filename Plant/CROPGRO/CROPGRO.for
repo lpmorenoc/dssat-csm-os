@@ -288,7 +288,7 @@ C-----------------------------------------------------------------------
      &    AGRSH2, AGRSTM, AGRVG, AGRVG2, SDPROR)          !Output
 
 !-----------------------------------------------------------------------
-        CALL NUPTAK(RUNINIT,
+        CALL NUPTAK(RNMODE, RUNINIT,
      &     DLAYR, DUL, FILECC, KG2PPM, LL, NDMSDR, NDMTOT,!Input
      &     NH4, NO3, NLAYR, RLV, SAT, SW,                 !Input
      &     TRNH4U, TRNO3U, TRNU, UNH4, UNO3)              !Output
@@ -547,7 +547,7 @@ C     Initialize pest coupling point and damage variables
      &  ShutMob, RootMob, ShelMob)                        !Output
 
 !-----------------------------------------------------------------------
-      CALL NUPTAK(SEASINIT, 
+      CALL NUPTAK(RNMODE, SEASINIT, 
      &    DLAYR, DUL, FILECC, KG2PPM, LL, NDMSDR, NDMTOT, !Input
      &    NH4, NO3, NLAYR, RLV, SAT, SW,                  !Input
      &    TRNH4U, TRNO3U, TRNU, UNH4, UNO3)               !Output
@@ -944,7 +944,7 @@ C    If ISWNIT = Y - Call soil N routines. Balance Available C and N
 C    If ISWNIT = N - Do not call soil N routines, N assumed to be limited by C
 C-----------------------------------------------------------------------
       IF (ISWNIT .EQ. 'Y') THEN
-        CALL NUPTAK(INTEGR, 
+        CALL NUPTAK(RNMODE, INTEGR, 
      &    DLAYR, DUL, FILECC, KG2PPM, LL, NDMSDR, NDMTOT, !Input
      &    NH4, NO3, NLAYR, RLV, SAT, SW,                  !Input
      &    TRNH4U, TRNO3U, TRNU, UNH4, UNO3)               !Output

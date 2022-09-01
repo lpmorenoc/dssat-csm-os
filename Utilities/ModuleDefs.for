@@ -428,7 +428,8 @@ C             CHP Added TRTNUM to CONTROL variable.
         !VPD parameters for CSYCA model (LPM)
         REAL PHSV, PHTV
         ! Potential N uptake for intercropping
-        REAL, DIMENSION(NL) :: UNO3M, UNH4M
+        REAL, DIMENSION(NL) :: PUNO3M, PUNH4M
+        REAL TRNUM
       End Type SPAMType
 
 !     Data transferred from CROPGRO routine 
@@ -675,6 +676,7 @@ C             CHP Added TRTNUM to CONTROL variable.
         Case ('KC');     Value = SAVE_data % SPAM % KC
         Case ('PHSV');   Value = SAVE_data % SPAM % PHSV
         Case ('PHTV');   Value = SAVE_data % SPAM % PHTV
+        Case ('TRNUM');  Value = SAVE_data % SPAM % TRNUM
         Case DEFAULT; ERR = .TRUE.
         END SELECT
 
@@ -809,6 +811,7 @@ C             CHP Added TRTNUM to CONTROL variable.
         Case ('KC');     SAVE_data % SPAM % KC     = Value
         Case ('PHSV');   SAVE_data % SPAM % PHSV   = Value
         Case ('PHTV');   SAVE_data % SPAM % PHTV   = Value
+        Case ('TRNUM');  SAVE_data % SPAM % TRNUM  = Value
         Case DEFAULT; ERR = .TRUE.
         END SELECT
 
@@ -909,8 +912,8 @@ C             CHP Added TRTNUM to CONTROL variable.
       CASE ('SPAM')
         SELECT CASE (VarName)
         CASE ('UH2O'); Value = SAVE_data % SPAM % UH2O
-        CASE ('UNO3M'); Value = SAVE_data % SPAM % UNO3M    
-        CASE ('UNH4M'); Value = SAVE_data % SPAM % UNH4M    
+        CASE ('PUNO3M'); Value = SAVE_data % SPAM % PUNO3M    
+        CASE ('PUNH4M'); Value = SAVE_data % SPAM % PUNH4M    
           CASE DEFAULT; ERR = .TRUE.
         END SELECT
       
@@ -942,8 +945,8 @@ C             CHP Added TRTNUM to CONTROL variable.
       Case ('SPAM')
         SELECT CASE (VarName)
         Case ('UH2O'); SAVE_data % SPAM % UH2O = Value
-        CASE ('UNO3M'); SAVE_data % SPAM % UNO3M = Value  
-        CASE ('UNH4M'); SAVE_data % SPAM % UNH4M = Value   
+        CASE ('PUNO3M'); SAVE_data % SPAM % PUNO3M = Value  
+        CASE ('PUNH4M'); SAVE_data % SPAM % PUNH4M = Value   
         Case DEFAULT; ERR = .TRUE.
         END SELECT
            
