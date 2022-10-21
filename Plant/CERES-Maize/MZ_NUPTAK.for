@@ -210,7 +210,12 @@ C-----------------------------------------------------------------------
                 RNO3U(L) = MIN(RNO3U(L),PUNO3M(L))
                 RNH4U(L) = MIN(RNH4U(L),PUNH4M(L))
             ENDDO
-        ENDIF
+        ELSE
+        OPEN (UNIT = test,FILE = 'pot_Nuptake_MZ.txt',POSITION="APPEND")
+         write (test, '(14F8.4)') 
+     &          RNH4U(1:6), RNO3U(1:6), TRNU, ANDEM 
+        CLOSE (UNIT=test)
+       ENDIF
         
       IF (ANDEM .LE. 0.0) THEN
          TRNU  = 0.0

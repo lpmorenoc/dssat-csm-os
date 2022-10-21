@@ -36,7 +36,7 @@ C=======================================================================
       REAL NUF, XMIN
       REAL DLAYR(NL), LL(NL), DUL(NL), SAT(NL), SW(NL), RLV(NL)
       REAL SNO3(NL), SNH4(NL), KG2PPM(NL), NO3(NL), NH4(NL)
-      REAL RNO3U(NL), RNH4U(NL), UNO3(NL), UNH4(NL)
+      REAL RNO3U(NL), RNH4U(NL), UNO3(NL), UNH4(NL), SHF(NL)
       REAL TRNO3U, TRNH4U, TRNU
       REAL NDMTOT, NDMSDR, ANDEM, FNH4, FNO3, SMDFR, RFAC
       REAL RTNO3, RTNH4, MXNH4U, MXNO3U
@@ -52,6 +52,7 @@ C=======================================================================
       LL     = SOILPROP % LL
       NLAYR  = SOILPROP % NLAYR
       SAT    = SOILPROP % SAT
+      SHF    = SOILPROP % WR
 
 
 !***********************************************************************
@@ -106,12 +107,16 @@ C   Calculate potential N uptake in soil layers with roots
 C-----------------------------------------------------------------------
         DO L=1,NLAYR
           IF (RLV(L) .GT. 1.E-6) THEN
-            FNH4 = 1.0 - EXP(-0.08 * NH4(L))
-            FNO3 = 1.0 - EXP(-0.08 * NO3(L))
-            IF (FNO3 .LT. 0.04) FNO3 = 0.0  
-            IF (FNO3 .GT. 1.0)  FNO3 = 1.0
-            IF (FNH4 .LT. 0.04) FNH4 = 0.0  
-            IF (FNH4 .GT. 1.0)  FNH4 = 1.0
+            !FNH4 = 1.0 - EXP(-0.08 * NH4(L))
+            !FNO3 = 1.0 - EXP(-0.08 * NO3(L))
+            !IF (FNO3 .LT. 0.04) FNO3 = 0.0  
+            !IF (FNO3 .GT. 1.0)  FNO3 = 1.0
+            !IF (FNH4 .LT. 0.04) FNH4 = 0.0  
+            !IF (FNH4 .GT. 1.0)  FNH4 = 1.0
+! LPM 09/09/2022 Use FNO3 and FNH4 from CERES to avoid high values of 
+! potential uptake
+            FNH4     = SHF(L)*0.075
+            FNO3     = SHF(L)*0.075
 
 ! LPM 08/25/2022 follow advice from KJB and use SMDFR, RFAC and RNH4U 
 ! from Ceres-Maize. 

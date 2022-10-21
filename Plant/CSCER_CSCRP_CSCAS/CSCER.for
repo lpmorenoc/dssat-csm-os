@@ -173,12 +173,13 @@
 
       USE OSDefinitions
       USE CSVOUTPUT  ! VSH
+      USE ModuleData
       
       IMPLICIT NONE
       SAVE
       
-      INTEGER       NL            ! Maximum number of soil layers  #
-      PARAMETER     (NL = 20)     ! Maximum number of soil layers  #
+      !INTEGER       NL            ! Maximum number of soil layers  #
+      !PARAMETER     (NL = 20)     ! Maximum number of soil layers  #
       INTEGER       LNUMX         ! Maximum number of leaves       #
       PARAMETER     (LNUMX = 100) ! Maximum number of leaves       #
       INTEGER       SUMNUM        ! Number of variables passed     #
@@ -590,7 +591,7 @@
       INTEGER       IEDAT         ! Inflorescence emergenceYeardoy #
       CHARACTER*1   IFERI         ! Fertilizer switch (A,R,D)      code
       CHARACTER*1   IHARI         ! Control flag,harvest           code
-      INTEGER       INTEGR        ! Program control variable (=4)  #
+      !INTEGER       INTEGR        ! Program control variable (=4)  #
       CHARACTER*1   IPLTI         ! Code for planting date method  code
       INTEGER       ISTAGE        ! Developmental stage            #
       INTEGER       ISTAGEP       ! Developmental stage,previous   #
@@ -795,7 +796,7 @@
       CHARACTER*12  OUTPG2        ! Growth output2 file code       code
       CHARACTER*12  OUTPGF        ! Growth output GF file code     code
       CHARACTER*12  OUTPN         ! GrowthN output file code       code
-      INTEGER       OUTPUT        ! Program control variable (=5)  #
+      !INTEGER       OUTPUT        ! Program control variable (=5)  #
       REAL          P1D           ! Photoperiod sensitivity coeff. %/10h
       REAL          P1DA          ! Photoperiod coeff,age adjusted /h
       REAL          P1DAFAC       ! Photoperiod coeff,adjust fac   /lf
@@ -868,6 +869,8 @@
       REAL          PTHOLD        ! Phase threshold,previous       du
       REAL          PTTN          ! Minimum soil temperature,plt   C
       REAL          PTX           ! Maximum soil temperature,plt   C
+      REAL          PUNH4M(NL)    ! Pot. ammonium uptake intercrop kg/ha
+      REAL          PUNO3M(NL)    ! Pot. nitrate uptake intercrop  kg/ha
       REAL          PWAM          ! Chaff + seed wt,maturity       kg/ha
       INTEGER       PWDINF        ! First day of planting window   YYDDD
       INTEGER       PWDINL        ! Last day of planting window    YYDDD
@@ -882,7 +885,7 @@
       REAL          RAINSUM       ! Precipitation sum in phase     mm
       REAL          RAINSUM0      ! Precipitation during cycle     mm
       REAL          RANC          ! Roots actual N concentration   #
-      INTEGER       RATE          ! Program control variable (=3)  #
+      !INTEGER       RATE          ! Program control variable (=3)  #
       REAL          RCNC          ! Root critical N concentration  #
       REAL          RCNCS(0:9)    ! Roots critical N conc,by stage #
       REAL          RCNF          ! Roots N as fr of critical 0-1  #
@@ -960,7 +963,7 @@
       REAL          RTWTSL(20)    ! Root weight senesced by layer  g/p
       INTEGER       RUN           ! Run (from command line) number #
       INTEGER       RUNI          ! Run (internal for sequences)   #
-      INTEGER       RUNINIT       ! Program control variable (= 1) #
+      !INTEGER       RUNINIT       ! Program control variable (= 1) #
       CHARACTER*25  RUNNAME       ! Run title                      text
       CHARACTER*8   RUNRUNI       ! Run+internal run number        text
       REAL          RWAM          ! Root wt at maturity            kg/ha
@@ -985,9 +988,9 @@
       REAL          SDNC          ! Seed N concentration           #
       REAL          SDNPCI        ! Seed N concentration,initial   %
       REAL          SDSZ          ! Seed size                      g
-      INTEGER       SEASEND       ! Program control variable (= 6) #
+      !INTEGER       SEASEND       ! Program control variable (= 6) #
       CHARACTER*1   SEASENDOUT    ! Season end outputs flag        text
-      INTEGER       SEASINIT      ! Program control variable (=2)  #
+      !INTEGER       SEASINIT      ! Program control variable (=2)  #
       REAL          SEEDN         ! Seed N                         g/p
       REAL          SEEDNI        ! Seed N,initial                 g/p
       REAL          SEEDNR        ! Seed N used by roots           g/p
@@ -1095,6 +1098,7 @@
       CHARACTER*6   TCHAR         ! Temporary character string     #
       REAL          TCNP          ! Critical N concentration       %
       REAL          TDAY          ! Temperature during light hours C
+      INTEGER       test          ! Temporary output file  
       REAL          TFAC4         ! Temperature factor function    #
       INTEGER       TFCOLNUM      ! T-file column number           #
       INTEGER       TFDAP         ! T-file days after planting     #
@@ -1195,6 +1199,7 @@
       REAL          TRLV          ! Total root length density      cm-2
       REAL          TRNU          ! Total N uptake,csm apprach     kg/ha
       REAL          TRPHS(4)      ! Temp response,photosynthesis   #
+      REAL          TRNUM         ! Pot. root N uptake intercrop   kg N/ha
       CHARACTER*40  TRUNNAME      ! Treatment+run composite name   text
       REAL          TRVRN(4)      ! Temp response,vernalization    #
       REAL          TRWUP         ! Total water uptake,potential   cm
@@ -1233,7 +1238,7 @@
       CHARACTER*6   VARNOP        ! Variety identification code    text
       REAL          VCNC          ! Vegetative critical N conc     #
       REAL          VDLOST        ! Vernalization lost (de-vern)   d
-      INTEGER       VERSION       ! Version #                      #
+      INTEGER       VERSIONCSCER  ! Version #                      #
       REAL          VF            ! Vernalization factor 0-1       #
       REAL          VMNC          ! Vegetative minimum N conc      #
       REAL          VNAA          ! Vegetative N,anthesis          kg/ha
@@ -1391,12 +1396,12 @@
 !      REAL          NUAD_Y        !Yesterday's cumulative N uptake
 
       PARAMETER     (BLANK = ' ')
-      PARAMETER     (RUNINIT = 1)
-      PARAMETER     (SEASINIT = 2)
-      PARAMETER     (RATE = 3)
-      PARAMETER     (INTEGR = 4)
-      PARAMETER     (OUTPUT = 5)
-      PARAMETER     (SEASEND = 6)
+      !PARAMETER     (RUNINIT = 1)
+      !PARAMETER     (SEASINIT = 2)
+      !PARAMETER     (RATE = 3)
+      !PARAMETER     (INTEGR = 4)
+      !PARAMETER     (OUTPUT = 5)
+      !PARAMETER     (SEASEND = 6)
       PARAMETER     (ERRKEY = 'CSCER ')
 
       ! Condition at end of phase
@@ -1478,7 +1483,7 @@
         IF (DYNAMIC.EQ.RUNINIT) THEN
 
           MODNAME = 'CSCER048'
-          VERSION = 010115
+          VERSIONCSCER = 010115
           GENFLCHK(3:15) = 'CER048.20200721'
 
           ! Parameters
@@ -2502,7 +2507,7 @@ C  FO - 05/07/2020 Add new Y4K subroutine call to convert YRDOY
         WRITE(fnumwrk,'(A18)')' RUN OVERVIEW     '
         WRITE(fnumwrk,*)' MODEL   ',MODEL
         WRITE(fnumwrk,*)' MODULE  ',MODNAME
-        WRITE(fnumwrk,'(A10,I6)')'  VERSION ',VERSION
+        WRITE(fnumwrk,'(A10,I6)')'  VERSION ',VERSIONCSCER
         WRITE(fnumwrk,*)' RNMODE  ',RNMODE
 
         WRITE(fnumwrk,*)' '
@@ -4815,6 +4820,28 @@ C-GH      IF (snow.GT.0) THEN
               ENDIF
             ENDDO
  
+! LPM Compare potential uptake from intercropping with the monocrop and
+! select the minimum value       
+        IF (RNMODE == 'M') THEN
+            CALL GET('SPAM', 'PUNH4M',  PUNH4M)
+            Call GET('SPAM', 'PUNO3M',  PUNO3M)
+            Call GET('SPAM', 'TRNUM',  TRNUM)
+       OPEN (UNIT = test,FILE = 'pot_Nuptake_WH.txt',POSITION="APPEND")
+         write (test, '(27F8.4)') PUNH4M(1:6), PUNO3M(1:6),
+     &          RNH4U(1:6), RNO3U(1:6), TRNUM, TRNU, ANDEM 
+        CLOSE (UNIT=test)
+            IF (TRNU > TRNUM) TRNU = TRNUM
+            DO L=1,NLAYR
+                RNO3U(L) = MIN(RNO3U(L),PUNO3M(L))
+                RNH4U(L) = MIN(RNH4U(L),PUNH4M(L))
+            ENDDO
+        ELSE
+        OPEN (UNIT = test,FILE = 'pot_Nuptake_WH.txt',POSITION="APPEND")
+         write (test, '(14F8.4)') 
+     &          RNH4U(1:6), RNO3U(1:6), TRNU, ANDEM 
+        CLOSE (UNIT=test)
+       ENDIF
+            
             ! Ratio (NUPR) to indicate N supply for output
             IF (ANDEM.GT.0) THEN
               NUPR = TRNU/ANDEM
