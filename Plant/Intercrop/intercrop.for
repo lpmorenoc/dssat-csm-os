@@ -135,12 +135,12 @@ C         Variables to run CASUPRO from Alt_PLANT.  FSR 07-23-03
       MODELS(1) = MODEL
       MODELS(2) = 'CRGRO'
       CROPS(1) = CROP
-      CROPS(2) = 'SB'
+      CROPS(2) = 'FB'
       CONTROL % INTERCROP = CROPS
       FILEIOM(1) = 'DSSAT48.INP'
-      FILEIOM(2) = 'DSSAT48_SB.INP'
+      FILEIOM(2) = 'DSSAT48_FB.INP'
       !LPM 09/14/2022 Added this temporary to allow N fixation
-      ISWITCH % ISWSYM = 'Y'
+      !ISWITCH % ISWSYM = 'Y'
 
       MEEVP  = ISWITCH % MEEVP
       ISWNIT = ISWITCH % ISWNIT
