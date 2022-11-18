@@ -55,7 +55,7 @@ C-----------------------------------------------------------------------
          STNAME( 9) = 'Emergence '
 
 !      ELSE IF (CROP .EQ. 'BN') THEN
-      CASE ('BN','CH','CP','CT','FB','LT','PE',
+      CASE ('BN','CH','CP','CT','CV','FB','LT','PE',
      &      'PN','PP','PR','SB','TM','VB')
          STNAME( 1) = 'Emergence '
          STNAME( 2) = 'Unifoliate'

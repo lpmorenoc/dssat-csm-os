@@ -71,7 +71,8 @@ C=======================================================================
      &              'BR','SC','VB','CP','CB','FB','CO','CT','NP','GB',
 c**WDB 12/2015     &              'WH','BA','MZ','SG','ML','LT','CS')
 C**WDB   Added sugarbeet crop code BS           
-     &              'WH','BA','MZ','SG','ML','LT','CS','BS','SU', 'RY')                  
+     &              'WH','BA','MZ','SG','ML','LT','CS','BS','SU', 
+     &              'RY', 'CV')          
            WRITE (*, 210) ECOTYP,ECONAM
           END SELECT
 !         ENDIF

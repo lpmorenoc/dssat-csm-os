@@ -135,7 +135,7 @@ C         Variables to run CASUPRO from Alt_PLANT.  FSR 07-23-03
       MODELS(1) = MODEL
       MODELS(2) = 'CRGRO'
       CROPS(1) = CROP
-      CROPS(2) = 'FB'
+      CROPS(2) = 'CV'
       CONTROL % INTERCROP = CROPS
       FILEIOM(1) = 'DSSAT48.INP'
       FILEIOM(2) = 'DSSAT48_FB.INP'

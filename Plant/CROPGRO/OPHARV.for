@@ -221,7 +221,7 @@ C-----------------------------------------------------------------------
       PlantStres % ACTIVE = .FALSE.
       PlantStres % StageName = '                       '
       SELECT CASE (CROP)
-      CASE ('BG','BN','CH','CI','CN','CO','CP','FB','GB','PE',
+      CASE ('BG','BN','CH','CI','CN','CO','CP','FB','GB','PE','CV',
      &      'LT','PN','PP','PR','QU','SB','SF','SU','TM','VB')
         PlantStres % NSTAGES = 4
         PlantStres % StageName(1)  = 'Emergence -First Flower'
@@ -265,7 +265,7 @@ C-----------------------------------------------------------------------
 
 !     Set ACTIVE variable to indicate that current phase is active
       SELECT CASE (CROP)
-      CASE ('BG','BN','CH','CI','CN','CO','CP','FB','GB','LT',
+      CASE ('BG','BN','CH','CI','CN','CO','CP','FB','GB','LT','CV',
      &     'PE','PN','PP','PR','QU','SB','SF','SU','TM','VB')
         IF (YRDOY > STGDOY(1) .AND. YRDOY <= STGDOY(5)) THEN
           PlantStres % ACTIVE(1) = .TRUE.
@@ -628,7 +628,7 @@ C-----------------------------------------------------------------------
       ENDDO
 
       SELECT CASE (CROP)
-      CASE ('BN','CH','CI','CN','CP','FB','GB','PE','PP',
+      CASE ('BN','CH','CI','CN','CP','FB','GB','PE','PP','CV',
      &      'PR','SB','TM','VB','LT')
 !     For stage-dependant irrigation - send GSTAGE back to irrig routine
         STNAME(1) = 'Emergence '    !; GSTAGE(1) = "GS001"

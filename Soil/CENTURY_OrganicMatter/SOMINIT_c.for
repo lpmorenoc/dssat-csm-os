@@ -394,7 +394,7 @@
 !             total P; for cropped land with organic amendents it is 1% and
 !             for continuous cropping it is 0.5%. (A. Oberson, pers.comm.).
               CASE ('BA','MZ','ML','RI','SG','WH',
-     &              'CH','CP','BN','FB','PN','SB',
+     &              'CH','CP','BN','FB','PN','SB','CV',
      &              'VB','CS','PT','TN','TR','LT','PE', 'RY')
                 SOM1E(L,P) = 0.005 * P_TOTAL(L) * PPM2KG(L)
 

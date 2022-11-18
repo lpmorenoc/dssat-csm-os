@@ -602,7 +602,7 @@ C-----------------------------------------------------------------------
         STNAME(14)= 'Start Sim '
         STNAME(16)= 'End Sim   '
 
-      CASE ('FB')
+      CASE ('FB','CV')
         STNAME(1) = 'Emergence '
         STNAME(2) = 'Unifoliate'
         STNAME(3) = 'End Juven.'
