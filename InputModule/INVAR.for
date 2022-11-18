@@ -562,7 +562,7 @@ C        Branch to menu choice
          END SELECT
 
 !=======================================================================
-!     CSCER - Wheat, barley
+!     CSCER - Wheat, barley, rye
       CASE ('CSCER')
 	  WRITE (*,5600) P1V,P1D,P5,G1,G2,G3,PHINT
 5600    FORMAT (12X,'0. End of changes',//,
@@ -592,7 +592,7 @@ C        Branch to menu choice
          CASE(6);  CALL GETREAL (G3,   'G3   ',  0.5,   8.0)
          CASE(7)
            SELECT CASE (CROP)
-           CASE('WH'); CALL GETREAL (PHINT,'PHINT', 30.0,  150.)
+           CASE('WH','RY'); CALL GETREAL (PHINT,'PHINT', 30.0,  150.)
            CASE('BA'); CALL GETREAL (PHINT,'PHINT', 30.0,  100.)
            END SELECT
          END SELECT

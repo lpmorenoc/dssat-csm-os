@@ -202,3 +202,5 @@ PRFRM    BR   FORAGE-Brachiaria
 PRFRM    BH   FORAGE-Bahiagrass
 PRFRM    AL   FORAGE-Alfalfa
 SUOIL    SU   OILCROP-Sunflower
+CSCER    RY   CROPSIM-CERES-Rye
+

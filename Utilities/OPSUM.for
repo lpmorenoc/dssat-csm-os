@@ -856,6 +856,7 @@ C-------------------------------------------------------------------
 !         These models write out Evaluate.OUT using separate routines
 !         CSCER    BA   CROPSIM-CERES-Barley
 !         CSCER    WH   CROPSIM-CERES-Wheat
+!         CSCER    RY   CROPSIM-CERES-Rye
 !         CSCRP    BA   CSCRP-Barley
 !         CSCAS    CS   CSCAS-Cassava
 !         CSYCA    CS   CSYCA-Cassava

@@ -474,4 +474,5 @@ C=======================================================================
 !  CRGRO    SR   CRGRO-Strawberry
 !  CRGRO    SQ   CRGRO-WinterSquash
 !  CRGRO    CI   CRGRO-Chia
+!  RYCER    RY   CROPSIM-CERES-Rye   
 !-----------------------------------------------------------------------

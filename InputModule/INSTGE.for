@@ -192,7 +192,7 @@ C-----------------------------------------------------------------------
          STNAME( 9) = 'Emergence '
 
 !       ELSE IF (CROP .EQ. 'WH') THEN
-      CASE ('WH')
+      CASE ('WH', 'RY')
          STNAME( 1) = 'Term Spklt'
          STNAME( 2) = 'End Veg   '
          STNAME( 3) = 'End Ear Gr'
