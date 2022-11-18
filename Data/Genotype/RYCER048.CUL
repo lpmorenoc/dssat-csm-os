@@ -1,0 +1,34 @@
+$CULTIVARS:RYCER048.20221118   Last edit: 2022-11-18 LPM
+
+! Coefficients based on CERES Wheat. It requires further revision.
+!
+!             P/G/N:Phenology/Growth/Not used for calbration
+!
+*CULTIVARS:WHCER048
+@VAR#  VAR-NAME........  EXP#   ECO#   P1V   P1D    P5    G1    G2    G3 PHINT
+!Coeffient #                             1     2     3     4     5     6     7
+!Calibration                             P     P     P     G     G     G     N
+!                                     Vday %/10h  oC.d   #/g    mg     g  oC.d
+999991 MINIMA               . 999991     0     0   100    10    10   0.5    30
+999992 MAXIMA               . 999992    60   200   999    50    80   8.0   150
+                                                                            
+DFAULT DEFAULT              . DFAULT     5    75   450    30    35   1.0    60
+
+KY0001 Rye                  . USWH01    52    75   500    25    30   2.2   143
+
+!KY0001 Based on values reported by Leuthold et al. 2021. 
+                                                                                                                                                                                                             
+! COEFF       DEFINITION
+! ========    ==========
+! VAR#        Identification code or number for the specific cultivar.
+! VAR-NAME    Name of cultivar.
+! EXP#        Number of experiments used to generate parameters
+! ECO#        Ecotype code for this cultivar,points to entry in ECO file
+! P1V         Days,optimum vernalizing temperature,required for vernalization
+! P1D         Photoperiod response (% reduction in rate/10 h drop in pp)
+! P5          Grain filling (excluding lag) phase duration (oC.d)
+! G1          Kernel number per unit canopy weight at anthesis (#/g)
+! G2          Standard kernel size under optimum conditions (mg)
+! G3          Standard,non-stressed mature tiller wt (incl grain) (g dwt)
+! PHINT       Interval between successive leaf tip appearances (oC.d)
+
