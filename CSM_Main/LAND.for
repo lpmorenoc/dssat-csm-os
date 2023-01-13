@@ -1,5 +1,5 @@
 C=======================================================================
-C COPYRIGHT 1998-2021 
+C COPYRIGHT 1998-2022
 C                     DSSAT Foundation
 C                     University of Florida, Gainesville, Florida
 C                     International Fertilizer Development Center
@@ -31,6 +31,8 @@ C-----------------------------------------------------------------------
       USE CsvOutput   ! VSH 
 
       IMPLICIT NONE
+      EXTERNAL INFO, ERROR, WARNING, IPIBS, WEATHR, SOIL, SPAM, PLANT, 
+     &  OPSUM, MGMTOPS
       SAVE
 C-----------------------------------------------------------------------
 C     Crop, Experiment, Command line Variables
@@ -205,10 +207,9 @@ C-----------------------------------------------------------------------
       ELSE   
       CALL PLANT(CONTROL, ISWITCH, 
      &    EO, EOP, EOS, EP, ES, FLOODWAT, HARVFRAC,       !Input
-     &    NH4_plant, NO3_plant, SKi_Avail, SomLitC, SomLitE, !Input
+     &    IRRAMT, NH4_plant, NO3_plant, SKi_Avail,        !Input
      &    SPi_AVAIL, SNOW, SOILPROP, SRFTEMP, ST, SW,     !Input
-     &    TRWU, TRWUP, UPPM, WEATHER, YREND, YRPLT,       !Input
-     &    IRRAMT,                                         !Input
+     &    TRWU, TRWUP, WEATHER, YREND, YRPLT,             !Input
      &    FLOODN,                                         !I/O
      &    CANHT, EORATIO, HARVRES, KSEVAP, KTRANS,        !Output
      &    KUptake, MDATE, NSTRES, PSTRES1,                !Output
@@ -275,18 +276,6 @@ C-----------------------------------------------------------------------
      &    EO, EOP, EOS, EP, ES, RWU, SRFTEMP, ST,         !Output
      &    SWDELTX, TRWU, TRWUP, UPFLOW)                   !Output
 
-!C-----------------------------------------------------------------------
-!C     Seasonal initialization for soil processes
-!C-----------------------------------------------------------------------
-!      CALL SOIL(CONTROL, ISWITCH, 
-!     &    ES, FERTDATA, HARVRES, IRRAMT, KTRANS,          !Input
-!     &    KUptake, OMAData, PUptake, SENESCE, ST,         !Input
-!     &    FracRts, SWDELTX,TILLVALS, UNH4, UNO3, UPFLOW,  !Input
-!     &    WEATHER, XHLAI, FLOODN, FLOODWAT, MULCH,        !I/O
-!     &    NH4_plant, NO3_plant, SKi_AVAIL, SNOW,          !Output
-!     &    SPi_AVAIL, SOILPROP, SomLitC, SomLitE,          !Output
-!     &    SW, SWDELTS, SWDELTU, UPPM, WINF, YREND)        !Output
-
 C-----------------------------------------------------------------------
 C     Initialize PLANT routines (including phenology and pest)
 C-----------------------------------------------------------------------
@@ -306,10 +295,9 @@ C-----------------------------------------------------------------------
       ELSE   
       CALL PLANT(CONTROL, ISWITCH, 
      &    EO, EOP, EOS, EP, ES, FLOODWAT, HARVFRAC,       !Input
-     &    NH4_plant, NO3_plant, SKi_Avail, SomLitC, SomLitE, !Input
+     &    IRRAMT, NH4_plant, NO3_plant, SKi_Avail,        !Input
      &    SPi_AVAIL, SNOW, SOILPROP, SRFTEMP, ST, SW,     !Input
-     &    TRWU, TRWUP, UPPM, WEATHER, YREND, YRPLT,       !Input
-     &    IRRAMT,                                         !Input
+     &    TRWU, TRWUP, WEATHER, YREND, YRPLT,             !Input
      &    FLOODN,                                         !I/O
      &    CANHT, EORATIO, HARVRES, KSEVAP, KTRANS,        !Output
      &    KUptake, MDATE, NSTRES, PSTRES1,                !Output
@@ -384,10 +372,9 @@ C-----------------------------------------------------------------------
       IF (RNMODE == 'M') THEN
       CALL INTERCROP(CONTROL, ISWITCH, 
      &    EO, EOP, EOS, EP, ES, FLOODWAT, HARVFRAC,       !Input
-     &    NH4_plant, NO3_plant, SKi_Avail, SomLitC, SomLitE, !Input
+     &    IRRAMT, NH4_plant, NO3_plant, SKi_Avail,        !Input
      &    SPi_AVAIL, SNOW, SOILPROP, SRFTEMP, ST, SW,     !Input
-     &    TRWU, TRWUP, UPPM, WEATHER, YREND, YRPLT,       !Input
-     &    IRRAMT,                                         !Input
+     &    TRWU, TRWUP, WEATHER, YREND, YRPLT,             !Input
      &    FLOODN,                                         !I/O
      &    CANHT, EORATIO, HARVRES, KSEVAP, KTRANS,        !Output
      &    KUptake, MDATE, NSTRES, PSTRES1,                !Output
@@ -447,10 +434,9 @@ C-----------------------------------------------------------------------
       IF (RNMODE == 'M') THEN
       CALL INTERCROP(CONTROL, ISWITCH, 
      &    EO, EOP, EOS, EP, ES, FLOODWAT, HARVFRAC,       !Input
-     &    NH4_plant, NO3_plant, SKi_Avail, SomLitC, SomLitE, !Input
+     &    IRRAMT, NH4_plant, NO3_plant, SKi_Avail,        !Input
      &    SPi_AVAIL, SNOW, SOILPROP, SRFTEMP, ST, SW,     !Input
-     &    TRWU, TRWUP, UPPM, WEATHER, YREND, YRPLT,       !Input
-     &    IRRAMT,                                         !Input
+     &    TRWU, TRWUP, WEATHER, YREND, YRPLT,             !Input
      &    FLOODN,                                         !I/O
      &    CANHT, EORATIO, HARVRES, KSEVAP, KTRANS,        !Output
      &    KUptake, MDATE, NSTRES, PSTRES1,                !Output
@@ -516,10 +502,9 @@ C-----------------------------------------------------------------------
       IF (RNMODE == 'M') THEN
       CALL INTERCROP(CONTROL, ISWITCH, 
      &    EO, EOP, EOS, EP, ES, FLOODWAT, HARVFRAC,       !Input
-     &    NH4_plant, NO3_plant, SKi_Avail, SomLitC, SomLitE, !Input
+     &    IRRAMT, NH4_plant, NO3_plant, SKi_Avail,        !Input
      &    SPi_AVAIL, SNOW, SOILPROP, SRFTEMP, ST, SW,     !Input
-     &    TRWU, TRWUP, UPPM, WEATHER, YREND, YRPLT,       !Input
-     &    IRRAMT,                                         !Input
+     &    TRWU, TRWUP, WEATHER, YREND, YRPLT,             !Input
      &    FLOODN,                                         !I/O
      &    CANHT, EORATIO, HARVRES, KSEVAP, KTRANS,        !Output
      &    KUptake, MDATE, NSTRES, PSTRES1,                !Output
@@ -592,10 +577,9 @@ C     Print seasonal summaries and close files.
       ELSE   
       CALL PLANT(CONTROL, ISWITCH, 
      &    EO, EOP, EOS, EP, ES, FLOODWAT, HARVFRAC,       !Input
-     &    NH4_plant, NO3_plant, SKi_Avail, SomLitC, SomLitE, !Input
+     &    IRRAMT, NH4_plant, NO3_plant, SKi_Avail,        !Input
      &    SPi_AVAIL, SNOW, SOILPROP, SRFTEMP, ST, SW,     !Input
-     &    TRWU, TRWUP, UPPM, WEATHER, YREND, YRPLT,       !Input
-     &    IRRAMT,                                         !Input
+     &    TRWU, TRWUP, WEATHER, YREND, YRPLT,             !Input
      &    FLOODN,                                         !I/O
      &    CANHT, EORATIO, HARVRES, KSEVAP, KTRANS,        !Output
      &    KUptake, MDATE, NSTRES, PSTRES1,                !Output

@@ -90,8 +90,11 @@ C=======================================================================
       END SUBROUTINE Y2K_DOY
       
 C=======================================================================
-C  4-digit Year, Subroutine, Fabio Oliveira, Willingthon Pavan, Gerrit Hoogenboom
+C  4-digit Year, Subroutine, Fabio Oliveira, Willingthon Pavan, 
+C  Gerrit Hoogenboom
 C  Converts YRDOY to YEARDOY
+C  REVISION HISTORY
+C  08/31/2022 FO  Fixed bug for issue #259 related with SDATE.
 C-----------------------------------------------------------------------
 C  Input : YRDOY
 C  Output: 
@@ -136,16 +139,15 @@ C=======================================================================
           CALL ERROR (ERRKEY,1,FILE,LINE)
         ENDIF
         
-        IF(YRDOY .LT. NEWSDATE) THEN
-          CALL ERROR (IERRKEY,IERRNUM,FILE,LINE)
-        ENDIF
-        
-        IF(YRDOY .GT. NEWSDATE + CROVER * 1000) THEN
+        IF(YRDOY .GT. (YRDOY + CROVER * 1000)) THEN
           WRITE(MSG(1),*) "WARNING - Y4K Date - Cross-over"
           WRITE(MSG(2),*) "Please check file: ",FILE
           WRITE(MSG(3),*) "Line: ",LINE
           WRITE(MSG(4),*) "Date: ",YRDOY
-          CALL WARNING(4,IERRKEY,MSG)
+!         2023-01-05 chp Replace error number 4 with IERRNUM from 
+!           calling subroutine
+!         CALL WARNING(4,IERRKEY,MSG)
+          CALL WARNING(IERRNUM,IERRKEY,MSG)
         ENDIF
         
 !-----------------------------------------------------------------------
