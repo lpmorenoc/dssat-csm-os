@@ -36,11 +36,11 @@ C  Calls:     None
       IMPLICIT NONE
       SAVE
 !-----------------------------------------------------------------------
-      CHARACTER*1  IDETG, ISWPHO, ISWPOT
+      CHARACTER*1  IDETG, ISWPHO, ISWPOT, RNMODE
       CHARACTER*2  CROP
       CHARACTER*6, PARAMETER :: ERRKEY = 'OPGROW'
 !      CHARACTER*8  FNAME
-      CHARACTER*12 OUTG, OUTPC, OUTPN
+      CHARACTER*15 OUTG, OUTPC, OUTPN
 
       INTEGER COUNT, DAP, DAS, DOY, DYNAMIC, ERRNUM, FROP, I, L
       INTEGER N_LYR, NLAYR, NOUTDG, NOUTPC, NOUTPN, RUN, RSTAGE
@@ -103,6 +103,7 @@ C  Calls:     None
       ISWPOT = ISWITCH % ISWPOT
           
       FMOPT  = ISWITCH % FMOPT    ! VSH
+      RNMODE  = CONTROL % RNMODE
 
 !***********************************************************************
 !***********************************************************************
@@ -111,14 +112,18 @@ C  Calls:     None
       IF (DYNAMIC .EQ. RUNINIT) THEN
 !-----------------------------------------------------------------------
         IF (FMOPT == 'A' .OR. FMOPT == ' ') THEN    ! VSH
-        OUTG  = 'PlantGro.OUT'
-        CALL GETLUN('OUTG',  NOUTDG)
-
-        OUTPN  = 'PlantN.OUT  '
-        CALL GETLUN('OUTPN', NOUTPN)
-
-        OUTPC  = 'PlantC.OUT  '
-        CALL GETLUN('OUTPC', NOUTPC)
+            IF (RNMODE == 'M') THEN 
+               OUTG  = 'PlantGro_'//CROP//'.OUT'
+               OUTPN  = 'PlantN.OUT  '
+               OUTPC  = 'PlantC.OUT  '
+            ELSE
+               OUTG  = 'PlantGro.OUT'
+               OUTPN  = 'PlantN.OUT  '
+               OUTPC  = 'PlantC.OUT  '
+            ENDIF
+            CALL GETLUN('OUTG',  NOUTDG)
+            CALL GETLUN('OUTPN', NOUTPN)
+            CALL GETLUN('OUTPC', NOUTPC) 
         END IF    ! VSH
 
 !***********************************************************************
