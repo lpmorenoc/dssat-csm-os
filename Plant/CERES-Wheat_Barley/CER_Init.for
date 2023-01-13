@@ -90,7 +90,7 @@
 
           MODNAME = 'CSCER048'
           VERSIONCSCER = 010115
-          GENFLCHK(3:15) = 'CER048.20200721'
+          GENFLCHK(3:15) = 'CER048.20221118'
 
           ! Parameters
           STDAY = 20.0    ! TT in standard day
@@ -1441,7 +1441,7 @@ C  FO - 05/07/2020 Add new Y4K subroutine call to convert YRDOY
         ENDIF  
         
         ! BASED ON ORIGINAL CERES -- FOR INITIAL CALIBRATION
-        IF (CROP.EQ.'WH') THEN
+        IF (CROP.EQ.'WH'.OR. CROP.EQ.'RY') THEN
           IF (PD(1).LE.0.0) THEN
             PD(1) = 400 * PHINTS / 95
             PD(2) = 3.0 * PHINTS
@@ -1555,7 +1555,7 @@ C  FO - 05/07/2020 Add new Y4K subroutine call to convert YRDOY
           STNAME(I) = '          '
           IF (CROP.EQ.'BA') THEN
             STNAME(I) = BASTGNAM (I)
-          ELSEIF (CROP.EQ.'WH') THEN
+          ELSEIF (CROP.EQ.'WH'. OR. CROP. EQ. 'RY') THEN
             STNAME(I) = WHSTGNAM (I)
           ENDIF
         END DO
@@ -1701,7 +1701,7 @@ C  FO - 05/07/2020 Add new Y4K subroutine call to convert YRDOY
         WRITE(fnumwrk,'(A17,2F8.2)')'   CHFR,CHSTG    ',chfr,chstg
         WRITE(fnumwrk,'(A17,2F8.2)')'   TPAR,TSRAD    ',part,sradt
 
-        IF (CROP.EQ.'WH') THEN
+        IF (CROP.EQ.'WH'.OR. CROP.EQ.'RY') THEN
           WRITE(fnumwrk,*) ' '
           WRITE(fnumwrk,'(A55)')
      &     ' PHASE DURATIONS                                       '

@@ -43,6 +43,7 @@
 
       ! For CSM
       SUBROUTINE CSCER (FILEIOIN, RUN, TN, RN, RNMODE,     !Command line
+     &  FracIntRadM,                                       !Frac rad (intercrop)
      & ISWWAT, ISWNIT, IDETS, IDETO, IDETG, IDETL, FROP,   !Controls
      & SN, ON, RUNI, REP, YEAR, DOY, STEP, CN,             !Run+loop
      & SRAD, TMAX, TMIN, CO2, RAIN, TOTIR,                 !Weather
@@ -174,6 +175,7 @@
       USE OSDefinitions
       USE CSVOUTPUT  ! VSH
       USE ModuleDefs
+      USE ModuleData
       USE CER_First_Trans_m
       
       IMPLICIT NONE
@@ -199,6 +201,7 @@
       REAL SW(20), NO3LEFT(20), NH4LEFT(NL)
       REAL CO2, TMAX, TMIN, SRAD, WINDSP, SNOW
       REAL TFAC4, TOTIR, YVALXY, YVAL1
+      REAL  FracIntRadM
 
       CHARACTER*1   IDETG, ISWNIT, ISWWAT, IDETL, IDETO, IDETS
       CHARACTER*1   RNMODE
@@ -255,11 +258,11 @@
       ELSEIF (DYNAMIC.EQ.INTEGR) THEN
 
         CALL CER_Integrate (BD, LAI, CANHT, CO2,
-     &     DAYLT, DEPMAX, DLAYR, DOY, EOP, EP, ET, KCAN,
-     &     HARVFRAC, ISWWAT, LL, NFP, NLAYR,
-     &     RAIN, RESCALG, RESLGALG, RESNALG, RLV,
+     &     DAYLT, DEPMAX, DLAYR, DOY, EOP, EP, ET, 
+     &    FracIntRadM, KCAN, HARVFRAC, ISWWAT, LL, NFP, 
+     &    NLAYR, RAIN, RESCALG, RESLGALG, RESNALG, RLV,
      &     RESWALG, RESWAL, RESNAL, RESLGAL,
-     &     SRAD, STGDOY, SW, TMAX, TMIN,
+     &     RNMODE, SRAD, STGDOY, SW, TMAX, TMIN,
      &     YEAR)
 
 

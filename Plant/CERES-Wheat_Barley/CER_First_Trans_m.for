@@ -1,4 +1,6 @@
         Module CER_First_Trans_m
+      
+      USE ModuleData
 
       CHARACTER(LEN=1),PARAMETER::BLANK = ' '
       !CHARACTER(LEN=3),PARAMETER::DASH = ' - '
@@ -53,8 +55,8 @@
       REAL          BLAYER        ! Depth at base of layer         cm
       REAL          CANANC        ! Canopy N concentration         %
       !REAL          CANHT         ! Canopy height                  cm
-      CHARACTER*6   CANHTC        ! Canopy height                  cm
-      REAL          CANHTG        ! Canopy height growth           cm
+      CHARACTER*6   CANHTC        ! Canopy height                  m
+      REAL          CANHTG        ! Canopy height growth           m
       REAL          CANHTS        ! Canopy height standard         cm
       REAL          CARBO         ! Carbohydrate available,phs     g/p
       REAL          CARBOACM      ! Carbohydrate assimilated,cum,m kg/ha
@@ -695,6 +697,8 @@
       REAL          PTHOLD        ! Phase threshold,previous       du
       REAL          PTTN          ! Minimum soil temperature,plt   C
       REAL          PTX           ! Maximum soil temperature,plt   C
+      REAL          PUNH4M(NL)    ! Pot. ammonium uptake intercrop kg/ha
+      REAL          PUNO3M(NL)    ! Pot. nitrate uptake intercrop  kg/ha
       REAL          PWAM          ! Chaff + seed wt,maturity       kg/ha
       INTEGER       PWDINF        ! First day of planting window   YYDDD
       INTEGER       PWDINL        ! Last day of planting window    YYDDD
@@ -922,6 +926,7 @@
       CHARACTER*6   TCHAR         ! Temporary character string     #
       REAL          TCNP          ! Critical N concentration       %
       REAL          TDAY          ! Temperature during light hours C
+      INTEGER       test          ! Temporary output file  
       !REAL          TFAC4         ! Temperature factor function    #
       INTEGER       TFCOLNUM      ! T-file column number           #
       INTEGER       TFDAP         ! T-file days after planting     #
@@ -1022,6 +1027,7 @@
       REAL          TRLV          ! Total root length density      cm-2
       REAL          TRNU          ! Total N uptake,csm apprach     kg/ha
       REAL          TRPHS(4)      ! Temp response,photosynthesis   #
+      REAL          TRNUM         ! Pot. root N uptake intercrop   kg N/ha
       CHARACTER*40  TRUNNAME      ! Treatment+run composite name   text
       REAL          TRVRN(4)      ! Temp response,vernalization    #
       !REAL          TRWUP         ! Total water uptake,potential   cm

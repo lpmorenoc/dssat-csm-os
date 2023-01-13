@@ -1852,8 +1852,15 @@ C  FO - 07/16/2021 Added more characters for H#AMS and H#GMS because of GLUE err
               
               IF (FILEIOT(1:2).EQ.'DS') THEN
                 IF (RUN.EQ.1 .AND. RUNI.EQ.1) THEN
-                  OPEN (UNIT = FNUMTMP, FILE = FNAMETMP)
-                  WRITE(FNUMTMP,'("*SIMULATION OVERVIEW FILE")')
+                  IF (FEXIST) THEN
+                    INQUIRE (FILE = 'OVERVIEW.OUT',OPENED = fopen)
+                    IF (.NOT.fopen) THEN
+                      OPEN (UNIT = FNUMTMP,FILE = FNAMETMP,
+     &                 POSITION = 'APPEND')
+                      !OPEN (UNIT = FNUMTMP, FILE = FNAMETMP)
+                      WRITE(FNUMTMP,'("*SIMULATION OVERVIEW FILE")')
+                    ENDIF
+                  ENDIF
                 ELSE
                   INQUIRE (FILE = FNAMETMP, EXIST = FEXIST)
                   IF (FEXIST) THEN
@@ -2159,6 +2166,8 @@ C  FO - 07/16/2021 Added more characters for H#AMS and H#GMS because of GLUE err
               WRITE(FNUMTMP,270)
               IF (CR.EQ.'WH') THEN 
                 WRITE(FNUMTMP,300) 'WHEAT', NINT(GWAM)
+              ELSEIF (CR.EQ.'RY') THEN 
+                WRITE(FNUMTMP,300) 'RYE', NINT(GWAM)
               ELSEIF (CR.EQ.'BA') THEN 
                 WRITE(FNUMTMP,300) 'BARLEY', NINT(GWAM)
               ENDIF  

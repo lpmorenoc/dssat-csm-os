@@ -884,10 +884,11 @@ C-GH      IF (snow.GT.0) THEN
           IF (XSTAGE.LT.7) THEN
             IF (XSTAGE.GT.1.0) THEN
               CANHTG =
-     &         AMAX1(0.0,(CANHTS*AMIN1(1.0,(XSTAGE-1.0)/4.0)-CANHT))
+     &         AMAX1(0.0,((CANHTS/100.)*AMIN1(1.0,(XSTAGE-1.0)/4.0)-
+     &        CANHT))
             ELSEIF (XSTAGE.EQ.1.0 .AND. PLAGT(1).GT.0.0) THEN
               ! Height growth on day of emergence or if no development
-              CANHTG = 0.5
+              CANHTG = 0.5/100.
             ENDIF
           ENDIF
           
@@ -1321,6 +1322,28 @@ C-GH      IF (snow.GT.0) THEN
               ENDIF
             ENDDO
  
+! LPM Compare potential uptake from intercropping with the monocrop and
+! select the minimum value       
+        IF (RNMODE == 'M') THEN
+            CALL GET('SPAM', 'PUNH4M',  PUNH4M)
+            Call GET('SPAM', 'PUNO3M',  PUNO3M)
+            Call GET('SPAM', 'TRNUM',  TRNUM)
+       OPEN (UNIT = test,FILE = 'pot_Nuptake_WH.txt',POSITION="APPEND")
+         write (test, '(27F8.4)') PUNH4M(1:6), PUNO3M(1:6),
+     &          RNH4U(1:6), RNO3U(1:6), TRNUM, TRNU, ANDEM 
+        CLOSE (UNIT=test)
+            IF (TRNU > TRNUM) TRNU = TRNUM
+            DO L=1,NLAYR
+                RNO3U(L) = MIN(RNO3U(L),PUNO3M(L))
+                RNH4U(L) = MIN(RNH4U(L),PUNH4M(L))
+            ENDDO
+        ELSE
+        OPEN (UNIT = test,FILE = 'pot_Nuptake_WH.txt',POSITION="APPEND")
+         write (test, '(14F8.4)') 
+     &          RNH4U(1:6), RNO3U(1:6), TRNU, ANDEM 
+        CLOSE (UNIT=test)
+       ENDIF
+            
             ! Ratio (NUPR) to indicate N supply for output
             IF (ANDEM.GT.0) THEN
               NUPR = TRNU/ANDEM

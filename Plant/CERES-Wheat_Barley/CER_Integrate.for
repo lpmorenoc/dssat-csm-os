@@ -4,11 +4,11 @@
 !***********************************************************************
 
       SUBROUTINE CER_Integrate (BD, LAI, CANHT, CO2,
-     &     DAYLT, DEPMAX, DLAYR, DOY, EOP, EP, ET, KCAN,
-     &     HARVFRAC, ISWWAT, LL, NFP, NLAYR,
-     &     RAIN, RESCALG, RESLGALG, RESNALG, RLV,
+     &     DAYLT, DEPMAX, DLAYR, DOY, EOP, EP, ET, 
+     &    FracIntRadM, KCAN, HARVFRAC, ISWWAT, LL, NFP, 
+     &    NLAYR, RAIN, RESCALG, RESLGALG, RESNALG, RLV,
      &     RESWALG, RESWAL, RESNAL, RESLGAL,
-     &     SRAD, STGDOY, SW, TMAX, TMIN,
+     &     RNMODE, SRAD, STGDOY, SW, TMAX, TMIN,
      &     YEAR)
      
         USE ModuleDefs
@@ -24,8 +24,9 @@
         REAL RESNALG(0:NL), RESCALG(0:NL), RESLGALG(0:NL) 
         REAL RESWALG(0:20), RESWAL(0:20), RESNAL(0:20), RESLGAL(0:20)
         REAL YVAL1
+        REAL  FracIntRadM
       
-        CHARACTER(LEN=1) ISWWAT 
+        CHARACTER(LEN=1) ISWWAT,RNMODE 
         
 
         IF (YEARDOY.GE.YEARPLT) THEN
@@ -170,7 +171,8 @@
               IF (PLASTMP.LE.0.0) EXIT
             ENDDO
           ENDIF
-
+!         LPM 07/14/2022 This subroutine is not used by DSSAT but 
+!         needs canht in cm 
           IF (fileiot(1:2).NE.'DS') THEN
           IF (LNUMSG.GT.0) CALL Cslayers
      X     (chtpc,clapc,               ! Canopy characteristics
@@ -180,15 +182,19 @@
           ENDIF
 
           ! PAR interception
-          IF (PARIP.LT.0.0.AND.LAI.GT.0.0) THEN
-            PARI = (1.0 - EXP(-KCAN*(LAI+AWNAI)))
-            !WRITE(fnumwrk,'(A28,F5.3)')
-     X      ! '  PARI from one-crop model: ',PARI
-            ! For maize, kcan is calculated as:
-            ! 1.5 - 0.768*((rowspc*0.01)**2*pltpop)**0.1
-            ! eg. 1.5 - 0.768*((75*0.01)**2*6.0)**0.1  =  0.63
+          IF (RNMODE == 'M') THEN
+              PARI =  FracIntRadM
           ELSE
-            PARI = 0.0
+            IF (PARIP.LT.0.0.AND.LAI.GT.0.0) THEN
+              PARI = (1.0 - EXP(-KCAN*(LAI+AWNAI)))
+              !WRITE(fnumwrk,'(A28,F5.3)')
+     X        ! '  PARI from one-crop model: ',PARI
+              ! For maize, kcan is calculated as:
+              ! 1.5 - 0.768*((rowspc*0.01)**2*pltpop)**0.1
+              ! eg. 1.5 - 0.768*((75*0.01)**2*6.0)**0.1  =  0.63
+            ELSE
+              PARI = 0.0
+            ENDIF
           ENDIF
 
           ! Specific leaf area

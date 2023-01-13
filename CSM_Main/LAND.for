@@ -194,10 +194,9 @@ C-----------------------------------------------------------------------
       IF (RNMODE == 'M') THEN
       CALL INTERCROP(CONTROL, ISWITCH, 
      &    EO, EOP, EOS, EP, ES, FLOODWAT, HARVFRAC,       !Input
-     &    NH4_plant, NO3_plant, SKi_Avail, SomLitC, SomLitE, !Input
+     &    IRRAMT, NH4_plant, NO3_plant, SKi_Avail,        !Input
      &    SPi_AVAIL, SNOW, SOILPROP, SRFTEMP, ST, SW,     !Input
-     &    TRWU, TRWUP, UPPM, WEATHER, YREND, YRPLT,       !Input
-     &    IRRAMT,                                         !Input
+     &    TRWU, TRWUP, WEATHER, YREND, YRPLT,             !Input
      &    FLOODN,                                         !I/O
      &    CANHT, EORATIO, HARVRES, KSEVAP, KTRANS,        !Output
      &    KUptake, MDATE, NSTRES, PSTRES1,                !Output
@@ -282,10 +281,9 @@ C-----------------------------------------------------------------------
       IF (RNMODE == 'M') THEN
       CALL INTERCROP(CONTROL, ISWITCH, 
      &    EO, EOP, EOS, EP, ES, FLOODWAT, HARVFRAC,       !Input
-     &    NH4_plant, NO3_plant, SKi_Avail, SomLitC, SomLitE, !Input
+     &    IRRAMT, NH4_plant, NO3_plant, SKi_Avail,        !Input
      &    SPi_AVAIL, SNOW, SOILPROP, SRFTEMP, ST, SW,     !Input
-     &    TRWU, TRWUP, UPPM, WEATHER, YREND, YRPLT,       !Input
-     &    IRRAMT,                                         !Input
+     &    TRWU, TRWUP, WEATHER, YREND, YRPLT,             !Input
      &    FLOODN,                                         !I/O
      &    CANHT, EORATIO, HARVRES, KSEVAP, KTRANS,        !Output
      &    KUptake, MDATE, NSTRES, PSTRES1,                !Output
@@ -304,7 +302,7 @@ C-----------------------------------------------------------------------
      &    PUptake, PORMIN, RLV, RWUMX, SENESCE,           !Output
      &    STGDOY, FracRts, UH2O, UNH4, UNO3, XHLAI, XLAI) !Output
       
-      ENDIF 
+      ENDIF  
 C-----------------------------------------------------------------------
 C     Initialize summary output file - possible output from 
 C     various modules.
@@ -384,17 +382,16 @@ C-----------------------------------------------------------------------
       ELSE   
       CALL PLANT(CONTROL, ISWITCH, 
      &    EO, EOP, EOS, EP, ES, FLOODWAT, HARVFRAC,       !Input
-     &    NH4_plant, NO3_plant, SKi_Avail, SomLitC, SomLitE, !Input
+     &    IRRAMT, NH4_plant, NO3_plant, SKi_Avail,        !Input
      &    SPi_AVAIL, SNOW, SOILPROP, SRFTEMP, ST, SW,     !Input
-     &    TRWU, TRWUP, UPPM, WEATHER, YREND, YRPLT,       !Input
-     &    IRRAMT,                                         !Input
+     &    TRWU, TRWUP, WEATHER, YREND, YRPLT,             !Input
      &    FLOODN,                                         !I/O
      &    CANHT, EORATIO, HARVRES, KSEVAP, KTRANS,        !Output
      &    KUptake, MDATE, NSTRES, PSTRES1,                !Output
      &    PUptake, PORMIN, RLV, RWUMX, SENESCE,           !Output
      &    STGDOY, FracRts, UH2O, UNH4, UNO3, XHLAI, XLAI) !Output
       
-      ENDIF 
+      ENDIF  
 !      ENDIF
 
 C***********************************************************************
@@ -446,10 +443,9 @@ C-----------------------------------------------------------------------
       ELSE   
       CALL PLANT(CONTROL, ISWITCH, 
      &    EO, EOP, EOS, EP, ES, FLOODWAT, HARVFRAC,       !Input
-     &    NH4_plant, NO3_plant, SKi_Avail, SomLitC, SomLitE, !Input
+     &    IRRAMT, NH4_plant, NO3_plant, SKi_Avail,        !Input
      &    SPi_AVAIL, SNOW, SOILPROP, SRFTEMP, ST, SW,     !Input
-     &    TRWU, TRWUP, UPPM, WEATHER, YREND, YRPLT,       !Input
-     &    IRRAMT,                                         !Input
+     &    TRWU, TRWUP, WEATHER, YREND, YRPLT,             !Input
      &    FLOODN,                                         !I/O
      &    CANHT, EORATIO, HARVRES, KSEVAP, KTRANS,        !Output
      &    KUptake, MDATE, NSTRES, PSTRES1,                !Output
@@ -514,17 +510,16 @@ C-----------------------------------------------------------------------
       ELSE   
       CALL PLANT(CONTROL, ISWITCH, 
      &    EO, EOP, EOS, EP, ES, FLOODWAT, HARVFRAC,       !Input
-     &    NH4_plant, NO3_plant, SKi_Avail, SomLitC, SomLitE, !Input
+     &    IRRAMT, NH4_plant, NO3_plant, SKi_Avail,        !Input
      &    SPi_AVAIL, SNOW, SOILPROP, SRFTEMP, ST, SW,     !Input
-     &    TRWU, TRWUP, UPPM, WEATHER, YREND, YRPLT,       !Input
-     &    IRRAMT,                                         !Input
+     &    TRWU, TRWUP, WEATHER, YREND, YRPLT,             !Input
      &    FLOODN,                                         !I/O
      &    CANHT, EORATIO, HARVRES, KSEVAP, KTRANS,        !Output
      &    KUptake, MDATE, NSTRES, PSTRES1,                !Output
      &    PUptake, PORMIN, RLV, RWUMX, SENESCE,           !Output
      &    STGDOY, FracRts, UH2O, UNH4, UNO3, XHLAI, XLAI) !Output
       
-      ENDIF 
+      ENDIF  
       ENDIF
 
         CALL MGMTOPS(CONTROL, ISWITCH, 
@@ -564,10 +559,9 @@ C     Print seasonal summaries and close files.
       IF (RNMODE == 'M') THEN
       CALL INTERCROP(CONTROL, ISWITCH, 
      &    EO, EOP, EOS, EP, ES, FLOODWAT, HARVFRAC,       !Input
-     &    NH4_plant, NO3_plant, SKi_Avail, SomLitC, SomLitE, !Input
+     &    IRRAMT, NH4_plant, NO3_plant, SKi_Avail,        !Input
      &    SPi_AVAIL, SNOW, SOILPROP, SRFTEMP, ST, SW,     !Input
-     &    TRWU, TRWUP, UPPM, WEATHER, YREND, YRPLT,       !Input
-     &    IRRAMT,                                         !Input
+     &    TRWU, TRWUP, WEATHER, YREND, YRPLT,             !Input
      &    FLOODN,                                         !I/O
      &    CANHT, EORATIO, HARVRES, KSEVAP, KTRANS,        !Output
      &    KUptake, MDATE, NSTRES, PSTRES1,                !Output
@@ -586,7 +580,7 @@ C     Print seasonal summaries and close files.
      &    PUptake, PORMIN, RLV, RWUMX, SENESCE,           !Output
      &    STGDOY, FracRts, UH2O, UNH4, UNO3, XHLAI, XLAI) !Output
       
-      ENDIF 
+      ENDIF  
 
 !     Call management operations module for seasonal printout.
       CALL MGMTOPS(CONTROL, ISWITCH, 

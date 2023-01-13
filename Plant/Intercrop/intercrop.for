@@ -18,10 +18,9 @@ C=======================================================================
 
       SUBROUTINE INTERCROP(CONTROL, ISWITCH,
      &    EO, EOP, EOS, EP, ES, FLOODWAT, HARVFRAC,       !Input
-     &    NH4, NO3, SKi_Avail, SomLitC, SomLitE,          !Input
-     &    SPi_AVAIL, SNOW, SOILPROP, SRFTEMP, ST, SW,     !Input
-     &    TRWU, TRWUP, UPPM, WEATHER, YREND, YRPLT,       !Input
-     &    IRRAMT,                                         !Input
+     &    IRRAMT, NH4, NO3, SKi_Avail, SPi_AVAIL,         !Input
+     &    SNOW, SOILPROP, SRFTEMP, ST, SW,                !Input
+     &    TRWU, TRWUP, WEATHER, YREND, YRPLT,             !Input
      &    FLOODN,                                         !I/O
      &    CANHT, EORATIO, HARVRES, KSEVAP, KTRANS,        !Output
      &    KUptake, MDATE, NSTRES, PSTRES1,                !Output
@@ -111,7 +110,7 @@ C         Variables to run CASUPRO from Alt_PLANT.  FSR 07-23-03
       CHARACTER*2, CROPS(NumOfCrops)
       CHARACTER*8  MODELS(NumOfCrops)
       CHARACTER*30 FILEIOM(NumOfCrops)
-      INTEGER :: test, DAS
+      INTEGER :: test, DAS, CropStatus
 !-----------------------------------------------------------------------
 !     Constructed variables are defined in ModuleDefs.
       TYPE (ControlType)  CONTROL
@@ -448,7 +447,7 @@ C         Variables to run CASUPRO from Alt_PLANT.  FSR 07-23-03
         CALL CROPGRO(CONTROL, ISWITCH,
      &    EOPM(I), HARVFRAC, NH4, NO3, SOILPROP, SPi_AVAIL,          !Input
      &    ST, SW, TRWUPM(I), WEATHER, YREND, YRPLT,                  !Input
-     &    CANHTM(I), EORATIOM(I), HARVRESM(I), KSEVAPM(I),           !Output
+     &    CANHTM(I), CropStatus,EORATIOM(I), HARVRESM(I), KSEVAPM(I),!Output
      &    KTRANSM(I), MDATEM(I),NSTRESM(I), PSTRES1M(I),             !Output
      &    PUptakeM(:,I), PORMINM(I), RLVM(:,I), RWUMXM(I),           !Output
      &    SENESCEM(I), STGDOYM(:,I), FracRtsM(:,I), UNH4M(:,I),      !Output
@@ -461,6 +460,7 @@ C         Variables to run CASUPRO from Alt_PLANT.  FSR 07-23-03
      &     EOPM(I), HARVFRAC, NH4, NO3, SKi_Avail,               !Input
      &     SPi_AVAIL, SNOW,                                      !Input
      &     SOILPROP, SW, TRWUPM(I), WEATHER, YREND, YRPLT,       !Input
+     &     CropStatus,                                           !Output
      &     CANHTM(I), HARVRESM(I), KCANM(I), KEPM(I),            !Output
      &     KUptakeM(:,I), MDATEM(I), NSTRESM(I), PORMINM(I),     !Output
      &     PUptakeM(:,I),RLVM(:,I), RWUMXM(I), SENESCEM(I),      !Output
