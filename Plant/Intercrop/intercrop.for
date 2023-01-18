@@ -133,13 +133,13 @@ C         Variables to run CASUPRO from Alt_PLANT.  FSR 07-23-03
       RUN     = CONTROL % RUN
       MODELS(1) = MODEL
       MODELS(2) = 'CRGRO'
-      CROPS(1) = CROP
+      CROPS(1) = 'RY'
       CROPS(2) = 'CV'
       CONTROL % INTERCROP = CROPS
       FILEIOM(1) = 'DSSAT48.INP'
-      FILEIOM(2) = 'DSSAT48_FB.INP'
+      FILEIOM(2) = 'DSSAT48_CV.INP'
       !LPM 09/14/2022 Added this temporary to allow N fixation
-      !ISWITCH % ISWSYM = 'Y'
+      ISWITCH % ISWSYM = 'Y'
 
       MEEVP  = ISWITCH % MEEVP
       ISWNIT = ISWITCH % ISWNIT
@@ -431,7 +431,8 @@ C         Variables to run CASUPRO from Alt_PLANT.  FSR 07-23-03
 !     Call crop models for all values of DYNAMIC:         
       DO I=1, NumOfCrops
         CONTROL % CROP = CROPS(I)
-        CONTROL % FILEIO = FILEIOM(I) 
+        CONTROL % FILEIO = FILEIOM(I)
+        CROP = CONTROL % CROP
         Call PUT('PLANT', 'FracIntRadM',  FracIntRadM(I))
         IF (ISWNIT .EQ. 'Y') THEN
             Call PUT('SPAM', 'PUNO3M',  PUNO3M(:,I))

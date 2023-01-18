@@ -10,6 +10,7 @@
      &     TOTIR, TN, UNH4ALG, UNO3ALG, YEAR)
 
         USE ModuleDefs
+        USE ModuleData
         USE CSVOUTPUT  ! VSH
         USE CER_First_Trans_m
 
@@ -24,10 +25,12 @@
         REAL LAI, CANHT, NFP, RAIN, RLV(20)
         REAL UNH4ALG(20), CO2, EOP, UNO3ALG(20)
         REAL TOTIR
+        TYPE (ControlType) CONTROL
         
         CHARACTER(LEN=1) IDETG, IDETL, IDETO, IDETS, ISWNIT, ISWWAT 
         CHARACTER(LEN=1) RNMODE     
         CHARACTER(LEN=10) TL10FROMI
+        
         
         IF (YEARDOY.GE.YEARPLT .AND. STEP.EQ.STEPNUM) THEN             
           ! General file header
@@ -46,10 +49,17 @@
           IF (YEARDOY.EQ.STGDOY(7)) THEN
             CNCHAR = ' '
             IF (CN.EQ.1) THEN
-              OUTPG = 'PlantGro.OUT'
-              OUTPG2 = 'PlantGr2.OUT'
-              OUTPGF = 'PlantGrf.OUT'
-              OUTPN = 'PlantN.OUT  '
+               IF (RNMODE == 'M') THEN 
+                  OUTPG  = 'PlantGro_'//CROP//'.OUT'
+                  OUTPG2 = 'PlantGr2_'//CROP//'.OUT'
+                  OUTPGF = 'PlantGrf_'//CROP//'.OUT'
+                  OUTPN  = 'PlantN_'//CROP//'.OUT  '
+               ELSE
+                  OUTPG  = 'PlantGro.OUT'
+                  OUTPG2 = 'PlantGr2.OUT'
+                  OUTPGF = 'PlantGrf.OUT'
+                  OUTPN  = 'PlantN.OUT  '
+               ENDIF
 
 ! File names are changed at end of simulation by CSM
 ! Changing names here eliminates wheat output in sequence runs.
@@ -60,10 +70,10 @@
               !  OUTPN = EXCODE(1:8)//'.ONI'
               !ENDIF
 
-              CALL GETLUN ('PlantGro.OUT',NOUTPG)
-              CALL GETLUN ('PlantN.OUT',NOUTPN)
-              CALL GETLUN ('PlantGr2.OUT',NOUTPG2)
-              CALL GETLUN ('PlantGrf.OUT',NOUTPGF)
+              CALL GETLUN (OUTPG,NOUTPG)
+              CALL GETLUN (OUTPN,NOUTPN)
+              CALL GETLUN (OUTPG2,NOUTPG2)
+              CALL GETLUN (OUTPGF,NOUTPGF)
             ELSE
               CNCHAR = TL10FROMI(CN)
               OUTPG = 'PlantGro.OU'//CNCHAR(1:1)

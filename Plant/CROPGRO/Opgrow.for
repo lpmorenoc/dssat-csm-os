@@ -114,17 +114,37 @@ C  Calls:     None
         IF (FMOPT == 'A' .OR. FMOPT == ' ') THEN    ! VSH
             IF (RNMODE == 'M') THEN 
                OUTG  = 'PlantGro_'//CROP//'.OUT'
-               OUTPN  = 'PlantN.OUT  '
-               OUTPC  = 'PlantC.OUT  '
+               OUTPN  = 'PlantN_'//CROP//'.OUT  '
+               OUTPC  = 'PlantC_'//CROP//'.OUT  '
+               CALL GETLUN(OUTG,  NOUTDG)
+               CALL GETLUN(OUTPN, NOUTPN)
+               CALL GETLUN(OUTPC, NOUTPC) 
+               INQUIRE (FILE = OUTG, EXIST = FEXIST)
+               IF (FEXIST) THEN
+                   OPEN (UNIT=NOUTDG,FILE=OUTG,STATUS='UNKNOWN')
+                   CLOSE (UNIT = NOUTDG, STATUS = 'DELETE')
+               ENDIF
+               INQUIRE (FILE = OUTPN, EXIST = FEXIST)
+               IF (FEXIST) THEN
+                   OPEN (UNIT=NOUTPN,FILE=OUTPN,STATUS='UNKNOWN')
+                   CLOSE (UNIT = NOUTPN, STATUS = 'DELETE')
+               ENDIF
+               INQUIRE (FILE = OUTPC, EXIST = FEXIST)
+               IF (FEXIST) THEN
+                   OPEN (UNIT=NOUTPC,FILE=OUTPC,STATUS='UNKNOWN')
+                   CLOSE (UNIT = NOUTPC, STATUS = 'DELETE')
+               ENDIF
             ELSE
                OUTG  = 'PlantGro.OUT'
                OUTPN  = 'PlantN.OUT  '
                OUTPC  = 'PlantC.OUT  '
+               CALL GETLUN(OUTG,  NOUTDG)
+               CALL GETLUN(OUTPN, NOUTPN)
+               CALL GETLUN(OUTPC, NOUTPC) 
             ENDIF
-            CALL GETLUN('OUTG',  NOUTDG)
-            CALL GETLUN('OUTPN', NOUTPN)
-            CALL GETLUN('OUTPC', NOUTPC) 
         END IF    ! VSH
+        
+
 
 !***********************************************************************
 !***********************************************************************

@@ -34,7 +34,7 @@ C  Calls:     None
       INTEGER DYNAMIC
 
       CHARACTER*1  RNMODE
-      CHARACTER*12 OUTG
+      CHARACTER*15 OUTG
 
       INTEGER TIMDIF, COUNT
       INTEGER DAP, DAS, DOY, I, N_LYR, RSTAGE, RUN
@@ -53,6 +53,7 @@ C  Calls:     None
 
       CHARACTER*1     IDETG
       CHARACTER*6, PARAMETER :: ERRKEY = 'MZ_OPG'
+      CHARACTER*2  CROP
       INTEGER         ERRNUM, FROP, NLAYR, L
       LOGICAL         FEXIST, FIRST
 
@@ -64,6 +65,7 @@ C  Calls:     None
       IDETG   = ISWITCH % IDETG
       IF (IDETG .EQ. 'N') RETURN
 
+      CROP    = CONTROL % CROP
       DAS     = CONTROL % DAS
       DYNAMIC = CONTROL % DYNAMIC
       FROP    = CONTROL % FROP
@@ -78,9 +80,17 @@ C  Calls:     None
 !                                 DYNAMIC = RUNINIT
 !-----------------------------------------------------------------------
       IF(DYNAMIC.EQ.RUNINIT) THEN
-          OUTG  = 'PlantGro.OUT'
-          CALL GETLUN('OUTG',  NOUTDG)
-
+         IF (RNMODE == 'M') THEN 
+               OUTG  = 'PlantGro_'//CROP//'.OUT'
+         ELSE
+               OUTG  = 'PlantGro.OUT'
+         ENDIF
+         CALL GETLUN(OUTG,  NOUTDG)
+         INQUIRE (FILE = OUTG, EXIST = FEXIST)
+         IF (FEXIST) THEN
+            OPEN (UNIT=NOUTDG,FILE=OUTG,STATUS='UNKNOWN')
+            CLOSE (UNIT = NOUTDG, STATUS = 'DELETE')
+         ENDIF
 !**********************************************************************
 !     Seasonal initialization - run once per season
 !**********************************************************************

@@ -29,7 +29,8 @@ C  Calls:     None
 
       CHARACTER*1  IDETG, IDETN, RNMODE
       CHARACTER*6, PARAMETER :: ERRKEY = 'MZ_OPN'
-      CHARACTER*12 OUTPN
+      CHARACTER*15 OUTPN
+      CHARACTER*2     CROP
 
       INTEGER DAP, DOY, ERRNUM, FROP, L, NLAYR, RUN
       INTEGER TIMDIF, YEAR, YRDOY, YRPLT
@@ -52,6 +53,7 @@ C  Calls:     None
       IDETN   = ISWITCH % IDETN
       IF (IDETG == 'N' .OR. IDETN == 'N') RETURN
 
+      CROP    = CONTROL % CROP
       DAS     = CONTROL % DAS
       DYNAMIC = CONTROL % DYNAMIC
       FROP    = CONTROL % FROP
@@ -63,10 +65,17 @@ C  Calls:     None
       FMOPT   = ISWITCH % FMOPT   ! VSH
 !-----------------------------------------------------------------------
       IF(DYNAMIC.EQ.RUNINIT) THEN
-
-          OUTPN = 'PlantN.OUT'
-          CALL GETLUN('OUTPN', NOUTDN)
-
+         IF (RNMODE == 'M') THEN 
+               OUTPN  = 'PlantN_'//CROP//'.OUT  '
+         ELSE
+               OUTPN = 'PlantN.OUT'
+         ENDIF
+         CALL GETLUN(OUTPN, NOUTDN)
+         INQUIRE (FILE = OUTPN, EXIST = FEXIST)
+         IF (FEXIST) THEN
+            OPEN (UNIT=NOUTDN,FILE=OUTPN,STATUS='UNKNOWN')
+            CLOSE (UNIT = NOUTDN, STATUS = 'DELETE')
+         ENDIF
       ENDIF
 
 !***********************************************************************

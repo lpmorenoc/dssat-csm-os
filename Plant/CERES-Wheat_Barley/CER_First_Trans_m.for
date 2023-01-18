@@ -620,10 +620,10 @@
       INTEGER       OUTCHOICE     ! Output choice (+reserves,etc)  #
       INTEGER       OUTCOUNT      ! Output counter                 #
       CHARACTER*77  OUTHED        ! Output file heading            text
-      CHARACTER*12  OUTPG         ! Growth output file code        code
-      CHARACTER*12  OUTPG2        ! Growth output2 file code       code
-      CHARACTER*12  OUTPGF        ! Growth output GF file code     code
-      CHARACTER*12  OUTPN         ! GrowthN output file code       code
+      CHARACTER*15  OUTPG         ! Growth output file code        code
+      CHARACTER*15  OUTPG2        ! Growth output2 file code       code
+      CHARACTER*15  OUTPGF        ! Growth output GF file code     code
+      CHARACTER*15  OUTPN         ! GrowthN output file code       code
       !INTEGER       OUTPUT        ! Program control variable (=5)  #
       REAL          P1D           ! Photoperiod sensitivity coeff. %/10h
       REAL          P1DA          ! Photoperiod coeff,age adjusted /h
