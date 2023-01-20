@@ -26,7 +26,8 @@
         REAL YVAL1
         REAL  FracIntRadM
       
-        CHARACTER(LEN=1) ISWWAT,RNMODE 
+        CHARACTER(LEN=1) ISWWAT,RNMODE
+        INTEGER :: test1
         
 
         IF (YEARDOY.GE.YEARPLT) THEN
@@ -196,6 +197,11 @@
               PARI = 0.0
             ENDIF
           ENDIF
+          
+          OPEN (UNIT = test1,FILE = 'IPAR_RY.txt',POSITION="APPEND")
+          write (test1, '(I,5F8.4)') DAS, FracIntRadM,
+     &          KCAN, LAI, AWNAI, PARI 
+          CLOSE (UNIT=test1)
 
           ! Specific leaf area
           SLA = -99.0
