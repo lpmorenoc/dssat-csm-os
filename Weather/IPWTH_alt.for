@@ -440,40 +440,6 @@ C     The components are copied into local variables for use here.
             END SELECT
           ENDIF
         ENDDO
-
-!  05/28/2021 FO  Added code for LAT,LONG and ELEV in Summary.OUT
-!     Check if LAT and LONG are correct in FileX   
-      IF(SUMDAT%YCRD .LE. -99.0 .OR. SUMDAT%XCRD .LE. -999.0) THEN
-        
-        IF(XLAT .GE. -90.0 .AND. XLAT .LE. 90.0 .AND.
-     &     XLONG .GE.-180.0 .AND. XLONG .LE. 180.0 .AND.
-     &   LEN_TRIM(CYCRD).GT.0.0 .AND. LEN_TRIM(CXCRD).GT.0.0)THEN
-!     Transfer data to the modules
-         CALL PUT('FIELD','CYCRD',CYCRD)
-         CALL PUT('FIELD','CXCRD',CXCRD)      
-         LABEL(1) = 'YCRD'; VALUE(1) = XLAT 
-         LABEL(2) = 'XCRD'; VALUE(2) = XLONG
-        ELSE
-          !     Transfer data to the modules
-          CALL PUT('FIELD','CYCRD','            -99')
-          CALL PUT('FIELD','CXCRD','            -99')
-          LABEL(1) = 'YCRD'; VALUE(1) = -99.0 
-          LABEL(2) = 'XCRD'; VALUE(2) = -999.0 
-        ENDIF
-        CALL SUMVALS (SUMNUM, LABEL, VALUE) 
-      ENDIF
-
-!     Check if ELEV are correct in FileX      
-      IF(SUMDAT%ELEV .LE. -99.0) THEN
-        IF(XELEV .GT. -99.0 .AND. LEN_TRIM(CELEV) .GT. 0.0) THEN
-          CALL PUT('FIELD','CELEV',CELEV)
-          LABEL(3) = 'ELEV'; VALUE(3) = XELEV
-        ELSE
-          CALL PUT('FIELD','CELEV','      -99')
-          LABEL(3) = 'ELEV'; VALUE(3) = -99.0
-        ENDIF
-        CALL SUMVALS (SUMNUM, LABEL, VALUE)
-      ENDIF
       
 C       Substitute default values if REFHT or WINDHT are missing.
         IF (REFHT <= 0.) REFHT = 1.5
@@ -558,6 +524,45 @@ C       Substitute default values if REFHT or WINDHT are missing.
         ENDIF
       ENDIF
 
+!-----------------------------------------------------------------------
+!  05/28/2021 FO  Added code for LAT,LONG and ELEV in Summary.OUT
+!     Check if LAT and LONG are correct in FileX     
+      IF(SUMDAT%YCRD .LE. -99.0 .OR. SUMDAT%XCRD .LE. -999.0) THEN
+        
+        IF(XLAT .GE. -90.0 .AND. XLAT .LE. 90.0 .AND.
+     &     XLONG .GE.-180.0 .AND. XLONG .LE. 180.0 .AND.
+     &   LEN_TRIM(CYCRD).GT.0.0 .AND. LEN_TRIM(CXCRD).GT.0.0
+     &   .AND.
+     &   (ABS(XLAT) .GT. 1.E-15 .OR. ABS(XLONG) .GT. 1.E-15))THEN
+!     Transfer data to the modules
+         CALL PUT('FIELD','CYCRD',CYCRD)
+         CALL PUT('FIELD','CXCRD',CXCRD)      
+         LABEL(1) = 'YCRD'; VALUE(1) = XLAT 
+         LABEL(2) = 'XCRD'; VALUE(2) = XLONG
+        ELSE
+          !     Transfer data to the modules
+          CALL PUT('FIELD','CYCRD','            -99')
+          CALL PUT('FIELD','CXCRD','            -99')
+          LABEL(1) = 'YCRD'; VALUE(1) = -99.0 
+          LABEL(2) = 'XCRD'; VALUE(2) = -999.0 
+        ENDIF
+      ENDIF
+  
+!     Check if ELEV are correct in FileX      
+      IF(SUMDAT%ELEV .LE. -99.0) THEN
+        IF(XELEV .GT. -99.0 .AND. LEN_TRIM(CELEV) .GT. 0.0) THEN
+          CALL PUT('FIELD','CELEV',CELEV)
+          LABEL(3) = 'ELEV'; VALUE(3) = XELEV
+        ELSE
+          CALL PUT('FIELD','CELEV','      -99')
+          LABEL(3) = 'ELEV'; VALUE(3) = -99.0
+        ENDIF
+      ENDIF
+
+C     Send labels and values to OPSUM      
+      CALL SUMVALS (SUMNUM, LABEL, VALUE)
+!-----------------------------------------------------------------------      
+
       YRDOYWY = INCYD(YRSIM,-1)
       IF (MULTI > 1) THEN 
         YRDOY_WY = YRDOYWY
@@ -614,8 +619,8 @@ C       Substitute default values if REFHT or WINDHT are missing.
 
 !     Error checking
       CALL DailyWeatherCheck(CONTROL,
-     &    "WTHINIT", FILEWW, RAIN, RecNum, RHUM,          !Input
-     &    SRAD, TDEW, TMAX, TMIN, WINDSP, YRDOY,          !Input
+     &    "WTHINIT", FILEWW, RAIN, RecNum,                !Input
+     &    SRAD, TMAX, TMIN, YRDOY,                        !Input
      &    YREND)                                          !Output
 
       IF (YREND > 0) THEN
@@ -635,8 +640,8 @@ C       Substitute default values if REFHT or WINDHT are missing.
       
 !       Error checking
         CALL DailyWeatherCheck(CONTROL,
-     &    ERRKEY, FILEWW, RAIN, RecNum, RHUM,             !Input
-     &    SRAD, TDEW, TMAX, TMIN, WINDSP, YRDOY,          !Input
+     &    ERRKEY, FILEWW, RAIN, RecNum,                   !Input
+     &    SRAD, TMAX, TMIN, YRDOY,                        !Input
      &    YREND)                                          !Output
 
       ENDIF
@@ -791,8 +796,8 @@ C         Read in weather file header.
 
 !     Error checking
       CALL DailyWeatherCheck(CONTROL,
-     &    ERRKEY, FILEWW, RAIN, RecNum, RHUM,             !Input
-     &    SRAD, TDEW, TMAX, TMIN, WINDSP, YRDOY,          !Input
+     &    ERRKEY, FILEWW, RAIN, RecNum,                   !Input
+     &    SRAD, TMAX, TMIN, YRDOY,                        !Input
      &    YREND)                                          !Output
 
 !      ERR = 0
@@ -841,12 +846,12 @@ C         Read in weather file header.
 !!        CALL ERROR(ERRKEY,9,FILEW,RecNum)
 !!      ENDIF
 
-      IF (I > NRecords) THEN
-        ErrCode = 64
-        CALL WeatherError(CONTROL, ErrCode, FILEWW, 
-     &                  LINWTH, YRDOY, YREND)
-        RETURN
-      ENDIF
+!      IF (I > NRecords) THEN
+!        ErrCode = 64
+!        CALL WeatherError(CONTROL, ErrCode, FILEWW, 
+!     &                  LINWTH, YRDOY, YREND)
+!        RETURN
+!      ENDIF
 
 !***********************************************************************
 !***********************************************************************
@@ -1247,8 +1252,8 @@ C         Read in weather file header.
 ! 09/01/2009 CHP Written
 !-----------------------------------------------------------------------
       Subroutine DailyWeatherCheck(CONTROL,
-     &    ERRKEY, FILEWW, RAIN, RecNum, RHUM,             !Input
-     &    SRAD, TDEW, TMAX, TMIN, WINDSP, YRDOYW,         !Input
+     &    ERRKEY, FILEWW, RAIN, RecNum,                   !Input
+     &    SRAD, TMAX, TMIN, YRDOYW,                       !Input
      &    YREND)                                          !Output
 
 !     Checks validity of daily weather for observed or generated values.
@@ -1260,8 +1265,7 @@ C         Read in weather file header.
       CHARACTER*(*) ERRKEY, FILEWW
       CHARACTER*78 MSG(10)
       Integer ErrCode, NChar, RecNum, YRDOYW, YREND
-      REAL RAIN, RHUM, SRAD, TDEW, TMAX, TMIN, WINDSP
-      REAL CALC_TDEW
+      REAL RAIN, SRAD, TMAX, TMIN
       TYPE (ControlType) CONTROL
 
 !     Error checking
@@ -1338,29 +1342,6 @@ C         Read in weather file header.
         CALL WARNING(4,ERRKEY,MSG) 
       ENDIF
 
-!     Substitute default values if TDEW or WINDSP are missing.
-      IF (TDEW <= -90.)  THEN 
-c               MJ, 2007-04-05: set TDEW to TMIN if TDEW not otherwise available.  This is not
-c               appropriate to South African (and presumably other) conditions
-c               --> suggest replacing with a better calculation based on relative humidity, if
-c                   available.
-          IF (RHUM .GT. 0.01) THEN
-              TDEW = CALC_TDEW(TMIN, RHUM)
-          ELSE
-             TDEW = TMIN
-          ENDIF
-      ENDIF
-
-!      IF (WINDSP <= 0.) WINDSP = 86.4
-!      IF (WINDSP <= -1.E-6) THEN
-!        WINDSP = 86.4
-!      ELSEIF (WINDSP < 1.0) THEN
-!        MSG(1) = "Unlikely value for WINDSP in weather file."
-!        WRITE(MSG(2),'("WINDSP = ",F8.2," km/d")') WINDSP
-!        CALL WARNING(2,ERRKEY,MSG)
-!        CALL ERROR(ERRKEY,9,FILEW,RecNum)
-!      ENDIF
-
       Return
       End Subroutine DailyWeatherCheck
 
@@ -1375,6 +1356,7 @@ c                   available.
 !-----------------------------------------------------------------------
 ! REVISION HISTORY
 ! 09/01/2009 CHP Written
+! 06/15/2022 CHP Added CropStatus
 !-----------------------------------------------------------------------
       SUBROUTINE WeatherError(CONTROL, ErrCode, FILEWW, LNUM, 
      &      YRDOYW, YREND)
@@ -1457,6 +1439,7 @@ c                   available.
       MSG(NMSG) = "Simulation will end."
       YREND = CONTROL%YRDOY
       CONTROL % ErrCode = ErrCode
+      CONTROL % CropStatus = 200
       CALL PUT(CONTROL)
       CALL WARNING(NMSG,ERRKEY,MSG)
 
@@ -1482,8 +1465,6 @@ c                   available.
 
 !-----------------------------------------------------------------------
 ! BLANK   blank character 
-! CALC_TDEW Function that calculates dew point temperature from min and
-!           max temperatures and relative humidity.
 ! CCO2    Atmospheric CO2 concentration read from input file (ppm)
 ! ERRKEY  Subroutine name for error file 
 ! ERR  Error number for input 

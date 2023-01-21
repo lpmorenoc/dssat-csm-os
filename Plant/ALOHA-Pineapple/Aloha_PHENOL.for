@@ -11,6 +11,7 @@ C  3. Added switch block, code cleanup            P.W.W.      2-7-93
 C  4. Modified TT calculations to reduce line #'s P.W.W.      2-7-93
 C  5. Modified for MILLET model                   W.T.B.      MAY 94
 C  6. Stages changes for inclusion in Overview    J.V.J.      9-5-20      
+!  04/14/2021 CHP Added CONTROL % CropStatus
 C=======================================================================
 
       SUBROUTINE Aloha_PHENOL (CONTROL, ISWITCH,
@@ -36,7 +37,6 @@ C=======================================================================
 
       INTEGER      DYNAMIC, EDATE, MDATE,HAREND
       REAL         XSTAGE
-!TEMP      REAL         GRAINN
 
       CHARACTER*1 ISWWAT, IDETO, ISWNIT
       INTEGER     ISTAGE, NLAYR, NOUTDO, ISDATE, FHDATE, PMDATE
@@ -377,40 +377,43 @@ C     6 - Physiological maturity
           !
           NDAS   = NDAS + 1
          
-                
-          IF (PLANTING % NFORCING .GE. 2) THEN  !
-          NDOF = TIMDIF(YRPLT, PLANTING % ForcingYRDOY) -ROOTINGTIME   !NDOF es el tiempo desde la siembra hasta el forzamiento (aplicación química)
-                                                                       !pero por alguna razón suma el tiempo que se lleva en puntas de raíces blancas
-                                                                       !por esa razón en CASE(11) cree una variable que se llama ROOTINGTIME que simplemente
-                                                                       !calcula los días que se demoró en producir puntas de raíces blancas para poder restar
-                                                                       !esos días aquí, y que la fecha de forza reportada coincida con la fecha de aplicación química real de la forza.
+          IF (PLANTING % NFORCING .GE. 2) THEN
+!           chp 2022-03-21 use Forcing date here directly. No need to back calculate.
+!           NDOF = TIMDIF(YRPLT, PLANTING % ForcingYRDOY) - ROOTINGTIME  
+            NDOF = TIMDIF(YRPLT, PLANTING % ForcingYRDOY) - 
+     &           FLOOR(ROOTINGTIME) + 1
+!NDOF es el tiempo desde la siembra hasta el forzamiento (aplicación química)
+!pero por alguna razón suma el tiempo que se lleva en puntas de raíces blancas
+!por esa razón en CASE(11) cree una variable que se llama ROOTINGTIME que simplemente
+!calcula los días que se demoró en producir puntas de raíces blancas para poder restar
+!esos días aquí, y que la fecha de forza reportada coincida con la fecha de aplicación química real de la forza.
             
-        ENDIF
-          
-          IF (NFORCING .GE. 2) THEN
-             !
-             ! Forcing by number of days after planting
-             !
-             IF (NDAS .LT. NDOF) THEN
-                RETURN
-             ENDIF
-!moved to grosub             PLANTSIZE = TOTPLTWT
-           ELSE
-              !
-              ! Forcing by Plant Size (200 to 350 grams usually)
-              !
-              IF (TOTPLTWT .LT. PLANTSIZE) THEN
-                 RETURN
-              ENDIF
           ENDIF
+          
+        IF (NFORCING .GE. 2) THEN
+           !
+           ! Forcing by number of days after planting
+           !
+!          IF (NDAS .LT. NDOF) THEN
+           IF (YRDOY .LT. PLANTING % ForcingYRDOY) THEN
+              RETURN
+           ENDIF
+         ELSE
+            !
+            ! Forcing by Plant Size (200 to 350 grams usually)
+            !
+            IF (TOTPLTWT .LT. PLANTSIZE) THEN
+               RETURN
+            ENDIF
+        ENDIF
 
-          ISDATE = YRDOY                ! Record forcing date.
+        ISDATE = YRDOY                ! Record forcing date.
 
-!         Ready for next stage
-          STGDOY(ISTAGE) = YRDOY
-          ISTAGE = 5                    ! JVJ Value changed because 2 stages in vegetative phase and one stage in reproductive phase were included
-          TBASE  = 10.00                ! Base temperature of 6.25 is used during forcing to sepals closed on youngest flowers
-          SUMDTT = 0.0                  ! Cumulative GDD set to 0.0
+!       Ready for next stage
+        STGDOY(ISTAGE) = YRDOY
+        ISTAGE = 5                    ! JVJ Value changed because 2 stages in vegetative phase and one stage in reproductive phase were included
+        TBASE  = 10.00                ! Base temperature of 6.25 is used during forcing to sepals closed on youngest flowers
+        SUMDTT = 0.0                  ! Cumulative GDD set to 0.0
 
 !-----------------------------------------------------------------
       CASE (5)                          !JVJ Value changed because 2 stages in vegetative phase and one stage in reproductive phase were included
@@ -489,6 +492,7 @@ C     6 - Physiological maturity
 
           FHDATE = YRDOY                  ! physiological maturity date PMDATE = YRDOY 
           MDATE  = YRDOY                  ! Set MDATE to stop model
+          CONTROL % CropStatus = 1
           STGDOY(ISTAGE) = YRDOY
 
 !         Ready for next stage

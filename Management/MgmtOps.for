@@ -1,10 +1,8 @@
 C=======================================================================
-C  COPYRIGHT 1998-2010 The University of Georgia, Griffin, Georgia
+C  COPYRIGHT 1998-2021 DSSAT Foundation
 C                      University of Florida, Gainesville, Florida
-C                      Iowa State University, Ames, Iowa
-C                      International Center for Soil Fertility and 
-C                       Agricultural Development, Muscle Shoals, Alabama
-C                      University of Guelph, Guelph, Ontario
+C                      International Fertilizer Development Center
+C    
 C  ALL RIGHTS RESERVED
 C=======================================================================
 C=====================================================================
@@ -187,7 +185,7 @@ C-----------------------------------------------------------------------
      &    FLOOD, FLOODWAT, FLOODN)                        !Output 
 
       CALL OpMgmt(CONTROL, ISWITCH,
-     &    FERTDATA, HARVRES, IIRRI, IRRAMT, NAP, OMADATA, 
+     &    FERTDATA, HARVFRAC, HARVRES, IIRRI, IRRAMT, NAP, OMADATA, 
      &    SOILPROP, TILLNO, TILLVALS, TOTIR, YRPLT)
 
 C***********************************************************************
@@ -274,7 +272,7 @@ C-----------------------------------------------------------------------
       ELSEIF (DYNAMIC .EQ. OUTPUT) THEN
 !-----------------------------------------------------------------------
       CALL OpMgmt(CONTROL, ISWITCH,
-     &    FERTDATA, HARVRES, IIRRI, IRRAMT, NAP, OMADATA, 
+     &    FERTDATA, HARVFRAC, HARVRES, IIRRI, IRRAMT, NAP, OMADATA, 
      &    SOILPROP, TILLNO, TILLVALS, TOTIR, YRPLT)
 
       IF (NBUND .GT. 0) THEN
@@ -295,7 +293,7 @@ C-----------------------------------------------------------------------
      &    OMAData)                                !Output
 
       CALL OpMgmt(CONTROL, ISWITCH,
-     &    FERTDATA, HARVRES, IIRRI, IRRAMT, NAP, OMADATA, 
+     &    FERTDATA, HARVFRAC, HARVRES, IIRRI, IRRAMT, NAP, OMADATA, 
      &    SOILPROP, TILLNO, TILLVALS, TOTIR, YRPLT)
 
       IF (NBUND .GT. 0) THEN
@@ -343,7 +341,7 @@ C  Called from:   MgmtOps
 C  Calls:         None
 C=======================================================================
       SUBROUTINE OpMgmt(CONTROL, ISWITCH,
-     &    FERTDATA, HARVRES, IIRRI, IRRAMT, NAP, OMADATA, 
+     &    FERTDATA, HARVFRAC, HARVRES, IIRRI, IRRAMT, NAP, OMADATA, 
      &    SOILPROP, TILLNO, TILLVALS, TOTIR, YRPLT)
 
 !-----------------------------------------------------------------------
@@ -372,6 +370,7 @@ C=======================================================================
 
       REAL BDAVG3, CUMDEP, IRRAMT, TILDEP, DEPIR
       REAL TotAmtN, TotAmtP, TotAmtK, TOTIR, TotResWt, SurfRes, RootRes
+      REAL HARVFRAC(2)
       REAL, DIMENSION(NELEM) :: AMTFER, CumRESE
       REAL, DIMENSION(NL) :: BD, DLAYR
 
@@ -386,7 +385,7 @@ C     ModuleDefs.for.
       TYPE (SoilType)     SOILPROP
       TYPE (FertType)     FERTDATA
       TYPE (OrgMatAppType)OMAData
-      Type (ResidueType)  HARVRES  
+      Type (ResidueType)  HARVRES
 
       CROP    = CONTROL % CROP 
       DAS     = CONTROL % DAS 
@@ -711,21 +710,24 @@ C-----------------------------------------------------------------------
       IF (IDETR == 'Y') THEN
 !       Harvest
         IF (CROP .NE. 'FA') THEN
-          WRITE(DLUN2,112) RUN, Date_Txt, DOY, DAS, DAP, CROP, 
-     &            "Harvest Yield  ", SumDat % HWAH, " kg/ha"
-  112     FORMAT(I4,1X,A12,2X,I3.3,2(1X,I6),2X,A2,T57,A,F7.0,A)
+          WRITE(DLUN2,112) HARVFRAC(1)*100., " % yield harvested",
+     &            SumDat % HWAH, " kg/ha"
+          WRITE(DLUN2,112) HARVFRAC(2)*100., " % by-product harv",
+     &            SumDat % BWAH, " kg/ha"
+  112     FORMAT(T45,F6.1,A,T72,F7.0,A)
+
           IF (INDEX('FQ',RNMODE) > 0 .AND. CROP /= 'FA') THEN
             SurfRes = HARVRES % ResWt(0)
             IF (SurfRes > 0) THEN
-              WRITE(DLUN2,200) "Surface residue", SurfRes,
-     &            " kg/ha carryover"
+              WRITE(DLUN2,200) "Surface residue carryover", SurfRes,
+     &            " kg/ha"
+  200         FORMAT(T46,A,T72,F7.0,A)
             ENDIF
-  200       FORMAT(56X,A,F7.0,A)
         
             RootRes = SUM(HARVRES % ResWt) - HARVRES % ResWt(0)
             IF (RootRes > 0) THEN
-              WRITE(DLUN2,200) "Root residue   ", RootRes, 
-     &            " kg/ha carryover"
+              WRITE(DLUN2,200) "Root residue carryover", RootRes, 
+     &            " kg/ha"
             ENDIF
           ENDIF
         ELSE

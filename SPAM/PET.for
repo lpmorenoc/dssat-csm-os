@@ -54,13 +54,20 @@ C=======================================================================
       TYPE (ControlType) CONTROL
       CHARACTER*1 MEEVP
       INTEGER YRDOY, YEAR, DOY
-      REAL CANHT, CLOUDS, EO, EORATIO, ET_ALB, SRAD, TAVG               
+      REAL CANHT, CLOUDS, EO, EORATIO, ET_ALB, RHUM, SRAD, TAVG               
       REAL TDEW, TMAX, TMIN, VAPR, WINDHT, WINDSP, XHLAI
       REAL WINDRUN, XLAT, XELEV
       REAL, DIMENSION(TS)    ::RADHR, TAIRHR, ET0
+      LOGICAL NOTDEW, NOWIND
+      CHARACTER*78  MSG(2)
+      CHARACTER*12 FILEX
+      CHARACTER*6, PARAMETER :: ERRKEY = "PET   "
       
       CLOUDS = WEATHER % CLOUDS
       SRAD   = WEATHER % SRAD  
+      NOTDEW = WEATHER % NOTDEW
+      NOWIND = WEATHER % NOWIND
+      RHUM   = WEATHER % RHUM
       TAVG   = WEATHER % TAVG  
       TDEW   = WEATHER % TDEW  
       TMAX   = WEATHER % TMAX  
@@ -75,9 +82,16 @@ C=======================================================================
       TAIRHR = WEATHER % TAIRHR
       
       YRDOY = CONTROL % YRDOY
+      FILEX = CONTROL % FILEX
       CALL YR_DOY(YRDOY, YEAR, DOY)
 
       SELECT CASE (MEEVP)
+!         ------------------------
+          !Priestley-Taylor potential evapotranspiration
+          CASE ('R')
+            CALL PETPT(
+     &        ET_ALB, SRAD, TMAX, TMIN, XHLAI,          !Input
+     &        EO)                                       !Output
 !         ------------------------
           !FAO Penman-Monteith (FAO-56) potential evapotranspiration, 
 !             with KC = 1.0
@@ -93,9 +107,9 @@ C=======================================================================
           !FAO-56 crop coefficient method.
           CASE ('S','T')
             CALL PETASCE(
-     &        CANHT, DOY, ET_ALB, MEEVP, SRAD, TDEW,      !Input 
-     &        TMAX, TMIN, WINDHT, WINDRUN, XHLAI,         !Input
-     &        XLAT, XELEV,                                !Input
+     &        CANHT, DOY, ET_ALB, MEEVP, NOTDEW, NOWIND,  !Input
+     &        RHUM, SRAD, TDEW, TMAX, TMIN, WINDHT,       !Input  
+     &        WINDRUN, VAPR, XHLAI, XLAT, XELEV,          !Input
      &        EO)                                         !Output
 !         ------------------------
           !Dynamic Penman-Monteith, pot. evapotranspiration, with
@@ -123,39 +137,50 @@ C=======================================================================
           !CASE ('O')
           !    EO = EOMEAS
 !         ------------------------
-          !Priestly-Taylor potential evapotranspiration hourly
+          !Priestley-Taylor potential evapotranspiration hourly
           !including a VPD effect on transpiration
           CASE ('H')
               CALL PETPTH(
      &        ET_ALB, TMAX, XHLAI, RADHR, TAIRHR,       !Input
      &        EO, ET0)                                  !Output
 !         ------------------------
-          !Priestly-Taylor potential evapotranspiration
-          CASE DEFAULT !Default - MEEVP = 'R' 
-            CALL PETPT(
-     &        ET_ALB, SRAD, TMAX, TMIN, XHLAI,          !Input
-     &        EO)                                       !Output
+          CASE DEFAULT
+              MSG(1) = "Undefined EVAPO parameter in FileX."
+              MSG(2) = "Unknown MEEVP in PET.for."
+              CALL WARNING(2,ERRKEY,MSG)
+              CALL ERROR(ERRKEY,1,FILEX,0)
 !         ------------------------
       END SELECT
 
       RETURN
       END SUBROUTINE PET
-      
+
 C=======================================================================
 
 C=======================================================================
 C  PETASCE, Subroutine, K. R. Thorp
 C  Calculates reference evapotranspiration for the short or tall
-C  reference crops using the ASCE Standardized Reference 
+C  reference crops using the ASCE Standardized Reference
 C  Evapotranspiration Equation.
-C  Adjusts reference evapotranspiration to potential soil water 
+C  Adjusts reference evapotranspiration to potential soil water
 C  evaporation and potential transpiration using FAO-56 dual crop
 C  coefficients, following FAO-56 (Allen et al., 1998) and the
 C  ASCE (2005) standardized reference ET algorithm.
 C  DeJonge K. C., Thorp, K. R., 2017. Implementing standardized
 C  reference evapotranspiration and dual crop coefficient approach
-C  in the DSSAT Cropping System Model. Transactions of the ASABE. 
+C  in the DSSAT Cropping System Model. Transactions of the ASABE.
 C  60(6):1965-1981.
+C  ASCE Task Committee on Standardization of Reference
+C  Evapotranspiration (Walter, I. A., Allen, R. G., Elliott, R.,
+C  Itenfisu, D., Brown, P., Jensen, M. E., Mecham, B., Howell, T. A.,
+C  Snyder, R., Eching, S., Spofford, T., Hattendorf, M., Martin, D.,
+C  Cuenca, R. H., Wright, J. L.), 2005. The ASCE Standardized Reference
+C  Evapotranspiration Equation. American Society of Civil Engineers,
+C  Reston, VA.
+C  Allen, R. G., Pereira, L. S., Raes, D., Smith, M., 1998.  FAO
+C  Irrigation and Drainage Paper No. 56. Crop Evapotranspiration:
+C  Guidelines for Computing Crop Water Requirements. Food and
+C  Agriculture Organization of the United Nations, Rome Italy.
 !-----------------------------------------------------------------------
 C  REVISION HISTORY
 C  08/19/2013 KRT Added the ASCE Standardize Reference ET approach
@@ -167,9 +192,9 @@ C  07/23/2020 KRT Changed flags to S and T for short and tall references
 !  Calls:         None
 C=======================================================================
       SUBROUTINE PETASCE(
-     &        CANHT, DOY, MSALB, MEEVP, SRAD, TDEW,       !Input 
-     &        TMAX, TMIN, WINDHT, WINDRUN, XHLAI,         !Input
-     &        XLAT, XELEV,                                !Input
+     &        CANHT, DOY, MSALB, MEEVP, NOTDEW, NOWIND,   !Input
+     &        RHUM, SRAD, TDEW, TMAX, TMIN, WINDHT,       !Input
+     &        WINDRUN, VAPR, XHLAI, XLAT, XELEV,          !Input
      &        EO)                                         !Output
 !-----------------------------------------------------------------------
       USE ModuleDefs
@@ -178,9 +203,11 @@ C=======================================================================
       SAVE
 !-----------------------------------------------------------------------
 !     INPUT VARIABLES:
-      REAL CANHT, MSALB, SRAD, TDEW, TMAX, TMIN, WINDHT, WINDRUN
+      REAL CANHT, MSALB, RHUM, SRAD, TDEW, TMAX, TMIN
+      REAL VAPR, WINDHT, WINDRUN
       REAL XHLAI, XLAT, XELEV
       INTEGER DOY
+      LOGICAL NOTDEW, NOWIND
       CHARACTER*1 MEEVP
 !-----------------------------------------------------------------------
 !     OUTPUT VARIABLES:
@@ -192,35 +219,46 @@ C=======================================================================
       REAL FCD, TK4, RNL, RN, G, WINDSP, WIND2m, Cn, Cd, KCMAX, RHMIN
       REAL WND, CHT
       REAL REFET, SKC, KCBMIN, KCBMAX, KCB, KE, KC
-      CHARACTER*78 MSG(2)
 !-----------------------------------------------------------------------
 
-!     ASCE Standardized Reference Evapotranspiration 
-!     Average temperature (ASCE Standard Eq. 2)
+!     ASCE Standardized Reference Evapotranspiration
+!     Average temperature, ASCE (2005) Eq. 2
       TAVG = (TMAX + TMIN) / 2.0 !deg C
 
-!     Atmospheric pressure (ASCE Standard Eq. 3)
+!     Atmospheric pressure, ASCE (2005) Eq. 3
       PATM = 101.3 * ((293.0 - 0.0065 * XELEV)/293.0) ** 5.26 !kPa
 
-!     Psychrometric constant (ASCE Standard Eq. 4)
+!     Psychrometric constant, ASCE (2005) Eq. 4
       PSYCON = 0.000665 * PATM !kPa/deg C
 
-!     Slope of the saturation vapor pressure-temperature curve 
-!     (ASCE Standard Eq. 5)                                !kPa/degC
+!     Slope of the saturation vapor pressure-temperature curve
+!     ASCE (2005) Eq. 5                                    !kPa/degC
       UDELTA = 2503.0*EXP(17.27*TAVG/(TAVG+237.3))/(TAVG+237.3)**2.0
 
-!     Saturation vapor pressure (ASCE Standard Eqs. 6 and 7)
+!     Saturation vapor pressure, ASCE (2005) Eqs. 6 and 7
       EMAX = 0.6108*EXP((17.27*TMAX)/(TMAX+237.3)) !kPa
       EMIN = 0.6108*EXP((17.27*TMIN)/(TMIN+237.3)) !kPa
       ES = (EMAX + EMIN) / 2.0                     !kPa
-      
-!     Actual vapor pressure (ASCE Standard Eq. 8)
-      EA = 0.6108*EXP((17.27*TDEW)/(TDEW+237.3)) !kPa
 
-!     RHmin (ASCE Standard Eq. 13, RHmin limits from FAO-56 Eq. 70)
+!     Actual vapor pressure, ASCE (2005) Table 3
+      IF (VAPR.GT.1.E-6) THEN
+        EA = VAPR !kPa
+      ELSEIF (.NOT.NOTDEW) THEN
+!       ASCE (2005) Eq. 8 
+        EA = 0.6108*EXP((17.27*TDEW)/(TDEW+237.3)) !kPa
+      ELSEIF (RHUM.GT.1.E-6) THEN 
+!       RHUM is relative humidity at TMIN (or max rel. hum) (%)
+!       ASCE (2005) Eq. 12
+        EA = EMIN * RHUM / 100. !kPa
+      ELSE
+!       ASCE (2005) Appendix E, assume TDEW=TMIN-2.0
+        EA = 0.6108*EXP((17.27*(TMIN-2.0))/((TMIN-2.0)+237.3)) !kPa
+      ENDIF
+
+!     RHmin, ASCE (2005) Eq. 13, RHmin limits from FAO-56 Eq. 70
       RHMIN = MAX(20.0, MIN(80.0, EA/EMAX*100.0))
-      
-!     Net shortwave radiation (ASCE Standard Eq. 16)
+
+!     Net shortwave radiation, ASCE (2005) Eq. 16
       IF (XHLAI .LE. 0.0) THEN
         ALBEDO = MSALB
       ELSE
@@ -228,7 +266,7 @@ C=======================================================================
       ENDIF
       RNS = (1.0-ALBEDO)*SRAD !MJ/m2/d
 
-!     Extraterrestrial radiation (ASCE Standard Eqs. 21,23,24,27)
+!     Extraterrestrial radiation, ASCE (2005) Eqs. 21,23,24,27
       PIE = 3.14159265359
       DR = 1.0+0.033*COS(2.0*PIE/365.0*DOY) !Eq. 23
       LDELTA = 0.409*SIN(2.0*PIE/365.0*DOY-1.39) !Eq. 24
@@ -237,11 +275,11 @@ C=======================================================================
       RA2 = COS(XLAT*PIE/180.0)*COS(LDELTA)*SIN(WS) !Eq. 21
       RA = 24.0/PIE*4.92*DR*(RA1+RA2) !MJ/m2/d Eq. 21
 
-!     Clear sky solar radiation (ASCE Standard Eq. 19)
+!     Clear sky solar radiation, ASCE (2005) Eq. 19
       RSO = (0.75+2E-5*XELEV)*RA !MJ/m2/d
 
-!     Net longwave radiation (ASCE Standard Eqs. 17 and 18)
-      RATIO = SRAD/RSO 
+!     Net longwave radiation, ASCE (2005) Eqs. 17 and 18
+      RATIO = SRAD/RSO
       IF (RATIO .LT. 0.3) THEN
         RATIO = 0.3
       ELSEIF (RATIO .GT. 1.0) THEN
@@ -251,18 +289,22 @@ C=======================================================================
       TK4 = ((TMAX+273.16)**4.0+(TMIN+273.16)**4.0)/2.0 !Eq. 17
       RNL = 4.901E-9*FCD*(0.34-0.14*SQRT(EA))*TK4 !MJ/m2/d Eq. 17
 
-!     Net radiation (ASCE Standard Eq. 15)
+!     Net radiation, ASCE (2005) Eq. 15
       RN = RNS - RNL !MJ/m2/d
 
-!     Soil heat flux (ASCE Standard Eq. 30)
+!     Soil heat flux, ASCE (2005) Eq. 30
       G = 0.0 !MJ/m2/d
 
-!     Wind speed (ASCE Standard Eq. 33)
-      WINDSP = WINDRUN * 1000.0 / 24.0 / 60.0 / 60.0 !m/s
-      WIND2m = WINDSP * (4.87/LOG(67.8*WINDHT-5.42))
+!     Wind speed, ASCE (2005) Eq. 33 and Appendix E
+      IF (NOWIND) THEN         
+        WIND2m = 2.0 !m/s
+      ELSE
+        WINDSP = WINDRUN * 1000.0 / 24.0 / 60.0 / 60.0 !m/s
+        WIND2m = WINDSP * (4.87/LOG(67.8*WINDHT-5.42))
+      ENDIF
 
 !     Aerodynamic roughness and surface resistance daily timestep constants
-!     (ASCE Standard Table 1)
+!     ASCE (2005) Table 1
       SELECT CASE(MEEVP) !
         CASE('S') !Short reference crop (12-cm grass)
           Cn = 900.0 !K mm s^3 Mg^-1 d^-1
@@ -272,7 +314,7 @@ C=======================================================================
           Cd = 0.38 !s m^-1
       END SELECT
 
-!     Standardized reference evapotranspiration (ASCE Standard Eq. 1)
+!     Standardized reference evapotranspiration, ASCE (2005) Eq. 1
       REFET =0.408*UDELTA*(RN-G)+PSYCON*(Cn/(TAVG+273.0))*WIND2m*(ES-EA)
       REFET = REFET/(UDELTA+PSYCON*(1.0+Cd*WIND2m)) !mm/d
       REFET = MAX(0.0001, REFET)
@@ -282,20 +324,10 @@ C=======================================================================
       CALL GET('SPAM', 'SKC', SKC)
       KCBMIN = 0.0
       CALL GET('SPAM', 'KCBMAX', KCBMAX)
-      IF (SKC .LT. 0.30 .OR. SKC .GT. 1.0) THEN
-          MSG(1) = "SKC for ASCE PET method is out of range."
-          CALL WARNING(2,"PET",MSG)
-          CALL ERROR("CSM",64,"",0)
-      ENDIF
-      IF (KCBMAX .LT. 0.25 .OR. KCBMAX .GT. 1.5) THEN
-          MSG(1) = "KCBMAX for ASCE PET method is out of range."
-          CALL WARNING(2,"PET",MSG)
-          CALL ERROR("CSM",64,"",0)
-      ENDIF
 
 !     Basal crop coefficient (Kcb)
 !     Also similar to FAO-56 Eq. 97
-!     KCB is zero when LAI is zero by hard coding KCBMIN = 0.0.      
+!     KCB is zero when LAI is zero by hard coding KCBMIN = 0.0.
       IF (XHLAI .LE. 0.0) THEN
          KCB = 0.0
       ELSE
@@ -321,7 +353,7 @@ C=======================================================================
       ELSE
          FC = ((KCB-KCBMIN)/(KCMAX-KCBMIN))**(1.0+0.5*CANHT)
       ENDIF
-      
+
       !Exposed and wetted soil fraction (FAO-56 Eq. 75)
       !Wetted soil fraction (FW) is hard-coded to 1.0.
       !FW should not be used to adjust demand.
@@ -341,14 +373,14 @@ C=======================================================================
 
       !Potential evapotranspiration (FAO-56 Eq. 69)
       EO = (KCB + KE) * REFET
-      
+
       EO = MAX(EO,0.0001)
-      
+
       CALL PUT('SPAM', 'REFET', REFET)
       CALL PUT('SPAM', 'KCB', KCB)
       CALL PUT('SPAM', 'KE', KE)
       CALL PUT('SPAM', 'KC', KC)
-      
+
 !-----------------------------------------------------------------------
       RETURN
       END SUBROUTINE PETASCE

@@ -57,20 +57,24 @@ C           SOILNI, YR_DOY, FLOOD_CHEM, OXLAYER
 C=======================================================================
 
       SUBROUTINE SoilNi (CONTROL, ISWITCH, 
-     &    DRN, ES, FERTDATA, FLOODWAT, IMM, LITC, MNR,    !Input
-     &    newCO2, SNOW, SOILPROP, SSOMC, ST, SW, TDFC,    !Input
-     &    TDLNO, TILLVALS, UNH4, UNO3, UPFLOW, WEATHER,   !Input
-     &    XHLAI,                                          !Input
+     &    CH4_data, DRN, ES, FERTDATA, FLOODWAT, IMM,     !Input
+     &    LITC, MNR, newCO2, SNOW, SOILPROP, SSOMC, ST,   !Input
+     &    SW, TDFC, TDLNO, TILLVALS, UNH4, UNO3, UPFLOW,  !Input
+     &    WEATHER, XHLAI,                                 !Input
      &    FLOODN,                                         !I/O
      &    NH4, NO3, NH4_plant, NO3_plant, UPPM)           !Output
 
 !-----------------------------------------------------------------------
-      USE N2O_mod 
+      USE GHG_mod 
       USE FertType_mod
       USE ModuleData
       USE FloodModule
       USE ModSoilMix
       IMPLICIT  NONE
+      EXTERNAL DENIT_CERES, INCDAT, YR_DOY, OPSOILNI, 
+     &  SOILNI_INIT, NCHECK_INORG, FLOOD_CHEM, OXLAYER, DENIT_DAYCENT, 
+     &  NOX_PULSE, INCYD, DAYCENT_DIFFUSIVITY, NFLUX
+
       SAVE
 !-----------------------------------------------------------------------
       CHARACTER*1 ISWNIT, MEGHG
@@ -133,6 +137,7 @@ C=======================================================================
       REAL CN2,       TN2D,                    N2flux(NL)   !N2 detnitr
 
 !     Added for GHG model
+      TYPE (CH4_type) CH4_data
       REAL, DIMENSION(NL) :: dD0, NO_N2O_ratio
       REAL, DIMENSION(0:NL) :: newCO2
       REAL pn2onitrif, NH4_to_NO, NITRIF_to_NO
@@ -162,6 +167,24 @@ C=======================================================================
       TYPE (TillType)    TILLVALS
       TYPE (WeatherType) WEATHER
       
+!     Interface required because N2O_data is optional variable
+      INTERFACE
+        SUBROUTINE SoilNiBal(CONTROL, ISWITCH, 
+     &      ALGFIX, CIMMOBN, CMINERN, CUMFNRO, FERTDATA, NBUND, CLeach,
+     &      CNTILEDR, TNH4, TNO3, TOTAML, TOTFLOODN, TUREA, WTNUP,
+     &      N2O_data) 
+          USE GHG_mod
+          USE FertType_mod
+          TYPE (ControlType), INTENT(IN) :: CONTROL
+          TYPE (SwitchType),  INTENT(IN) :: ISWITCH
+          TYPE (FertType),    INTENT(IN) :: FertData
+          TYPE (N2O_type), INTENT(IN), OPTIONAL :: N2O_DATA
+          INTEGER, INTENT(IN) :: NBUND
+          REAL, INTENT(IN) :: ALGFIX, CIMMOBN, CMINERN, CUMFNRO, CLeach,
+     &      CNTILEDR, TNH4, TNO3, TOTAML, TOTFLOODN, TUREA, WTNUP
+        END SUBROUTINE SoilNiBal
+      END INTERFACE
+
 !      PI = 3.1416
       
 !     Transfer values from constructed data types into local variables.
@@ -283,9 +306,9 @@ C=======================================================================
         SELECT CASE(MEGHG)
         CASE("1")
           CALL Denit_DayCent (CONTROL, ISWNIT, 
-     &    dD0, newCO2, NO3, SNO3, SOILPROP, SW,       !Input
-     &    DLTSNO3,                                    !I/O
-     &    CNOX, TNOXD, N2O_data)                      !Output
+     &    dD0, newCO2, NO3, SNO3, SOILPROP,       !Input
+     &    DLTSNO3,                                !I/O
+     &    CNOX, TNOXD, N2O_data)                  !Output
 
         CASE DEFAULT
           CALL Denit_Ceres (CONTROL, ISWNIT, 
@@ -297,7 +320,9 @@ C=======================================================================
 
       CALL N2Oemit(CONTROL, ISWITCH, dD0, SOILPROP, N2O_DATA) 
 
-      CALL OpN2O(CONTROL, ISWITCH, SOILPROP, newCO2, N2O_DATA) 
+      CALL OpN2O(CONTROL, ISWITCH, SOILPROP, N2O_DATA) 
+
+      CALL OPGHG(CONTROL, ISWITCH, N2O_data, CH4_data)
 
       IF (CONTROL%RUN .EQ. 1 .OR. INDEX('QF',CONTROL%RNMODE) .LE. 0)THEN
         call nox_pulse (dynamic, rain, snow, nox_puls)
@@ -717,9 +742,9 @@ C=======================================================================
         SELECT CASE(MEGHG)
         CASE("1","2")
           CALL Denit_DayCent (CONTROL, ISWNIT, 
-     &    dD0, newCO2, NO3, SNO3, SOILPROP, SW,       !Input
-     &    DLTSNO3,                                    !I/O
-     &    CNOX, TNOXD, N2O_data)                      !Output
+     &    dD0, newCO2, NO3, SNO3, SOILPROP,       !Input
+     &    DLTSNO3,                                !I/O
+     &    CNOX, TNOXD, N2O_data)                  !Output
 
         CASE DEFAULT
           CALL Denit_Ceres (CONTROL, ISWNIT, 
@@ -954,7 +979,7 @@ C=======================================================================
       IF (DYNAMIC .EQ. SEASINIT) THEN
         CALL SoilNiBal (CONTROL, ISWITCH,
      &    ALGFIX, CIMMOBN, CMINERN, CUMFNRO, FERTDATA, NBUND, CLeach,  
-     &    CNTILEDR, TNH4, TNO3, CNOX, TOTAML, TOTFLOODN, TUREA, WTNUP,
+     &    CNTILEDR, TNH4, TNO3, TOTAML, TOTFLOODN, TUREA, WTNUP,
      &    N2O_data) 
 
         CALL OpSoilNi(CONTROL, ISWITCH, SoilProp, 
@@ -989,13 +1014,14 @@ C     Write daily output
      &    ALGFIX, BD1, CUMFNRO, TOTAML, TOTFLOODN)        !Output
       ENDIF
 
-
       CALL SoilNiBal (CONTROL, ISWITCH,
      &    ALGFIX, CIMMOBN, CMINERN, CUMFNRO, FERTDATA, NBUND, CLeach,  
-     &    CNTILEDR, TNH4, TNO3, CNOX, TOTAML, TOTFLOODN, TUREA, WTNUP,
-     &	  N2O_data) 
+     &    CNTILEDR, TNH4, TNO3, TOTAML, TOTFLOODN, TUREA, WTNUP,
+     &    N2O_data) 
 
-      CALL OpN2O(CONTROL, ISWITCH, SOILPROP, newCO2, N2O_DATA) 
+      CALL OpN2O(CONTROL, ISWITCH, SOILPROP, N2O_DATA) 
+
+      CALL OPGHG(CONTROL, ISWITCH, N2O_data, CH4_data)
 
 C***********************************************************************
 C***********************************************************************
