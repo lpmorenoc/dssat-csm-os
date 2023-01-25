@@ -176,14 +176,14 @@ C  Calls:     None
 !        IF (ISWPHO .NE. 'N') THEN
           WRITE (NOUTDG, 100) "Root Dens. (cm/cm3) by soil ",
      &      "depth (cm):",(SoilProp%LayerText(L), L=1,N_LYR)
-  100     FORMAT("!",244X,A,A,/,"!",239X,10A8) 
+  100     FORMAT("!",249X,A,A,/,"!",245X,10A8) 
 !        ELSE
 !          WRITE (NOUTDG,102) (SoilProp%LayerText(L), L=1,N_LYR)
 !  102     FORMAT("!",216X,"Soil Layer depths (cm):",/,"!",211X,10A8)
 !        ENDIF
 
         WRITE (NOUTDG,200, ADVANCE='NO')
-  200   FORMAT('@YEAR DOY   DAS   DAP',
+  200   FORMAT('@YEAR DOY   DAS   DAP    CR',
      &         '   L#SD   GSTD   LAID   LWAD   SWAD   GWAD',
      &         '   RWAD   VWAD   CWAD   G#AD    GWGD   HIAD   PWAD',
      &         '   P#AD   WSPD   WSGD   NSTD')
@@ -230,7 +230,7 @@ C  Calls:     None
         CALL HEADER(SEASINIT, NOUTPN, RUN)
 
         WRITE (NOUTPN,230)
-  230   FORMAT('@YEAR DOY   DAS   DAP',
+  230   FORMAT('@YEAR DOY   DAS   DAP    CR',
      &      '    CNAD    GNAD    VNAD    GN%D    VN%D     NFXC    NUPC',
      &      '    LNAD    SNAD    LN%D    SN%D    SHND',
 !CHP &      '  RN%D  NFXD')
@@ -254,7 +254,7 @@ C  Calls:     None
         CALL HEADER(SEASINIT, NOUTPC, RUN)
 
         WRITE (NOUTPC,250)
-  250   FORMAT('@YEAR DOY   DAS   DAP   TWAD    PHAD',
+  250   FORMAT('@YEAR DOY   DAS   DAP    CR   TWAD    PHAD',
      &      '    CMAD    CGRD    GRAD    MRAD    CHAD   CL%D   CS%D',
      &      '   TGNN   TGAV    GN%D    GL%D    GC%D')
         END IF ! VSH
@@ -386,12 +386,12 @@ C-----------------------------------------------------------------------
 
           IF (FMOPT == 'A' .OR. FMOPT == ' ') THEN   ! VSH
           WRITE (NOUTDG,310, ADVANCE='NO')
-     &        YEAR, DOY, DAS, DAP, VSTAGE, RSTAGE, XLAI,
+     &        YEAR, DOY, DAS, DAP, CROP,VSTAGE, RSTAGE, XLAI,
      &        NINT(WTLF*10.), NINT(STMWT*10.), NINT(SDWT*10.),
      &        NINT(RTWT*10.), VWAD, NINT(TOPWT*10.), NINT(SEEDNO), 
      &        SDSIZE, HI, NINT(PODWT*10.), NINT(PODNO), SWF_AV, TUR_AV,
      &        NST_AV
-  310     FORMAT (1X,I4,1X,I3.3,2(1X,I5),
+  310     FORMAT (1X,I4,1X,I3.3,2(1X,I5),4X, A2,
      &        1X,F6.1,1X,I6,1X,F6.3,   7(1X,I6),
      &        1X,F7.1,1X,F6.3,2(1X,I6),3(1X,F6.3))
 
@@ -475,11 +475,11 @@ C-----------------------------------------------------------------------
           ENDIF
 
           IF (FMOPT == 'A' .OR. FMOPT == ' ') THEN       ! VSH
-          WRITE (NOUTPN,410) YEAR, DOY, DAS, DAP, (WTNCAN*10), 
+          WRITE (NOUTPN,410) YEAR, DOY, DAS, DAP, CROP, (WTNCAN*10), 
      &       (WTNSD*10), (WTNVEG*10), PCNSDP, PCNVEG, (WTNFX*10),
      &       (WTNUP*10), (WTNLF*10), (WTNST*10), PCNLP, PCNSTP,
      &       PCNSHP, PCNRTP, NFIXN*10, CUMSENSURFN, CUMSENSOILN
-  410     FORMAT(1X,I4,1X,I3.3,2(1X,I5),3(1X,F7.1),2(1X,F7.2),1X,
+  410     FORMAT(1X,I4,1X,I3.3,2(1X,I5),4X,A2,3(1X,F7.1),2(1X,F7.2),1X,
      &       2(1X,F7.1),2(1X,F7.1),2(1X,F7.2),1X,F7.1,2(1X,F6.1),
      &       2(1X,F7.2))
           END IF    ! VSH
@@ -506,13 +506,13 @@ C-----------------------------------------------------------------------
       END IF
 C-----------------------------------------------------------------------
           IF (FMOPT == 'A' .OR. FMOPT == ' ') THEN ! VSH
-          WRITE (NOUTPC,510) YEAR, DOY, DAS, DAP,
+          WRITE (NOUTPC,510) YEAR, DOY, DAS, DAP, CROP,
      &        NINT(TOTWT*10), PG, CMINEA, GROWTH,
      &        GRWRES, MAINR, (CADLF + CADST), RHOLP, RHOSP,
      &        TGRO(TS/2), TGROAV, PCNSDP, PCLSDP, PCCSDP
 C       changed from 12 to TS/2 on 9Jul17 by Bruce Kimball
-  510     FORMAT(1X,I4,1X,I3.3,2(1X,I5),1X,I6,5(F8.4),F8.5,2(F7.3),
-     &        2(1X,F6.3),3(1X,F7.4))
+  510     FORMAT(1X,I4,1X,I3.3,2(1X,I5),4X,A2,1X,I6,5(F8.4),F8.5,
+     &        2(F7.3),2(1X,F6.3),3(1X,F7.4))
 !  510     FORMAT(1X,I4,1X,I3.3,2(1X,I5),1X,I6,6(1X,F7.2),2(1X,F6.1),
 !     &        2(1X,F6.1),3(1X,F7.2))
           END IF   ! VSH
