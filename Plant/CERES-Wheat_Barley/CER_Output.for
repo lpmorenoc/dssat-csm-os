@@ -140,7 +140,7 @@
               ENDIF
               ! Write variable headings
               WRITE (NOUTPG,2201)
- 2201         FORMAT ('@YEAR DOY   DAS   DAP TMEAN TKILL',
+ 2201         FORMAT ('@YEAR DOY   DAS   DAP    CR TMEAN TKILL',
      &        '  GSTD  L#SD',
      &        ' PARID PARUD  AWAD',
      &        '  LAID  SAID  CAID',
@@ -157,7 +157,7 @@
      
               WRITE (NOUTPN,2251)
 !             2021-02-15 chp Change NUAD to NUAC in header.
- 2251         FORMAT ('@YEAR DOY   DAS   DAP TMEAN  GSTD  NUAC',
+ 2251         FORMAT ('@YEAR DOY   DAS   DAP    CR TMEAN  GSTD  NUAC',
      &        '  TNAD SDNAD  RNAD  CNAD  LNAD  SNAD  HNAD  HIND',
      &        ' RSNAD SNNPD SNN0D SNN1D',
      B        '  RN%D  LN%D  SN%D  HN%D SDN%D  VN%D',
@@ -185,7 +185,7 @@
      &           month,dom,yearplt,NINT(pltpopp),NINT(rowspc)
               ENDIF 
               WRITE (NOUTPG2,2252)
- 2252         FORMAT ('@YEAR DOY   DAS   DAP TMEAN  GSTD  RSTD',
+ 2252         FORMAT ('@YEAR DOY   DAS   DAP    CR TMEAN  GSTD  RSTD',
      A        ' LAIPD LAISD  LAID  CHTD SDWAD SNWLD SNWSD',
      a        '  H#AD  HWUD',
      B        ' SHRTD  PTFD  RDPD',
@@ -210,14 +210,14 @@
      &           month,dom,yearplt,NINT(pltpopp),NINT(rowspc)
               ENDIF
               WRITE (NOUTPGF,2215)
- 2215         FORMAT ('!........DATES.......  TEMP STAGE ',
-     N        ' ...PHENOLOGY.... ',
+ 2215         FORMAT ('!........DATES.......      ',
+     N        '   TEMP STAGE ...PHENOLOGY.... ',
      1        ' .......PHOTOSYNTHESIS....... ', 
      M        ' .....GROWTH.....  ..TILLERS. ',
      2        'WATER STRESS DETERMINANTS',
      2        ' N STRESS DETERMINANTS       ')
               WRITE (NOUTPGF,2205)
- 2205         FORMAT ('@YEAR DOY   DAS   DAP TMEAN  GSTD',
+ 2205         FORMAT ('@YEAR DOY   DAS   DAP    CR TMEAN  GSTD',
      N        '    DU VRNFD DYLFD TFGEM  WFGE',
      1        '  TFPD  WFPD  NFPD CO2FD RSFPD', 
      M        '  TFGD  WFGD  NFGD  WFTD  NFTD',
@@ -275,7 +275,7 @@
 
               IF (IDETG.NE.'N') THEN
               WRITE (NOUTPG,
-     &        '(I5,I4,2I6,2F6.1,
+     &        '(I5,I4,2I6,A6,2F6.1,
      &        2F6.2,
      &        2F6.2,F6.1,F6.2,F6.3,
      &        F6.2,
@@ -290,7 +290,7 @@
      &        2F6.2,
      &        2F6.2,
      &        F6.1)')      
-     &        YEAR,DOY,DAS,DAP,TMEAN,TKILL,
+     &        YEAR,DOY,DAS,DAP,CROP,TMEAN,TKILL,
      &        ZSTAGE,LNUMSD,   ! Zadoks staging
 !     &        XSTAGE,LNUMSD,    ! Ceres staging
      &        PARIOUT,PARUED,AMIN1(999.9,CARBOA),
@@ -335,13 +335,13 @@
               CALL Csopline(gstagec,Zstage)
               !L = MAX(1,LNUMSG-INT(LLIFG))
               WRITE (NOUTPG2,503)
-     A         YEAR,DOY,DAS,DAP,TMEAN,GSTAGEC,RSTAGE,
+     A         YEAR,DOY,DAS,DAP,CROP,TMEAN,GSTAGEC,RSTAGE,
      B         LAIPRODC,SENLA*PLTPOP*0.0001,LAIC,CANHTC,SDWAD,
      &         SENW0C,SENWSC,
      &         NINT(GRNUMAD),hwudc,
      D         SHRTD,PTF,RTDEP/100.0,(RLV(I),I=1,10)
   503         FORMAT(
-     A         I5,I4,2I6,F6.1,A6,F6.2,
+     A         I5,I4,2I6,A6,F6.1,A6,F6.2,
      B         A6,F6.2,A6,A6,F6.1,2A6,I6,A6,
      D         2F6.2,F6.3,10F6.2)
              
@@ -358,14 +358,14 @@
             
               ! Plant Growth factors outputs
               WRITE (NOUTPGF,507)
-     A        YEAR,DOY,DAS,DAP,TMEAN,ZSTAGE,
+     A        YEAR,DOY,DAS,DAP,CROP,TMEAN,ZSTAGE,
      B        DU,1.0-VF,1.0-DF,1.0-TFGEM,1.0-WFGE,
      C        1.0-TFP,1.0-WFP,1.0-NFP,1.0-CO2FP,1.0-RSFP,
      D        1.0-TFG,1.0-WFG,1.0-NFG,1.0-WFT,1.0-NFT,
      H        AMIN1(99.9,WAVR),AMIN1(15.0,WUPR),H2OA,EOP,
      I        SNH4PROFILE+SNO3PROFILE,LCNF,SCNF,RCNF
   507         FORMAT(
-     a        I5,I4,2I6,F6.1,F6.1,
+     a        I5,I4,2I6,A6,F6.1,F6.1,
      b        F6.1,4F6.2,
      c        5F6.2,
      d        5F6.2,
@@ -392,7 +392,7 @@
                 CALL Csopline(senn0c,sennal(0))
                 CALL Csopline(sennsc,sennas)
                 WRITE (NOUTPN,'(
-     &           I5,I4,2I6,F6.1,F6.2,F6.1,
+     &           I5,I4,2I6,A6,F6.1,F6.2,F6.1,
      &           F6.1,F6.2,
      &           F6.2,
      &           3F6.1,
@@ -402,7 +402,7 @@
      &           3F6.2,
      &           F6.1,F6.2,
      &           2F6.2)')
-     &           YEAR,DOY,DAS,DAP,TMEAN,ZSTAGE,NUAD,
+     &           YEAR,DOY,DAS,DAP,CROP,TMEAN,ZSTAGE,NUAD,
 !    &           YEAR,DOY,DAS,DAP,TMEAN,ZSTAGE,
 !    &           Nuptake_daily,
      &           TNAD,SDNAD,
