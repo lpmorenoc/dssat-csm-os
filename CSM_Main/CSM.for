@@ -95,6 +95,7 @@ C-----------------------------------------------------------------------
       CHARACTER*120 FILECTL !12/11/08 control file includes path
       CHARACTER*120 PATHX
       CHARACTER*130 CHARTEST
+      CHARACTER*30  FILEIOM(NumOfCrops)
 
       INTEGER       YRDOY,YRSIM,YRPLT,MDATE,YREND,YR,ISIM, YR0, ISIM0
       INTEGER       MULTI,NYRS,INCYD,YEAR,DOY,DAS,TIMDIF,ENDYRS
@@ -103,7 +104,7 @@ C-----------------------------------------------------------------------
       INTEGER       LUNBIO,LINBIO,ISECT,IFIND,LN, LNUM, FOUND
       INTEGER       NREPS, REPNO,END_POS, ROTNUM, TRTREP, NARG
       INTEGER       OPNUM, CRPN
-      INTEGER, DIMENSION(2) :: CROPNUM
+      INTEGER, DIMENSION(NumOfCrops) :: CROPNUM
 
       LOGICAL       FEXIST, DONE
 
@@ -297,7 +298,7 @@ C***********************************************************************
       ENDIF
 
       IF (INDEX('M',RNMODE) .GT. 0) THEN
-        !DO WHILE (CRPN .LT. 2)
+        DO WHILE (CRPN .LT. NumOfCrops)
           CRPN = CRPN +1
            CALL IGNORE (LUNBIO,LINBIO,ISECT,CHARTEST)
          IF (ISECT .EQ. 1) THEN
@@ -312,7 +313,11 @@ C***********************************************************************
            DONE = .TRUE.
            GO TO 2000
          ENDIF
-        !ENDDO
+          CALL INPUT_SUB(
+     &    FILECTL, FILEIO, FILEX, MODELARG, PATHEX,       !Input
+     &    RNMODE, ROTNUM, RUN, TRTNUM, CROPNUM(CRPN),     !Input
+     &    ISWITCH, CONTROL)                               !Output
+        ENDDO
       ENDIF
       CONTROL % FILEIO  = FILEIO
       CONTROL % FILEX   = FILEX
@@ -336,7 +341,7 @@ C-----------------------------------------------------------------------
       IF (RNMODE .NE. 'D') THEN
         CALL INPUT_SUB(
      &    FILECTL, FILEIO, FILEX, MODELARG, PATHEX,       !Input
-     &    RNMODE, ROTNUM, RUN, TRTNUM, CROPNUM,           !Input
+     &    RNMODE, ROTNUM, RUN, TRTNUM, CROPNUM(CRPN),     !Input
      &    ISWITCH, CONTROL)                               !Output
       ELSE
         FILEX = '            '    !Debug mode - no FILEX

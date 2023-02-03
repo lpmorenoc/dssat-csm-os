@@ -115,10 +115,7 @@ C  Calls:     None
             IF (RNMODE == 'M') THEN 
                OUTG  = 'PlantGro_'//CROP//'.OUT'
                OUTPN  = 'PlantN_'//CROP//'.OUT  '
-               OUTPC  = 'PlantC_'//CROP//'.OUT  '
-               CALL GETLUN(OUTG,  NOUTDG)
-               CALL GETLUN(OUTPN, NOUTPN)
-               CALL GETLUN(OUTPC, NOUTPC) 
+               OUTPC  = 'PlantC_'//CROP//'.OUT  ' 
                INQUIRE (FILE = OUTG, EXIST = FEXIST)
                IF (FEXIST) THEN
                    OPEN (UNIT=NOUTDG,FILE=OUTG,STATUS='UNKNOWN')
@@ -134,6 +131,9 @@ C  Calls:     None
                    OPEN (UNIT=NOUTPC,FILE=OUTPC,STATUS='UNKNOWN')
                    CLOSE (UNIT = NOUTPC, STATUS = 'DELETE')
                ENDIF
+               CALL GETLUN(OUTG,  NOUTDG)
+               CALL GETLUN(OUTPN, NOUTPN)
+               CALL GETLUN(OUTPC, NOUTPC)
             ELSE
                OUTG  = 'PlantGro.OUT'
                OUTPN  = 'PlantN.OUT  '

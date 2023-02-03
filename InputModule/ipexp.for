@@ -360,7 +360,7 @@ C-GH        TRTN   = 1
          TRTN = TRTNUM
          ROTN = ROTNUM
          I = 999
-       ELSEIF (INDEX ('NQGSFBECTYM',RNMODE) .GT. 0) THEN
+       ELSEIF (INDEX ('NQGSFBECTY',RNMODE) .GT. 0) THEN
 !         READ (TRNARG(1:6),'(I6)') TRTN
          TRTN = TRTNUM
          I = 999

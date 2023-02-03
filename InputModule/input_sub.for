@@ -80,7 +80,7 @@ C=======================================================================
 !      PROGRAM INPUT_PROGRAM
       SUBROUTINE INPUT_SUB(
      &    FILECTL, FILEIO, FILEX, MODELARG, PATHEX,       !Input
-     &    RNMODE, ROTNUM, RUN, TRTNUM, CROPNUM,            !Input
+     &    RNMODE, ROTNUM, RUN, TRTNUM, CROPNUM,           !Input
      &    ISWITCH, CONTROL)                               !Output
 
       USE ModuleDefs
@@ -118,7 +118,7 @@ C=======================================================================
       INTEGER       NFORC,NDOF,PMTYPE,ISENS, TRTNUM, ROTNUM
       INTEGER       LNSIM,LNCU,LNHAR,LNENV,LNTIL,LNCHE
       INTEGER       LNFLD,LNSA,LNIC,LNPLT,LNIR,LNFER,LNRES
-      INTEGER, DIMENSION(2) :: CROPNUM
+      INTEGER       CROPNUM
 
 !      INTEGER       IP,IPX
       INTEGER       IPX
