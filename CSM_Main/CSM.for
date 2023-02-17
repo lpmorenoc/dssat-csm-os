@@ -313,10 +313,10 @@ C***********************************************************************
            DONE = .TRUE.
            GO TO 2000
          ENDIF
-    !      CALL INPUT_SUB(
-    ! &    FILECTL, FILEIO, FILEX, MODELARG, PATHEX,       !Input
-    ! &    RNMODE, ROTNUM, RUN, TRTNUM, CROPNUM(CRPN),     !Input
-    ! &    ISWITCH, CONTROL)                               !Output
+          CALL INPUT_SUB(
+     &    FILECTL, FILEIO, FILEX, MODELARG, PATHEX,       !Input
+     &    RNMODE, ROTNUM, RUN, TRTNUM, CROPNUM(CRPN),     !Input
+     &    ISWITCH, CONTROL)                               !Output
       ENDDO
       ENDIF
       CONTROL % FILEIO  = FILEIO
@@ -338,7 +338,7 @@ C-KRT*************************************************************
 C-----------------------------------------------------------------------
 C    Run INPUT module
 C-----------------------------------------------------------------------
-      IF (RNMODE .NE. 'D') THEN
+      IF (RNMODE .NE. 'D'.OR. RNMODE .NE. 'M') THEN
         CALL INPUT_SUB(
      &    FILECTL, FILEIO, FILEX, MODELARG, PATHEX,       !Input
      &    RNMODE, ROTNUM, RUN, TRTNUM, CROPNUM(CRPN),     !Input
