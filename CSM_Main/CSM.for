@@ -313,11 +313,11 @@ C***********************************************************************
            DONE = .TRUE.
            GO TO 2000
          ENDIF
-          CALL INPUT_SUB(
-     &    FILECTL, FILEIO, FILEX, MODELARG, PATHEX,       !Input
-     &    RNMODE, ROTNUM, RUN, TRTNUM, CROPNUM(CRPN),     !Input
-     &    ISWITCH, CONTROL)                               !Output
-        ENDDO
+    !      CALL INPUT_SUB(
+    ! &    FILECTL, FILEIO, FILEX, MODELARG, PATHEX,       !Input
+    ! &    RNMODE, ROTNUM, RUN, TRTNUM, CROPNUM(CRPN),     !Input
+    ! &    ISWITCH, CONTROL)                               !Output
+      ENDDO
       ENDIF
       CONTROL % FILEIO  = FILEIO
       CONTROL % FILEX   = FILEX
@@ -601,6 +601,9 @@ C-----------------------------------------------------------------------
         ELSE
           RUN = 0
         ENDIF
+      
+      ELSE IF (INDEX('M',RNMODE).GT. 0) THEN
+          DONE = .TRUE.
 
       ELSE IF (INDEX('IE',RNMODE) .GT. 0) THEN
         WRITE(*,1700)
