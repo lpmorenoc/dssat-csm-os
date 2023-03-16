@@ -1,0 +1,169 @@
+*** *  DSSAT PROFILE LINUX* ***
+DDB // /home/lmo284/dssat48
+DTB // /home/lmo284/dssat48
+DTE // /home/lmo284/dssat48
+DTO // /home/lmo284/dssat48
+DAT // /home/lmo284/dssat48
+DPT // /home/lmo284/dssat48
+DIM // /home/lmo284/dssat48
+DTP // /home/lmo284/dssat48
+DPF // /home/lmo284/dssat48
+DFO // /home/lmo284/dssat48
+DIS // /home/lmo284/dssat48
+DDW // /home/lmo284/dssat48
+DWG // /home/lmo284/dssat48
+DWC // /home/lmo284/dssat48
+DDS // /home/lmo284/dssat48
+DTS // /home/lmo284/dssat48
+DDG // /home/lmo284/dssat48
+DCG // /home/lmo284/dssat48/TOOLS/GENCALC GENCALC2.EXE
+DGL // /home/lmo284/dssat48/TOOLS/GLUE GLUE.BAT
+DPM // /home/lmo284/dssat48
+DDE // /home/lmo284/dssat48
+TOG // /home/lmo284/dssat48/TOOLS/GBUILD GBUILD.EXE
+
+MAL // /home/lmo284/dssat48 dscsm048 PRFRM048
+MBA // /home/lmo284/dssat48 dscsm048 CSCER048
+MBH // /home/lmo284/dssat48 dscsm048 CRGRO048
+MBM // /home/lmo284/dssat48 dscsm048 PRFRM048
+MBN // /home/lmo284/dssat48 dscsm048 CRGRO048
+MBR // /home/lmo284/dssat48 dscsm048 PRFRM048
+MBS // /home/lmo284/dssat48 dscsm048 BSCER048
+MCB // /home/lmo284/dssat48 dscsm048 CRGRO048
+MCH // /home/lmo284/dssat48 dscsm048 CRGRO048
+MCT // /home/lmo284/dssat48
+MCN // /home/lmo284/dssat48 dscsm048 CRGRO048
+MCI // /home/lmo284/dssat48 dscsm048 CRGRO048
+MCO // /home/lmo284/dssat48 dscsm048 CRGRO048
+MCP // /home/lmo284/dssat48 dscsm048 CRGRO048
+MCS // /home/lmo284/dssat48 dscsm048 CSYCA048
+MCV // /home/lmo284/dssat48
+MFA // /home/lmo284/dssat48 dscsm048 CRGRO048
+MFB // /home/lmo284/dssat48 dscsm048 CRGRO048
+MGB // /home/lmo284/dssat48 dscsm048 CRGRO048
+MGG // /home/lmo284/dssat48 dscsm048 PRFRM048
+MGW // /home/lmo284/dssat48
+MLT // /home/lmo284/dssat48 dscsm048 CRGRO048
+MML // /home/lmo284/dssat48 dscsm048 MLCER048
+MMZ // /home/lmo284/dssat48 dscsm048 MZCER048
+MNN // /home/lmo284/dssat48
+MNP // /home/lmo284/dssat48 dscsm048 CRGRO048
+MPE // /home/lmo284/dssat48 dscsm048 CRGRO048
+MPI // /home/lmo284/dssat48 dscsm048 PIALO048
+MPN // /home/lmo284/dssat48 dscsm048 CRGRO048
+MPO // /home/lmo284/dssat48 dscsm048 PRFRM048
+MPP // /home/lmo284/dssat48 dscsm048 CRGRO048
+MPR // /home/lmo284/dssat48 dscsm048 CRGRO048
+MPT // /home/lmo284/dssat48 dscsm048 PTSUB048
+MQU // /home/lmo284/dssat48 dscsm048 CRGRO048
+MRI // /home/lmo284/dssat48 dscsm048 RICER048
+MRP // /home/lmo284/dssat48
+MSB // /home/lmo284/dssat48 dscsm048 CRGRO048
+MSC // /home/lmo284/dssat48 dscsm048 SCCAN048
+MSF // /home/lmo284/dssat48 dscsm048 CRGRO048
+MSG // /home/lmo284/dssat48 dscsm048 SGCER048
+MSI // /home/lmo284/dssat48
+MSS // /home/lmo284/dssat48 dscsm048 CRGRO048
+MSU // /home/lmo284/dssat48 dscsm048 CRGRO048
+MSW // /home/lmo284/dssat48 dscsm048 SWCER048
+MTF // /home/lmo284/dssat48 dscsm048 TFAPS048
+MTM // /home/lmo284/dssat48 dscsm048 CRGRO048
+MTN // /home/lmo284/dssat48 dscsm048 TNARO048
+MTR // /home/lmo284/dssat48 dscsm048 TRARO048
+MVB // /home/lmo284/dssat48 dscsm048 CRGRO048
+MWH // /home/lmo284/dssat48 dscsm048 CSCER048
+MOT // /home/lmo284/dssat48
+MU1 // /home/lmo284/dssat48
+MU2 // /home/lmo284/dssat48
+MIO // /home/lmo284/dssat48
+MLO // /home/lmo284/dssat48
+
+MGR // /home/lmo284/dssat48
+NSH // /home/lmo284/dssat48
+ASP // /home/lmo284/dssat48
+ASS // /home/lmo284/dssat48 dscsm048
+ASA // /home/lmo284/dssat48 VARAN2.EXE
+AGR // /home/lmo284/dssat48
+AQS // /home/lmo284/dssat48 dscsm048
+AQA // /home/lmo284/dssat48 SUSTAIN2.EXE
+ASX // /home/lmo284/dssat48
+APS // /home/lmo284/dssat48 dscsm048
+APV // /home/lmo284/dssat48
+APM // /home/lmo284/dssat48
+APA // /home/lmo284/dssat48 VARAN2.EXE
+APJ // /home/lmo284/dssat48
+APF // /home/lmo284/dssat48
+APP // /home/lmo284/dssat48
+APK // /home/lmo284/dssat48 DISC9801.EXE
+TOE // /WINDOWS NOTEPAD.EXE
+TOS // /
+TOM // /
+STD // /home/lmo284/dssat48/StandardData
+CDD // /home/lmo284/dssat48
+WED // /home/lmo284/dssat48/Weather
+WGD // /home/lmo284/dssat48/Weather/Gen
+CLD // /home/lmo284/dssat48/Weather/Climate
+WMD // /home/lmo284/dssat48/Weather/Month
+SLD // /home/lmo284/dssat48/Soil
+CRD // /home/lmo284/dssat48/Genotype
+FID // /home/lmo284/dssat48/Background
+ALD // /home/lmo284/dssat48/Alfalfa
+GCD // /home/lmo284/dssat48/GCWork
+GUD // /home/lmo284/dssat48/GLWork
+BAD // /home/lmo284/dssat48/Barley
+BHD // /home/lmo284/dssat48/Bahia
+BMD // /home/lmo284/dssat48/Bermudagrass
+BND // /home/lmo284/dssat48/Drybean
+BRD // /home/lmo284/dssat48/Brachiaria
+BSD // /home/lmo284/dssat48/Sugarbeet
+CBD // /home/lmo284/dssat48/Cabbage
+CHD // /home/lmo284/dssat48/Chickpea
+CID // /home/lmo284/dssat48/Chia
+CTD // /home/lmo284/dssat48/Citrus
+CND // /home/lmo284/dssat48/Canola
+COD // /home/lmo284/dssat48/Cotton
+CPD // /home/lmo284/dssat48/Cowpea
+CSD // /home/lmo284/dssat48/Cassava
+CVD // /home/lmo284/dssat48/Clover
+FAD // /home/lmo284/dssat48/Fallow
+FBD // /home/lmo284/dssat48/Fababean
+GBD // /home/lmo284/dssat48/GreenBean
+GGD // /home/lmo284/dssat48/Guineagrass
+LTD // /home/lmo284/dssat48/Lentil
+MLD // /home/lmo284/dssat48/Millet
+MZD // /home/lmo284/dssat48/Maize
+NND // /home/lmo284/dssat48/Banana
+NPD // /home/lmo284/dssat48/Napier
+PED // /home/lmo284/dssat48/Pea
+PID // /home/lmo284/dssat48/Pineapple
+PND // /home/lmo284/dssat48/Peanut
+POD // /home/lmo284/dssat48/PerennialPeanut
+PPD // /home/lmo284/dssat48/Pigeonpea
+PRD // /home/lmo284/dssat48/Pepper
+PTD // /home/lmo284/dssat48/Potato
+QUD // /home/lmo284/dssat48/Quinoa
+RID // /home/lmo284/dssat48/Rice
+RPD // /home/lmo284/dssat48/Rhizomapeanut
+SBD // /home/lmo284/dssat48/Soybean
+SCD // /home/lmo284/dssat48/Sugarcane
+SFD // /home/lmo284/dssat48/Safflower
+SGD // /home/lmo284/dssat48/Sorghum
+SSD // /home/lmo284/dssat48/Sesame
+SID // /home/lmo284/dssat48
+SUD // /home/lmo284/dssat48/Sunflower
+SWD // /home/lmo284/dssat48/SweetCorn
+TFD // /home/lmo284/dssat48/Teff
+TMD // /home/lmo284/dssat48/Tomato
+TND // /home/lmo284/dssat48/Tanier
+TRD // /home/lmo284/dssat48/Taro
+VBD // /home/lmo284/dssat48/Velvetbean
+WHD // /home/lmo284/dssat48/Wheat
+U1D // /home/lmo284/dssat48/CROP1
+U2D // /home/lmo284/dssat48/CROP2
+OTD // /
+ASD // /home/lmo284/dssat48/Seasonal
+AQD // /home/lmo284/dssat48/Sequence
+APD // /home/lmo284/dssat48/Spatial
+PSD // /home/lmo284/dssat48/Pest
+ECD // /home/lmo284/dssat48/Economic
+TOD // /
