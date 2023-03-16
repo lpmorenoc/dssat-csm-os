@@ -339,6 +339,7 @@ C-----------------------------------------------------------------------
 C    Run INPUT module
 C-----------------------------------------------------------------------
       IF (RNMODE .NE. 'D'.OR. RNMODE .NE. 'M') THEN
+          CRPN = 1
         CALL INPUT_SUB(
      &    FILECTL, FILEIO, FILEX, MODELARG, PATHEX,       !Input
      &    RNMODE, ROTNUM, RUN, TRTNUM, CROPNUM(CRPN),     !Input
