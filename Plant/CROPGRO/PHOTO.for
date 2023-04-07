@@ -129,10 +129,10 @@ C-----------------------------------------------------------------------
       ELSE
           PGFAC = 1. - EXP(-KCANR * XHLAI)
       ENDIF
-       OPEN (UNIT = test,FILE = 'IPAR_CV.txt',POSITION="APPEND")
-         write (test, '(I,5F8.4)') DAS, FracIntRadM,
-     &          KCANR, XHLAI, PAR, PGFAC 
-        CLOSE (UNIT=test)
+!       OPEN (UNIT = test,FILE = 'IPAR_CV.txt',POSITION="APPEND")
+!         write (test, '(I,5F8.4)') DAS, FracIntRadM,
+!     &          KCANR, XHLAI, PAR, PGFAC 
+!        CLOSE (UNIT=test)
 C-----------------------------------------------------------------------
 C     Compute reduction in PG based on the average daylight temperature.
 C-----------------------------------------------------------------------

@@ -198,10 +198,10 @@
             ENDIF
           ENDIF
           
-          OPEN (UNIT = test1,FILE = 'IPAR_RY.txt',POSITION="APPEND")
-          write (test1, '(I,5F8.4)') DAS, FracIntRadM,
-     &          KCAN, LAI, AWNAI, PARI 
-          CLOSE (UNIT=test1)
+!          OPEN (UNIT = test1,FILE = 'IPAR_RY.txt',POSITION="APPEND")
+!          write (test1, '(I,5F8.4)') DAS, FracIntRadM,
+!     &          KCAN, LAI, AWNAI, PARI 
+!          CLOSE (UNIT=test1)
 
           ! Specific leaf area
           SLA = -99.0

@@ -1328,21 +1328,21 @@ C-GH      IF (snow.GT.0) THEN
             CALL GET('SPAM', 'PUNH4M',  PUNH4M)
             Call GET('SPAM', 'PUNO3M',  PUNO3M)
             Call GET('SPAM', 'TRNUM',  TRNUM)
-       OPEN (UNIT = test,FILE = 'pot_Nuptake_RY.txt',POSITION="APPEND")
-         write (test, '(27F8.4)') PUNH4M(1:6), PUNO3M(1:6),
-     &          RNH4U(1:6), RNO3U(1:6), TRNUM, TRNU, ANDEM 
-        CLOSE (UNIT=test)
+!       OPEN (UNIT = test,FILE = 'pot_Nuptake_RY.txt',POSITION="APPEND")
+!         write (test, '(27F8.4)') PUNH4M(1:6), PUNO3M(1:6),
+!     &          RNH4U(1:6), RNO3U(1:6), TRNUM, TRNU, ANDEM 
+!        CLOSE (UNIT=test)
             IF (TRNU > TRNUM) TRNU = TRNUM
             DO L=1,NLAYR
                 RNO3U(L) = MIN(RNO3U(L),PUNO3M(L))
                 RNH4U(L) = MIN(RNH4U(L),PUNH4M(L))
             ENDDO
         ELSE
-        OPEN (UNIT = test,FILE = 'pot_Nuptake_RY_mono.txt',
-     &       POSITION="APPEND")
-         write (test, '(14F8.4)') 
-     &          RNH4U(1:6), RNO3U(1:6), TRNU, ANDEM 
-        CLOSE (UNIT=test)
+!        OPEN (UNIT = test,FILE = 'pot_Nuptake_RY_mono.txt',
+!     &       POSITION="APPEND")
+!         write (test, '(14F8.4)') 
+!     &          RNH4U(1:6), RNO3U(1:6), TRNU, ANDEM 
+!        CLOSE (UNIT=test)
        ENDIF
             
             ! Ratio (NUPR) to indicate N supply for output

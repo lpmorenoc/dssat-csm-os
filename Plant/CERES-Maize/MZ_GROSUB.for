@@ -1136,10 +1136,10 @@ C-GH 60     FORMAT(25X,F5.2,13X,F5.2,7X,F5.2)
 !-SPE     PRFT= AMIN1(1.25 - 0.0035*((0.25*TMIN+0.75*TMAX)-25.0)**2,1.0) 
           TAVGD = 0.25*TMIN+0.75*TMAX
 
-       OPEN (UNIT = test,FILE = 'IPAR_MZ.txt',POSITION="APPEND")
-         write (test, '(I,4F8.4)') YRDOY, FracIntRadM,
-     &          LIFAC, LAI, PAR 
-        CLOSE (UNIT=test)
+!       OPEN (UNIT = test,FILE = 'IPAR_MZ.txt',POSITION="APPEND")
+!         write (test, '(I,4F8.4)') YRDOY, FracIntRadM,
+!     &          LIFAC, LAI, PAR 
+!        CLOSE (UNIT=test)
 
 !**************************************************************************
 !**************************************************************************

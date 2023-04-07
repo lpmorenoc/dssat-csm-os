@@ -408,10 +408,10 @@ C         Variables to run CASUPRO from Alt_PLANT.  FSR 07-23-03
      &   TRNUM, PUNH4M, PUNO3M)                            !Output
       ENDIF
       IF (DYNAMIC == INTEGR) THEN
-        OPEN (UNIT = test,FILE = 'pot_Nuptake.txt',POSITION="APPEND")
-         write (test, '(1I,44F8.4)') DAS, RLV(1:6), RLVM(1:6,:), 
-     &          PUNH4M(1:6,:), PUNO3M(1:6,:), TRNUM 
-        CLOSE (UNIT=test)
+!        OPEN (UNIT = test,FILE = 'pot_Nuptake.txt',POSITION="APPEND")
+!         write (test, '(1I,44F8.4)') DAS, RLV(1:6), RLVM(1:6,:), 
+!     &          PUNH4M(1:6,:), PUNO3M(1:6,:), TRNUM 
+!        CLOSE (UNIT=test)
       ENDIF
             
       XLAI = 0.0
