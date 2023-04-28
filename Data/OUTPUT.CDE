@@ -47,7 +47,11 @@ Potential.OUT      Water potential - daily
 Dormancy.OUT       Forage daylength signal for stolon daily output
 PlantMob.OUT       Forage plant mobilization and refill of storage
 Storage.OUT        Forage storage organ characteristics daily output
-
+PlantGro_CV.OUT PG Daily plant growth output file (Clover)
+PlantGro_RY.OUT PG Daily plant growth output file (Rye)
+PlantGr2_RY.OUT G2 Rye specific output file
+PlantN_RY.OUT   PN Daily plant nitrogen output file (Rye) 
+PlantN_CV.OUT   PN Daily plant nitrogen output file (Clover)
 !Daily csv format files:
 plantgro.csv       Daily plant growth output file in CSV format
 plantn.csv         Daily plant nitrogen output file in CSV format
