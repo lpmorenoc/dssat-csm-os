@@ -14,9 +14,9 @@ $CULTIVARS:RYCER048.20221118   Last edit: 2022-11-18 LPM
                                                                             
 DFAULT DEFAULT              . DFAULT     5    75   450    30    35   1.0    60
 
-KY0001 Rye                  . USWH01    52    75   500    25    30   2.2   143
+KY0001 Aroostook            . USWH01    60    52   500    25    30   2.2    90
 
-!KY0001 Based on values reported by Leuthold et al. 2021. 
+
                                                                                                                                                                                                              
 ! COEFF       DEFINITION
 ! ========    ==========
