@@ -111,8 +111,12 @@
                     BRFX(INT(TVR1)) = BRFX(INT(TVR1-1))                 !LPM 09JUN2015 To avoid number of branches 0 for BRSTAGE>6
                 ENDIF                                
             !LPM 11DEC2020 to reduce # of branches due to water or N stress
-            !LPM 16FEB2021 avoid reduction in the number of branches of no more than 50% of the maximum branching
-                BRNUMST(INT(TVR1)) = BRNUMST(BRSTAGEINT)*BRFX(INT(TVR1))                    ! BRFX(PSX)        ! EQN 005 ! # of branches at each fork # (This is where new branch is initiated)
+            !LPM 21JAN2023 Reduce number of branches when WFG or NFG < 0.5
+                IF(AMIN1(WFG,NFG) <= 0.5) THEN
+                  BRNUMST(INT(TVR1)) = BRNUMST(BRSTAGEINT)*(BRFX(INT(TVR1))-1.0)                    ! BRFX(PSX)        ! EQN 005 ! # of branches at each fork # (This is where new branch is initiated)
+                ELSE
+                  BRNUMST(INT(TVR1)) = BRNUMST(BRSTAGEINT)*BRFX(INT(TVR1))
+                ENDIF
                 BRNUMSHM = BRNUMST(INT(TVR1))
             ENDIF
             DO L = 2,INT(SHNUM+2) ! L is shoot cohort,main=cohort 1
