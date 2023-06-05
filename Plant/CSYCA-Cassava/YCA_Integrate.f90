@@ -70,7 +70,7 @@
         !-----------------------------------------------------------------------
         !IF (GESTAGE >= 0.5) CALL YCA_Integ_Nconc ( &  !LPM 21MAR2016 To separate germination and emergence
         IF (GESTAGE >= 1.0) CALL YCA_Integ_Nconc ( &
-            ISWNIT      , BRSTAGE           & 
+            ISWNIT       & 
             )   
             
         ! 6666        CONTINUE  ! Jump to here if germinating ! MF From CS_Integ_Stages (48)
