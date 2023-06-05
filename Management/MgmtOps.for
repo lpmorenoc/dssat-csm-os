@@ -28,6 +28,8 @@ C  08/01/2002 CHP Merged RUNINIT and SEASINIT into INIT section
 !                 FPLACE_C in Century)
 !  07/14/2006 CHP Added OM_Place (replaces RPLACE in NTRANS and 
 !                 RPLACE_C in Century)
+!  01/26/2023 CHP Reduce compile warnings: add EXTERNAL stmts, remove 
+!                 unused variables, shorten lines. 
 C=====================================================================
 
       SUBROUTINE MGMTOPS(CONTROL, ISWITCH, 
@@ -40,6 +42,8 @@ C-----------------------------------------------------------------------
       USE ModuleDefs
       USE FloodModule
       IMPLICIT NONE
+      EXTERNAL AUTHAR, AUTPLT, CHEMICAL, FERT_PLACE, IPAHAR, IRRIG, 
+     &  OM_PLACE, OPMGMT, PADDY_MGMT, SUMVALS, TILLAGE, TIMDIF, YR_DOY
       SAVE
 
       CHARACTER*1  IHARI, IIRRI, IPLTI, ISWCHE, RNMODE
@@ -52,11 +56,11 @@ C-----------------------------------------------------------------------
       INTEGER NAP, NCHEM, NLAYR, TILLNO          
       INTEGER NHAR, NTIL, RUN, TIMDIF
       INTEGER YRDIF, YRDOY, MDATE, YRO, YRPLT, YRS, YRSIM
-      INTEGER HDATE(3)
+      INTEGER HDATE(NAPPL)
       INTEGER STGDOY(20)
 
       REAL IRRAMT, TOTIR, TIL_IRR
-      REAL HPC(3), HBPC(3), HARVFRAC(2)
+      REAL HPC(NAPPL), HBPC(NAPPL), HARVFRAC(2)
       REAL, DIMENSION(NL) :: DLAYR, DUL, DS, LL, ST, SW
 
 !     Variables added for flooded conditions
@@ -64,7 +68,7 @@ C-----------------------------------------------------------------------
       REAL FLOOD, RAIN
 
       !Variables needed to call IPAHAR for sequenced runs:
-      INTEGER HDLAY, HLATE, HSTG(3)
+      INTEGER HDLAY, HLATE, HSTG(NAPPL)
       REAL    SWPLTL, SWPLTH, SWPLTD
 
 !     Arrays which contain data for printing in SUMMARY.OUT file
@@ -185,7 +189,7 @@ C-----------------------------------------------------------------------
      &    FLOOD, FLOODWAT, FLOODN)                        !Output 
 
       CALL OpMgmt(CONTROL, ISWITCH,
-     &    FERTDATA, HARVRES, IIRRI, IRRAMT, NAP, OMADATA, 
+     &    FERTDATA, HARVFRAC, HARVRES, IIRRI, IRRAMT, NAP, OMADATA, 
      &    SOILPROP, TILLNO, TILLVALS, TOTIR, YRPLT)
 
 C***********************************************************************
@@ -272,7 +276,7 @@ C-----------------------------------------------------------------------
       ELSEIF (DYNAMIC .EQ. OUTPUT) THEN
 !-----------------------------------------------------------------------
       CALL OpMgmt(CONTROL, ISWITCH,
-     &    FERTDATA, HARVRES, IIRRI, IRRAMT, NAP, OMADATA, 
+     &    FERTDATA, HARVFRAC, HARVRES, IIRRI, IRRAMT, NAP, OMADATA, 
      &    SOILPROP, TILLNO, TILLVALS, TOTIR, YRPLT)
 
       IF (NBUND .GT. 0) THEN
@@ -293,7 +297,7 @@ C-----------------------------------------------------------------------
      &    OMAData)                                !Output
 
       CALL OpMgmt(CONTROL, ISWITCH,
-     &    FERTDATA, HARVRES, IIRRI, IRRAMT, NAP, OMADATA, 
+     &    FERTDATA, HARVFRAC, HARVRES, IIRRI, IRRAMT, NAP, OMADATA, 
      &    SOILPROP, TILLNO, TILLVALS, TOTIR, YRPLT)
 
       IF (NBUND .GT. 0) THEN
@@ -341,7 +345,7 @@ C  Called from:   MgmtOps
 C  Calls:         None
 C=======================================================================
       SUBROUTINE OpMgmt(CONTROL, ISWITCH,
-     &    FERTDATA, HARVRES, IIRRI, IRRAMT, NAP, OMADATA, 
+     &    FERTDATA, HARVFRAC, HARVRES, IIRRI, IRRAMT, NAP, OMADATA, 
      &    SOILPROP, TILLNO, TILLVALS, TOTIR, YRPLT)
 
 !-----------------------------------------------------------------------
@@ -349,6 +353,7 @@ C=======================================================================
       USE ModuleData
       USE SumModule
       IMPLICIT NONE
+      EXTERNAL GETLUN, HEADER, NAILUJ, TIMDIF, YR_DOY
       SAVE
 
       CHARACTER*1  ISWCHE, IDETW, ISWTIL, IIRRI, RNMODE
@@ -370,6 +375,7 @@ C=======================================================================
 
       REAL BDAVG3, CUMDEP, IRRAMT, TILDEP, DEPIR
       REAL TotAmtN, TotAmtP, TotAmtK, TOTIR, TotResWt, SurfRes, RootRes
+      REAL HARVFRAC(2)
       REAL, DIMENSION(NELEM) :: AMTFER, CumRESE
       REAL, DIMENSION(NL) :: BD, DLAYR
 
@@ -384,7 +390,7 @@ C     ModuleDefs.for.
       TYPE (SoilType)     SOILPROP
       TYPE (FertType)     FERTDATA
       TYPE (OrgMatAppType)OMAData
-      Type (ResidueType)  HARVRES  
+      Type (ResidueType)  HARVRES
 
       CROP    = CONTROL % CROP 
       DAS     = CONTROL % DAS 
@@ -709,21 +715,24 @@ C-----------------------------------------------------------------------
       IF (IDETR == 'Y') THEN
 !       Harvest
         IF (CROP .NE. 'FA') THEN
-          WRITE(DLUN2,112) RUN, Date_Txt, DOY, DAS, DAP, CROP, 
-     &            "Harvest Yield  ", SumDat % HWAH, " kg/ha"
-  112     FORMAT(I4,1X,A12,2X,I3.3,2(1X,I6),2X,A2,T57,A,F7.0,A)
+          WRITE(DLUN2,112) HARVFRAC(1)*100., " % yield harvested",
+     &            SumDat % HWAH, " kg/ha"
+          WRITE(DLUN2,112) HARVFRAC(2)*100., " % by-product harv",
+     &            SumDat % BWAH, " kg/ha"
+  112     FORMAT(T45,F6.1,A,T72,F7.0,A)
+
           IF (INDEX('FQ',RNMODE) > 0 .AND. CROP /= 'FA') THEN
             SurfRes = HARVRES % ResWt(0)
             IF (SurfRes > 0) THEN
-              WRITE(DLUN2,200) "Surface residue", SurfRes,
-     &            " kg/ha carryover"
+              WRITE(DLUN2,200) "Surface residue carryover", SurfRes,
+     &            " kg/ha"
+  200         FORMAT(T46,A,T72,F7.0,A)
             ENDIF
-  200       FORMAT(56X,A,F7.0,A)
         
             RootRes = SUM(HARVRES % ResWt) - HARVRES % ResWt(0)
             IF (RootRes > 0) THEN
-              WRITE(DLUN2,200) "Root residue   ", RootRes, 
-     &            " kg/ha carryover"
+              WRITE(DLUN2,200) "Root residue carryover", RootRes, 
+     &            " kg/ha"
             ENDIF
           ENDIF
         ELSE

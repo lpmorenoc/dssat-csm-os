@@ -23,6 +23,8 @@
         USE YCA_First_Trans_m
         
         IMPLICIT NONE
+        EXTERNAL YCA_INTEG_AGESWTS, YCA_INTEG_LA, YCA_INTEG_N, YCA_INTEG_STAGES, YCA_INTEG_NCONC, YCA_INTEG_HSTFAIL, &
+            YCA_INTEG_SEASEND, YCA_INTEG_WTHRSUM, YCA_INTEG_ENDCROP
         
         INTEGER DOY         , NLAYR       , STGYEARDOY(0:19)            , YEAR
         
@@ -39,21 +41,21 @@
         !         Update ages
         !----------------------------------------------------------------------
         CALL YCA_Integ_AgesWts ( &
-            NLAYR,      BRSTAGE       , KCAN       , SRAD        & 
+            NLAYR,      KCAN       , SRAD        & 
             )
             
         !-----------------------------------------------------------------------
         !         Calculate reserve concentrations, shoot and total leaf area.
         !-----------------------------------------------------------------------
         CALL  YCA_Integ_LA ( &
-            LAI        , CANHT       , DEPMAX      , DLAYR       , NLAYR       , RLV         , BRSTAGE   & 
+            LAI        , CANHT       , DEPMAX      , DLAYR       , NLAYR       , RLV         & 
             ) 
             
         !-----------------------------------------------------------------------
         !         Update nitrogen amounts
         !-----------------------------------------------------------------------
         IF (ISWNIT  /=  'N') THEN
-            CALL YCA_Integ_N (NLAYR  , BRSTAGE)
+            CALL YCA_Integ_N (NLAYR  )
         ENDIF
         !-----------------------------------------------------------------------
         !         Update stages; returns if germinating.

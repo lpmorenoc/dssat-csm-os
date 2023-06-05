@@ -415,6 +415,32 @@ Type :: lin_valuePlantP
     
     Integer :: istatSomN 
 !--------------------------------------------------------------------------------------
+!   for SOM C 
+    Type :: lin_valueSomC
+       Character(:), Allocatable :: pclineSomC
+       Type (lin_valueSomC), Pointer :: pSomC
+    End Type
+
+    Type (lin_valueSomC), Pointer :: headSomC    
+    Type (lin_valueSomC), Pointer :: tailSomC    
+    Type (lin_valueSomC), Pointer :: ptrSomC     
+    
+    Integer :: istatSomC 
+
+!--------------------------------------------------------------------------------------
+!   for N2O.csv
+    Type :: lin_valueN2O
+       Character(:), Allocatable :: pclineN2O
+       Type (lin_valueN2O), Pointer :: pN2O
+    End Type
+
+    Type (lin_valueN2O), Pointer :: headN2O
+    Type (lin_valueN2O), Pointer :: tailN2O    
+    Type (lin_valueN2O), Pointer :: ptrN2O     
+    
+    Integer :: istatN2O
+
+!--------------------------------------------------------------------------------------
 Contains
 !------------------------------------------------------------------------------
 
@@ -979,6 +1005,7 @@ End Subroutine LinklstSUOIL
  End Subroutine LinklstSumOpsum
 !------------------------------------------------------------------------------
    Subroutine ListtofilePlantgrCrGro(nlayers)
+      EXTERNAL GETLUN
       Integer          :: nf       ! Number for growth output file  #
       Character(Len=12):: fn       ! Growth output file code  
       Character(Len=14) :: fmt
@@ -1036,6 +1063,7 @@ End Subroutine LinklstSUOIL
 !------------------------------------------------------------------------------
 
    Subroutine ListtofileSW(nlayers)
+      EXTERNAL GETLUN
       Integer          :: nf, ErrNum, length, nlayers, i, nl       
       Character(Len=12):: fn
       Character(Len=14) :: fmt
@@ -1087,6 +1115,7 @@ End Subroutine LinklstSUOIL
 !------------------------------------------------------------------------------
 
    Subroutine ListtofileTemp(nlayers)
+      EXTERNAL GETLUN
       Integer          :: nf, ErrNum, length, nlayers, i, nl       
       Character(Len=12):: fn         
       Character(Len=14) :: fmt
@@ -1138,6 +1167,7 @@ End Subroutine LinklstSUOIL
 !------------------------------------------------------------------------------
 
    Subroutine ListtofilePlantGrCsCer
+      EXTERNAL GETLUN
       Integer          :: nf, ErrNum, length       
       Character(Len=12):: fn 
       Character(:),Allocatable :: Header        
@@ -1182,6 +1212,7 @@ End Subroutine LinklstSUOIL
 !------------------------------------------------------------------------------
 
    Subroutine ListtofileET (nlayers)
+      EXTERNAL GETLUN
       Integer          :: nf, ErrNum, length, nlayers, i, nl        
       Character(Len=12):: fn         
       Character(Len=14) :: fmt
@@ -1212,13 +1243,13 @@ End Subroutine LinklstSUOIL
      
   length= Len('RUN,EXP,TRTNUM,ROTNUM,REPNO,YEAR,DOY,DAS,SRAA,TMAXA,TMINA,' &
   //'REFA,EOAA,EOPA,EOSA,ETAA,EPAA,ESAA,EFAA,EMAA,EOAC,ETAC,EPAC,ESAC,EFAC,' &
-  //'EMAC,KCAA,KBSA,KEAA,TRWUD,') + Len(Trim(Adjustl(tmp)))
+  //'EMAC,KCAA,KBSA,KEAA,TRWUD,TWUPD,') + Len(Trim(Adjustl(tmp)))
   
        Allocate(character(LEN=length) :: Header)
 
   Header = 'RUN,EXP,TRTNUM,ROTNUM,REPNO,YEAR,DOY,DAS,SRAA,TMAXA,TMINA,' &
   //'REFA,EOAA,EOPA,EOSA,ETAA,EPAA,ESAA,EFAA,EMAA,EOAC,ETAC,EPAC,ESAC,EFAC,' &
-  //'EMAC,KCAA,KBSA,KEAA,TRWUD,' // Trim(Adjustl(tmp)) 
+  //'EMAC,KCAA,KBSA,KEAA,TRWUD,TWUPD,' // Trim(Adjustl(tmp)) 
   
       fn = 'et.csv'
       Call GETLUN (fn,nf)
@@ -1242,6 +1273,7 @@ End Subroutine LinklstSUOIL
 !------------------------------------------------------------------------------
 
   Subroutine ListtofileMZCER(nlayers)
+      EXTERNAL GETLUN
       Integer          :: nf, ErrNum, length, nlayers, i, nl       
       Character(Len=12):: fn 
       Character(Len=14) :: fmt
@@ -1297,6 +1329,7 @@ End Subroutine LinklstSUOIL
 !------------------------------------------------------------------------------
 
   Subroutine ListtofileRICER(nlayers)
+      EXTERNAL GETLUN
       Integer          :: nf, ErrNum, length, nlayers, i, nl       
       Character(Len=12):: fn 
       Character(Len=14) :: fmt
@@ -1352,6 +1385,7 @@ End Subroutine LinklstSUOIL
 !------------------------------------------------------------------------------
 
   Subroutine ListtofileMLCER(nlayers)
+      EXTERNAL GETLUN
       Integer          :: nf, ErrNum, length, nlayers, i, nl       
       Character(Len=12):: fn 
       Character(Len=14) :: fmt
@@ -1408,6 +1442,7 @@ End Subroutine LinklstSUOIL
   End Subroutine ListtofileMLCER
 !-----------------------------------------------------------------------  
   Subroutine ListtofileSUOIL(nlayers)
+      EXTERNAL GETLUN
       Integer          :: nf, ErrNum, length, nlayers, i, nl       
       Character(Len=12):: fn 
       Character(Len=14) :: fmt
@@ -1462,6 +1497,7 @@ End Subroutine LinklstSUOIL
   End Subroutine ListtofileSUOIL
 !------------------------------------------------------------------------------
    Subroutine ListtofilePlNSUOIL
+      EXTERNAL GETLUN
       Integer          :: nf, ErrNum, length        
       Character(Len=12):: fn 
       Character(:),Allocatable :: Header         
@@ -1497,6 +1533,7 @@ End Subroutine LinklstSUOIL
    End Subroutine ListtofilePlNSUOIL      
 !------------------------------------------------------------------------------
   Subroutine ListtofilePlNCrGro
+      EXTERNAL GETLUN
       Integer          :: nf, ErrNum, length       
       Character(Len=12):: fn
       Character(:),Allocatable :: Header         
@@ -1533,6 +1570,7 @@ End Subroutine LinklstSUOIL
 !------------------------------------------------------------------------------
 
    Subroutine ListtofilePlNCsCer
+      EXTERNAL GETLUN
       Integer          :: nf, ErrNum, length       
       Character(Len=12):: fn
       Character(:),Allocatable :: Header         
@@ -1569,8 +1607,9 @@ End Subroutine LinklstSUOIL
       Close(nf)
    End Subroutine ListtofilePlNCsCer
 !------------------------------------------------------------------------------
-   Subroutine ListtofileSoilNi(nlayers)
-      Integer          :: nf, ErrNum, length, nlayers, i, nl       
+   Subroutine ListtofileSoilNi()  !(nlayers)
+      EXTERNAL GETLUN
+      Integer          :: nf, ErrNum, length, i, nl   !, nlayers    
       Character(Len=12):: fn
       Character(Len=14) :: fmt
       Character(Len=2) :: numtoch1, numtoch2 
@@ -1630,6 +1669,7 @@ End Subroutine LinklstSUOIL
 !------------------------------------------------------------------------------
 
    Subroutine ListtofilePlNMzCer
+      EXTERNAL GETLUN
       Integer          :: nf, ErrNum, length        
       Character(Len=12):: fn 
       Character(:),Allocatable :: Header         
@@ -1666,6 +1706,7 @@ End Subroutine LinklstSUOIL
 !------------------------------------------------------------------------------
 
    Subroutine ListtofileWth
+      EXTERNAL GETLUN
       Integer          :: nf, ErrNum, length       
       Character(Len=12):: fn         
       Character(:),Allocatable :: Header
@@ -1701,6 +1742,7 @@ End Subroutine LinklstSUOIL
    End Subroutine ListtofileWth
 !------------------------------------------------------------------------------
    Subroutine ListtoFilePlGr2
+      EXTERNAL GETLUN
       Integer          :: nf, ErrNum, length       
       Character(Len=12):: fn 
       Character(:),Allocatable :: Header 
@@ -1738,6 +1780,7 @@ End Subroutine LinklstSUOIL
    End Subroutine ListtofilePlGr2
 !------------------------------------------------------------------------------
    Subroutine ListtoFilePlGrf
+      EXTERNAL GETLUN
       Integer          :: nf, ErrNum, length       
       Character(Len=12):: fn 
       Character(:),Allocatable :: Header 
@@ -1775,6 +1818,7 @@ End Subroutine LinklstSUOIL
    End Subroutine ListtofilePlGrf
 !------------------------------------------------------------------------------
    Subroutine ListtofileEvalCsCer
+      EXTERNAL GETLUN
       Integer          :: nf, ErrNum, length       
       Character(Len=12):: fn 
       Character(:),Allocatable :: Header        
@@ -1814,6 +1858,7 @@ End Subroutine LinklstSUOIL
    End Subroutine ListtofileEvalCsCer
 !------------------------------------------------------------------------------
    Subroutine ListtofileEvOpsum
+      EXTERNAL GETLUN
       Integer          :: nf, i, ErrNum, length       
       Character(Len=12):: fn         
       Character(:),Allocatable :: Header 
@@ -1856,6 +1901,7 @@ End Subroutine LinklstSUOIL
    End Subroutine ListtofileEvOpsum
 !------------------------------------------------------------------------------
    Subroutine ListtofileSumOpsum
+      EXTERNAL GETLUN
       Integer          :: nf, ErrNum, length       
       Character(Len=12):: fn  
       Character(:),Allocatable :: Header        
@@ -1867,10 +1913,10 @@ End Subroutine LinklstSUOIL
   // 'FNAM,WSTA,WYEAR,SOIL_ID,LAT,LONG,ELEV,' &
   // 'SDAT,PDAT,EDAT,ADAT,MDAT,HDAT,HYEAR,DWAP,CWAM,HWAM,HWAH,BWAH,PWAM,HWUM,' &
   // 'H#AM,H#UM,HIAM,LAIX,FCWAM,FHWAM,HWAHF,FBWAH,FPWAM,IR#M,IRCM,PRCM,ETCM,EPCM,ESCM,ROCM,DRCM,SWXM,' &
-  // 'NI#M,NICM,NFXM,NUCM,NLCM,NIAM,NMINC,CNAM,GNAM,N2OEC,PI#M,PICM,PUPC,SPAM,KI#M,' &
-  // 'KICM,KUPC,SKAM,RECM,ONTAM,ONAM,OPTAM,OPAM,OCTAM,OCAM,CO2EC,CH4EC,DMPPM,DMPEM,' &
+  // 'NI#M,NICM,NFXM,NUCM,NLCM,NIAM,NMINC,CNAM,GNAM,N2OEM,PI#M,PICM,PUPC,SPAM,KI#M,' &
+  // 'KICM,KUPC,SKAM,RECM,ONTAM,ONAM,OPTAM,OPAM,OCTAM,OCAM,CO2EM,CH4EM,DMPPM,DMPEM,' &
   // 'DMPTM,DMPIM,YPPM,YPEM,YPTM,YPIM,DPNAM,DPNUM,YPNAM,YPNUM,NDCH,TMAXA,' &
-  // 'TMINA,SRADA,DAYLA,CO2A,PRCP,ETCP,ESCP,EPCP')
+  // 'TMINA,SRADA,DAYLA,CO2A,PRCP,ETCP,ESCP,EPCP,CRST')
 
       Allocate(character(LEN=length) :: Header)
 
@@ -1879,10 +1925,10 @@ End Subroutine LinklstSUOIL
   // 'FNAM,WSTA,WYEAR,SOIL_ID,LAT,LONG,ELEV,' &
   // 'SDAT,PDAT,EDAT,ADAT,MDAT,HDAT,HYEAR,DWAP,CWAM,HWAM,HWAH,BWAH,PWAM,HWUM,' &
   // 'H#AM,H#UM,HIAM,LAIX,FCWAM,FHWAM,HWAHF,FBWAH,FPWAM,IR#M,IRCM,PRCM,ETCM,EPCM,ESCM,ROCM,DRCM,SWXM,' &
-  // 'NI#M,NICM,NFXM,NUCM,NLCM,NIAM,NMINC,CNAM,GNAM,N2OEC,PI#M,PICM,PUPC,SPAM,KI#M,' &
-  // 'KICM,KUPC,SKAM,RECM,ONTAM,ONAM,OPTAM,OPAM,OCTAM,OCAM,CO2EC,CH4EC,DMPPM,DMPEM,' &
+  // 'NI#M,NICM,NFXM,NUCM,NLCM,NIAM,NMINC,CNAM,GNAM,N2OEM,PI#M,PICM,PUPC,SPAM,KI#M,' &
+  // 'KICM,KUPC,SKAM,RECM,ONTAM,ONAM,OPTAM,OPAM,OCTAM,OCAM,CO2EM,CH4EM,DMPPM,DMPEM,' &
   // 'DMPTM,DMPIM,YPPM,YPEM,YPTM,YPIM,DPNAM,DPNUM,YPNAM,YPNUM,NDCH,TMAXA,' &
-  // 'TMINA,SRADA,DAYLA,CO2A,PRCP,ETCP,ESCP,EPCP'      
+  // 'TMINA,SRADA,DAYLA,CO2A,PRCP,ETCP,ESCP,EPCP,CRST'      
       
       fn = 'summary.csv'
       Call GETLUN (fn,nf)
@@ -1906,6 +1952,7 @@ End Subroutine LinklstSUOIL
 !------------------------------------------------------------------------------
 
    Subroutine ListtofilePlCCrGro
+      EXTERNAL GETLUN
       Integer          :: nf, ErrNum, length       
       Character(Len=12):: fn 
       Character(:),Allocatable :: Header         
@@ -1992,6 +2039,7 @@ End Subroutine LinklstSUOIL
  End Subroutine LinklstSoilOrg
 !------------------------------------------------------------------------------
    Subroutine ListtofileSoilOrg(N_ELEMS)
+      EXTERNAL GETLUN
       Integer          :: nf, ErrNum, length       
       Character(Len=12):: fn  
       Character(:),Allocatable :: Header        
@@ -2068,6 +2116,7 @@ End Subroutine LinklstSUOIL
  End Subroutine LinklstETPhot
 !------------------------------------------------------------------------------
    Subroutine ListtofileETPhot
+      EXTERNAL GETLUN
       Integer          :: nf, ErrNum, length       
       Character(Len=12):: fn  
       Character(:),Allocatable :: Header 
@@ -2129,6 +2178,7 @@ End Subroutine LinklstSUOIL
  End Subroutine LinklstMulch
 !------------------------------------------------------------------------------
   Subroutine ListtofileMulch
+      EXTERNAL GETLUN
       Integer          :: nf, ErrNum, length       
       Character(Len=12):: fn
       Character(:),Allocatable :: Header          
@@ -2187,6 +2237,7 @@ End Subroutine LinklstSUOIL
  End Subroutine LinklstPlantP
 !------------------------------------------------------------------------------
  Subroutine ListtofilePlantP
+    EXTERNAL GETLUN
     Integer          :: nf, ErrNum, length       
     Character(Len=12):: fn 
     Character(:),Allocatable :: Header       
@@ -2252,6 +2303,7 @@ End Subroutine LinklstSUOIL
  End Subroutine LinklstSoilPi
 !------------------------------------------------------------------------------
  Subroutine ListtofileSoilPi
+    EXTERNAL GETLUN
     Integer          :: nf, ErrNum, length       
     Character(Len=12):: fn 
     Character(:),Allocatable :: Header        
@@ -2318,6 +2370,7 @@ Subroutine LinklstPlGroPrFrm(ptxtlinePlGroPrFrm)
 End Subroutine LinklstPlGroPrFrm
 !------------------------------------------------------------------------------ 
    Subroutine ListtofilePlGroPrFrm(nlayers)
+      EXTERNAL GETLUN
       Integer          :: nf       ! Number for growth output file  #
       Character(Len=12):: fn       ! Growth output file code  
       Character(Len=14) :: fmt
@@ -2376,6 +2429,7 @@ End Subroutine LinklstPlGroPrFrm
    End Subroutine ListtofilePlGroPrFrm 
 !------------------------------------------------------------------------------ 
   Subroutine ListtofilePlNPrFrm
+      EXTERNAL GETLUN
       Integer          :: nf, ErrNum, length       
       Character(Len=12):: fn
       Character(:),Allocatable :: Header         
@@ -2439,6 +2493,7 @@ Subroutine LinklstPlNPrFrm(ptxtlinePlNPrFrm)
 End Subroutine LinklstPlNPrFrm
 !------------------------------------------------------------------------------
   Subroutine ListtofilePlCPrFrm
+      EXTERNAL GETLUN
       Integer          :: nf, ErrNum, length       
       Character(Len=12):: fn
       Character(:),Allocatable :: Header         
@@ -2502,6 +2557,7 @@ Subroutine LinklstPlCPrFrm(ptxtlinePlCPrFrm)
 End Subroutine LinklstPlCPrFrm
 !------------------------------------------------------------------------------
   Subroutine ListtofileDormPrFrm
+      EXTERNAL GETLUN
       Integer          :: nf, ErrNum, length       
       Character(Len=12):: fn
       Character(:),Allocatable :: Header         
@@ -2563,6 +2619,7 @@ Subroutine LinklstDormPrFrm(ptxtlineDormPrFrm)
 End Subroutine LinklstDormPrFrm
 !------------------------------------------------------------------------------
   Subroutine ListtofileStorPrFrm
+      EXTERNAL GETLUN
       Integer          :: nf, ErrNum, length       
       Character(Len=12):: fn
       Character(:),Allocatable :: Header         
@@ -2632,6 +2689,7 @@ Subroutine LinklstStorPrFrm(ptxtlineStorPrFrm)
 End Subroutine LinklstStorPrFrm
 !------------------------------------------------------------------------------
   Subroutine ListtofileSomN
+      EXTERNAL GETLUN
       Integer          :: nf, ErrNum, length       
       Character(Len=12):: fn
       Character(:),Allocatable :: Header         
@@ -2640,21 +2698,21 @@ End Subroutine LinklstStorPrFrm
       
       length= Len('RUN,EXP,TRTNUM,ROTNUM,REPNO,YEAR,DOY,DAS,' &
   //'SNS20D,SN%20D,SNS40D,SN%40D,SOND,SN0D,SNTD,SN1D,SN2D,'&
-  //'SN3D,SN4D,SN5+D,S1N0D,S1NTD,S1N1D,S1N2D,S1N3D,S1N4D,' &
-  //'S1N5+D,S2NTD,S2N1D,S2N2D,S2N3D,S2N4D,S2N5+D,S3NTD,S3N1D,'&
-  //'S3N2D,S3N3D,S3N4D,S3N5+D,LN0D,LNTD,LN1D,LN2D,LN3D,LN4D,' &
-  //'LN5+D,MEN0D,MENTD,MEN1D,MEN2D,MEN3D,MEN4D,MEN5+D,STN0D,' &
-  //'STNTD,STN1D,STN2D,STN3D,STN4D,STN5+D,RESNC')
+  //'SN3D,SN4D,SN5D,S1N0D,S1NTD,S1N1D,S1N2D,S1N3D,S1N4D,' &
+  //'S1N5D,S2NTD,S2N1D,S2N2D,S2N3D,S2N4D,S2N5D,S3NTD,S3N1D,'&
+  //'S3N2D,S3N3D,S3N4D,S3N5D,LN0D,LNTD,LN1D,LN2D,LN3D,LN4D,' &
+  //'LN5D,MEN0D,MENTD,MEN1D,MEN2D,MEN3D,MEN4D,MEN5D,STN0D,' &
+  //'STNTD,STN1D,STN2D,STN3D,STN4D,STN5D,RESNC')
   
       Allocate(character(LEN=length) :: Header)
 
       Header = 'RUN,EXP,TRTNUM,ROTNUM,REPNO,YEAR,DOY,DAS,' &
   //'SNS20D,SN%20D,SNS40D,SN%40D,SOND,SN0D,SNTD,SN1D,SN2D,'&
-  //'SN3D,SN4D,SN5+D,S1N0D,S1NTD,S1N1D,S1N2D,S1N3D,S1N4D,' &
-  //'S1N5+D,S2NTD,S2N1D,S2N2D,S2N3D,S2N4D,S2N5+D,S3NTD,S3N1D,'&
-  //'S3N2D,S3N3D,S3N4D,S3N5+D,LN0D,LNTD,LN1D,LN2D,LN3D,LN4D,' &
-  //'LN5+D,MEN0D,MENTD,MEN1D,MEN2D,MEN3D,MEN4D,MEN5+D,STN0D,' &
-  //'STNTD,STN1D,STN2D,STN3D,STN4D,STN5+D,RESNC' 
+  //'SN3D,SN4D,SN5D,S1N0D,S1NTD,S1N1D,S1N2D,S1N3D,S1N4D,' &
+  //'S1N5D,S2NTD,S2N1D,S2N2D,S2N3D,S2N4D,S2N5D,S3NTD,S3N1D,'&
+  //'S3N2D,S3N3D,S3N4D,S3N5D,LN0D,LNTD,LN1D,LN2D,LN3D,LN4D,' &
+  //'LN5D,MEN0D,MENTD,MEN1D,MEN2D,MEN3D,MEN4D,MEN5D,STN0D,' &
+  //'STNTD,STN1D,STN2D,STN3D,STN4D,STN5D,RESNC' 
   
       fn = 'somlitn.csv'
       Call GETLUN (fn,nf)
@@ -2701,5 +2759,183 @@ Subroutine LinklstSomN(ptxtlineSomN)
     End If
 
 End Subroutine LinklstSomN
+
+!------------------------------------------------------------------------------
+  Subroutine ListtofileSomC
+      EXTERNAL GETLUN
+      Integer          :: nf, ErrNum, length       
+      Character(Len=12):: fn
+      Character(:),Allocatable :: Header         
+      
+      If(.Not. Associated(headSomC)) Return
+      
+      length= Len('RUN,EXP,TR,RN,REP,YEAR,DOY,DAS,'   &
+       //'SCS20D,C%20D,SCS40D,SC%40D'                 &
+       //'SLC20D,L%20D,SLC40D,SL%40D,SOCD'            &
+       //'SC0D,SCTD,SC1D,SC2D,SC3D,SC4D,SC5D'         &
+       //'S1C0D,S1CTD,S1C1D,S1C2D,S1C3D,S1C4D,S1C5D'  &
+       //',S2CTD,S2C1D,S2C2D,S2C3D,S2C4D,S2C5D'       &
+       //',S3CTD,S3C1D,S3C2D,S3C3D,S3C4D,S3C5D'       &
+       //'LC0D,LCTD,LC1D,LC2D,LC3D,LC4D,LC5D'         &
+       //'MEC0D,MECTD,MEC1D,MEC2D,MEC3D,MEC4D,MEC5D'  &
+       //'STC0D,STCTD,STC1D,STC2D,STC3D,STC4D,STC5D'  &
+       //'RESC,CO20C,CO2SC')                          
+
+      Allocate(character(LEN=length) :: Header)
+
+      Header = 'RUN,EXP,TR,RN,REP,YEAR,DOY,DAS,'      &
+       //'SCS20D,C%20D,SCS40D,SC%40D'                 &
+       //'SLC20D,L%20D,SLC40D,SL%40D,SOCD'            &
+       //'SC0D,SCTD,SC1D,SC2D,SC3D,SC4D,SC5D'         &
+       //'S1C0D,S1CTD,S1C1D,S1C2D,S1C3D,S1C4D,S1C5D'  &
+       //',S2CTD,S2C1D,S2C2D,S2C3D,S2C4D,S2C5D'       &
+       //',S3CTD,S3C1D,S3C2D,S3C3D,S3C4D,S3C5D'       &
+       //'LC0D,LCTD,LC1D,LC2D,LC3D,LC4D,LC5D'         &
+       //'MEC0D,MECTD,MEC1D,MEC2D,MEC3D,MEC4D,MEC5D'  &
+       //'STC0D,STCTD,STC1D,STC2D,STC3D,STC4D,STC5D'  &
+       //'RESC,CO20C,CO2SC'                           
+  
+      fn = 'somlitc.csv'
+      Call GETLUN (fn,nf)
+
+      Open (UNIT = nf, FILE = fn, FORM='FORMATTED', STATUS = 'REPLACE', &
+          IOSTAT = ErrNum)
+        
+      Write(nf,'(A)')Header
+      Deallocate(Header)    
+
+      ptrSomC => headSomC
+      Do
+        If(.Not. Associated(ptrSomC)) Exit          
+        Write(nf,'(A)') ptrSomC % pclineSomC    
+        ptrSomC => ptrSomC % pSomC          
+      End Do
+
+      Nullify(ptrSomC, headSomC, tailSomC)
+      Close(nf)
+  End Subroutine ListtofileSomC
+
+!------------------------------------------------------------------------------
+Subroutine LinklstSomC(ptxtlineSomC)
+
+    Character(:), Allocatable :: ptxtlineSomC            
+        
+    If(.Not. Associated(headSomC)) Then             
+      Allocate(headSomC, Stat=istatSomC)        
+      If(istatSomC==0) Then                         
+        tailSomC => headSomC                    
+        Nullify(tailSomC%pSomC)                 
+        tailSomC%pclineSomC = ptxtlineSomC  
+      Else
+        ! Error message
+      End If
+    Else
+      Allocate(tailSomC%pSomC, Stat=istatSomC)      
+      If(istatSomC==0) Then                                 
+        tailSomC=> tailSomC%pSomC                   
+        Nullify(tailSomC%pSomC)                         
+        tailSomC%pclineSomC = ptxtlineSomC          
+      Else
+      ! Error message
+      End If
+    End If
+
+End Subroutine LinklstSomC
+
+!------------------------------------------------------------------------------
+Subroutine ListtofileN2O(nlayers)
+      EXTERNAL GETLUN
+      Integer          :: nf       
+      Character(Len=12):: fn  
+      Character(Len=30):: fmt  
+      Character(Len=1000) :: tmp
+      Character(:),Allocatable :: Header 
+      Integer :: ErrNum, length, nlayers, i
+      
+      If(.Not. Associated(headN2O)) Return
+      
+      IF (nlayers < 10) THEN
+        WRITE(fmt,'(I2)') 5 * nlayers
+        fmt = '('//trim(adjustl(fmt))//'(",",g0,I1,g0))'
+        WRITE (tmp,fmt)                     &
+             ('NDN',i,'D',i=1,nlayers),     &
+             ('NIT',i,'D',i=1,nlayers),     &
+             ('N2O',i,'D',i=1,nlayers),     & 
+             ('N2F',i,'D',i=1,nlayers),     &
+             ('NOF',i,'D',i=1,nlayers)     
+      ELSE
+        fmt = '(5(9(",",A,I1,A),",",A5))'
+        WRITE (tmp,fmt)                     &                
+             ('NDN',i,'D',i=1,9),'NDN10',   &
+             ('NIT',i,'D',i=1,9),'NIT10',   &
+             ('N2O',i,'D',i=1,9),'N2O10',   &
+             ('N2F',i,'D',i=1,9),'N2F10',   &
+             ('NOF',i,'D',i=1,9),'NOF10'   
+      ENDIF
+      
+      tmp = Trim(Adjustl(tmp)) 
+      
+    length= Len('RUN,EXP,TRTNUM,ROTNUM,REPNO,YEAR,DOY,DAS,' &
+      //'N2OEC,N2EC,NOEC,NDNC,' &
+      //'NITC,N2ODC,N2ONC,N2FLC,NOFLC,' &
+      //'N2OED,N2ED,NOED,NDND,' &
+      //'NITRD,N2ODD,N2OND,N2FLD,NOFLD') &
+      + Len(Trim(Adjustl(tmp)))
+    
+        Allocate(character(LEN=length) :: Header)
+
+    Header = 'RUN,EXP,TRTNUM,ROTNUM,REPNO,YEAR,DOY,DAS,' &
+      //'N2OEC,N2EC,NOEC,NDNC,' &
+      //'NITC,N2ODC,N2ONC,N2FLC,NOFLC,' &
+      //'N2OED,N2ED,NOED,NDND,' &
+      //'NITRD,N2ODD,N2OND,N2FLD,NOFLD' &
+      // Trim(Adjustl(tmp))
+  
+      fn = 'n2o.csv'
+      Call GETLUN (fn,nf)
+
+      Open (UNIT = nf, FILE = fn, FORM='FORMATTED', STATUS = 'REPLACE', &
+          IOSTAT = ErrNum)
+        
+      Write(nf,'(A)')Header
+      Deallocate(Header)    
+
+      ptrN2O => headN2O
+      Do
+        If(.Not. Associated(ptrN2O)) Exit          
+        Write(nf,'(A)') ptrN2O % pclineN2O
+        ptrN2O => ptrN2O % pN2O
+      End Do
+
+      Nullify(ptrN2O, headN2O, tailN2O)
+      Close(nf)
+End Subroutine ListtofileN2O
+
+!------------------------------------------------------------------------------
+Subroutine LinklstN2O(ptxtlineN2O)
+
+    Character(:), Allocatable :: ptxtlineN2O
+        
+    If(.Not. Associated(headN2O)) Then             
+      Allocate(headN2O, Stat=istatN2O)        
+      If(istatN2O==0) Then                         
+        tailN2O => headN2O
+        Nullify(tailN2O%pN2O)                 
+        tailN2O%pclineN2O = ptxtlineN2O  
+      Else
+        ! Error message
+      End If
+    Else
+      Allocate(tailN2O%pN2O, Stat=istatN2O)   
+      If(istatN2O==0) Then                              
+        tailN2O=> tailN2O%pN2O                
+        Nullify(tailN2O%pN2O)                      
+        tailN2O%pclineN2O = ptxtlineN2O       
+      Else
+      ! Error message
+      End If
+    End If
+
+ End Subroutine LinklstN2O
 !------------------------------------------------------------------------------
 End Module Linklist

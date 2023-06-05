@@ -94,20 +94,23 @@ C  08/12/2003 CHP Added I/O error checking
 !  Called by: WATBAL
 !  Calls    : ERROR, FIND
 !=======================================================================
-      SUBROUTINE IPWBAL (CONTROL, DLAYR, LL, NLAYR, SAT,  !Input
-     &    SW, WTDEP)                                      !Output
+      SUBROUTINE IPWBAL (CONTROL, LL, NLAYR,              !Input
+     &    SW, ActWTD)                                     !Output
+
+!     2023-01-26 chp removed unused variables in argument list:
+!       DLAYR, SAT,
 
 !-----------------------------------------------------------------------
-      USE ModuleDefs     !Definitions of constructed variable types, 
-                         ! which contain control information, soil
-                         ! parameters, hourly weather data.
+      USE ModuleData
       IMPLICIT NONE
+      EXTERNAL FIND, ERROR
       SAVE
 
-      REAL, DIMENSION(NL), INTENT(IN) :: DLAYR, LL, SAT
+!     REAL, DIMENSION(NL), INTENT(IN) :: DLAYR, LL, SAT
+      REAL, DIMENSION(NL), INTENT(IN) :: LL
       INTEGER, INTENT(IN) :: NLAYR
       REAL, DIMENSION(NL), INTENT(OUT) :: SW
-      REAL, INTENT(OUT) :: WTDEP
+      REAL, INTENT(OUT) :: ActWTD
 
       INTEGER DYNAMIC
       INTEGER LUNIO
@@ -121,7 +124,7 @@ C  08/12/2003 CHP Added I/O error checking
       INTEGER ERRNUM, FOUND, L, LINC, LNUM, RUN
 
       REAL, DIMENSION(NL) :: SW_INIT
-      REAL ICWD, SWEF, ICWD_INIT, SWAD
+      REAL ICWD, ICWD_INIT, SWAD  !, SWEF
 
 !     The variable "CONTROL" is of constructed type "ControlType" as 
 !     defined in ModuleDefs.for, and contains the following variables.
@@ -154,7 +157,10 @@ C     Find and Read Initial Conditions Section
         ELSE
           READ(LUNIO,'(40X,F6.0)',IOSTAT=ERRNUM) ICWD ; LNUM = LNUM + 1
           IF (ERRNUM .NE. 0) CALL ERROR(ERRKEY,ERRNUM,FILEIO,LNUM)
-          WTDEP = ICWD
+          IF (ICWD .LT. 0.0) THEN
+            ICWD = 9999.
+          ENDIF
+          ActWTD = ICWD
 
           DO L = 1, NLAYR
             READ(LUNIO,'(9X,F5.3)',IOSTAT=ERRNUM) SW(L)
@@ -180,6 +186,7 @@ C     Find and Read Initial Conditions Section
 
       SW_INIT   = SW
       ICWD_INIT = ICWD
+      CALL PUT('MGMT','ICWD',ICWD)
 
       CLOSE (LUNIO)
 
@@ -198,7 +205,7 @@ C     Find and Read Initial Conditions Section
 !      ELSE
 !        READ(LUNIO,'(40X,F6.0)', IOSTAT=ERRNUM) ICWD ; LNUM = LNUM + 1
 !        IF (ERRNUM .NE. 0) CALL ERROR(ERRKEY,ERRNUM,FILEIO,LNUM)
-!        WTDEP = ICWD
+!        ActWTD = ICWD
 !
 !        DO L = 1, NLAYR
 !          READ(LUNIO,'(9X,F5.3)',IOSTAT=ERRNUM) SW(L)
@@ -220,6 +227,9 @@ C     Find and Read Initial Conditions Section
 
       SW   = SW_INIT   
       ICWD = ICWD_INIT  
+      ActWTD = ICWD
+      CALL PUT('MGMT','ICWD',ICWD)
+      CALL PUT('MGMT','WATTAB',ActWTD)
 
 !***********************************************************************
 !***********************************************************************
@@ -248,7 +258,7 @@ C     Find and Read Initial Conditions Section
 ! SECTION Section name in input file 
 ! SW(L)   Volumetric soil water content in layer L
 !          (cm3 [water] / cm3 [soil])
-! WTDEP   Depth to water table (cm)
+! ActWTD  Depth to water table (cm)
 !-----------------------------------------------------------------------
 !     END IPWBAL Subroutine
 C=======================================================================
@@ -275,11 +285,7 @@ C=======================================================================
      &    UPFLOW, SWDELTU)                                !Output
 
 !     ------------------------------------------------------------------
-      USE ModuleDefs     !Definitions of constructed variable types, 
-                         ! which contain control information, soil
-                         ! parameters, hourly weather data.
-!     NL defined in ModuleDefs.for
-
+      USE ModuleDefs   
       IMPLICIT NONE
       SAVE
 

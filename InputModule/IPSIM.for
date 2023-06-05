@@ -48,6 +48,8 @@ C=======================================================================
       USE ModuleData
       USE CsvOutput
       IMPLICIT NONE
+      EXTERNAL ERROR, FIND, IGNORE, UPCASE, WARNING, IGNORE2, Y4K_DOY, 
+     &  YR_DOY, MODEL_NAME, FILL_ISWITCH, DEFAULT_SIMCONTROLS, GET_CROPD
       SAVE
 
       INCLUDE 'COMSWI.blk'
@@ -68,12 +70,13 @@ C=======================================================================
       INTEGER PLDATE,PWDINF,PWDINL,HLATE,HDLAY,NRESDL
       INTEGER IFIND,LN,ERRNUM,FTYPEN,YRSIM,YEAR,RUN,RSEED1,RRSEED1
       INTEGER YRPLT
-      INTEGER FIST1, FIST2
+!     INTEGER FIST1, FIST2
 
       REAL DSOIL,THETAC,DSOILN,SOILNC,SOILNX,SWPLTL,SWPLTH,SWPLTD
       REAL PTX,PTTN,DRESMG,RIP,IEPT,HPP,HRP,AIRAMT,EFFIRR, AVWAT
-      REAL LDIFF, PREV_LINEXP
-      REAL V_AVWAT(20)    ! Create vectors to save growth stage based irrigation
+!     REAL LDIFF, PREV_LINEXP
+!     Vectors to save growth stage based irrigation
+      REAL V_AVWAT(20)    
       REAL V_IMDEP(20)
       REAL V_ITHRL(20)
       REAL V_ITHRU(20), IFREQ
@@ -85,6 +88,7 @@ C=======================================================================
       INTEGER GSIRRIG, I, STAT, CHARLEN
 
       LOGICAL UseSimCtr, MulchWarn, SimLevel
+
 
 !     2020-11-04 CHP Added for yield forecast mode, RNMODE = 'Y'
       INTEGER ENDAT, SeasDur, FODAT, FStartYear, FEndYear
@@ -133,7 +137,7 @@ C=======================================================================
          MESOM   = 'G'
          MESOL   = '2'    !was '1'
          MESEV   = 'R'    !old Ritchie two-stage method
-         METMP   = 'D'    !DSSAT original soil temperature
+         METMP   = 'D'    !DSSAT / Kimball improved soil temperature
 !        METMP   = 'E'    ! EPIC soil temp routine.
          MEGHG   = '0'
 !                   0  => DSSAT original denitrification routine
@@ -221,7 +225,7 @@ C
 
 !        IF (INDEX ('BNSBPNPECHPPVBCPCBFB',CROP) .EQ. 0) THEN
          SELECT CASE (CROP)
-         CASE ('BN','SB','PN','PE','CH','PP',
+         CASE ('BN','SB','PN','PE','CH','PP','GY',
      &          'VB','CP','CB','FB','GB','LT','AL','BG')
 C     &          'VB','CP','CB','FB','GB','LT')
 !          Do nothing -- these crops fix N and can have Y or N
@@ -304,8 +308,11 @@ C
 
 !        3/27/2016 chp Default soil temperature method is EPIC
 !        7/21/2016 chp Default soil temperature method is DSSAT, per GH
-         IF (INDEX('ED',METMP) < 1) METMP = 'D'
-!        IF (INDEX('ED',METMP) < 1) METMP = 'E'
+!        5/04/2023  FO Default ST method is TMA(1) = TAVG (BK changes)
+         IF (INDEX('EDR',METMP) < 1) METMP = 'D'
+!         METMP = 'D' - default DSSAT (improved Kimball) soil temperature
+!         METMP = 'R' - previous DSSAT default method (Ritchie)
+!         METMP = 'E' - EPIC soil temperature routine
 
 !        Default greenhouse gas method is DSSAT
          IF (INDEX('01',MEGHG) < 1) MEGHG = '0'
@@ -338,6 +345,27 @@ C
          IFERI = UPCASE(IFERI)
          IRESI = UPCASE(IRESI)
          IHARI = UPCASE(IHARI)
+
+C TF, FO & DP - 2022-07-12 - AutomaticMOW Switch
+! W - AutoMOW days frequency
+! X - AutoMOW GDD
+! Y - SmartMOW days frequency
+! Z - SmartMOW GDD
+         IF(IHARI .EQ. 'W') THEN
+           ISWITCH%ATMOW = .TRUE.
+           ISWITCH%ATTP = 'W'
+         ELSEIF(IHARI .EQ. 'X') THEN
+           ISWITCH%ATMOW = .TRUE.
+           ISWITCH%ATTP = 'X'
+         ELSEIF(IHARI .EQ. 'Y') THEN
+           ISWITCH%ATMOW = .TRUE.
+           ISWITCH%ATTP = 'Y'
+         ELSEIF(IHARI .EQ. 'Z') THEN
+           ISWITCH%ATMOW = .TRUE.
+           ISWITCH%ATTP = 'Z'
+         ELSE
+           ISWITCH%ATMOW = .FALSE.
+         ENDIF
 
          IF ((INDEX('CSPT',CROP)) .GT. 0) THEN
            IF (IHARI .EQ. 'A') THEN
@@ -475,7 +503,7 @@ C
 C           Read SEVENTH line of simulation control - AUTOMATIC IRRIGATION
 C
            DO I=1,20
-                V_IMDEP (I) = -99       ! Assighn default values to variable
+                V_IMDEP (I) = -99 
                 V_ITHRL (I) = -99
                 V_ITHRU (I) = -99
                 V_IRON  (I) = -99
@@ -485,7 +513,7 @@ C
                 V_AVWAT (I) = -99
            END DO
 
-           GSIRRIG = 1                                ! Start Growth Stage index
+           GSIRRIG = 1         ! Start Growth Stage index
 
            CALL IGNORE (LUNEXP,LINEXP,ISECT,CHARTEST)
 
@@ -495,16 +523,20 @@ C
      &               IEPT,IOFF,IAME,AIRAMT,EFFIRR,AVWAT, IFREQ
                IF (ERRNUM .NE. 0) CALL ERROR(ERRKEY,ERRNUM,FILEX,LINEXP)
 
-               READ(CHARTEST,'(57x,A5)') TEXT     ! Read value of AVWAT in text to check if blank or missing
+!              Read value of AVWAT in text to check if blank or missing
+               READ(CHARTEST,'(57x,A5)') TEXT     
                CHARLEN = LEN_TRIM(TEXT)
-               IF (CHARLEN==0) AVWAT = -99.       ! If TXAVWAT blank or missing set AVWAT -99 (for compatability with old files)
+!              If TXAVWAT blank or missing set AVWAT -99 (for compatability with old files)
+               IF (CHARLEN==0) AVWAT = -99.       
 
-               READ(CHARTEST,'(63x,A5)') TEXT     ! Read value of IFREQ in text to check if blank or missing
+!              Read value of IFREQ in text to check if blank or missing
+               READ(CHARTEST,'(63x,A5)') TEXT     
                CHARLEN = LEN_TRIM(TEXT)
-               IF (CHARLEN==0) IFREQ = 0.0        ! If TXFREQ blank or missing set IFREQ = 0 (for compatability with old files)
+!              If TXFREQ blank or missing set IFREQ = 0 (for compatability with old files)
+               IF (CHARLEN==0) IFREQ = 0.0        
 
-
-              V_IMDEP(GSIRRIG) = DSOIL                   ! Save growth stage specific variables in data vectors
+!             Save growth stage specific variables in data vectors
+              V_IMDEP(GSIRRIG) = DSOIL                   
               V_ITHRL(GSIRRIG) = THETAC
               V_ITHRU(GSIRRIG) = IEPT
               READ(IOFF(4:5), *, IOSTAT = STAT) V_IRON (GSIRRIG)
@@ -515,14 +547,17 @@ C
               V_IFREQ(GSIRRIG) = NINT(IFREQ)
               V_AVWAT(GSIRRIG) = AVWAT
 
-              CALL IGNORE2(LUNEXP,LINEXP,ISECT,CHARTEST)                ! Read next line until a second tier header is found
+!             Read next line until a second tier header is found
+              CALL IGNORE2(LUNEXP,LINEXP,ISECT,CHARTEST)                
 
               IF(ISECT .NE. 3) THEN
-                  GSIRRIG = GSIRRIG + 1                                 ! Increase the counter by 1
+!                 Increase the counter by 1
+                  GSIRRIG = GSIRRIG + 1                                 
               END IF
            END DO
            
-           DSOIL  = V_IMDEP(1)                         ! Save value of first line as default for compatibility with old files
+!          Save value of first line as default for compatibility with old files
+           DSOIL  = V_IMDEP(1)                         
            THETAC = V_ITHRL(1)
            IEPT   = V_ITHRU(1)
            IOFF   = V_IRONC(1)
@@ -566,8 +601,11 @@ C
 C           Read TENTH line of simulation control - AUTOMATIC HARVEST
 C
             CALL IGNORE(LUNEXP,LINEXP,ISECT,CHARTEST)
-            READ (CHARTEST,66,IOSTAT=ERRNUM) LN,HDLAY,HLATE,
-     &           HPP,HRP
+          
+C           Added AutoMow variables: HMFRQ, HMGDD, HMCUT, HMMOW, HRSPL, HMVS
+            READ (CHARTEST,71,IOSTAT=ERRNUM) LN,HDLAY,HLATE,
+     &           HPP,HRP,ISWITCH%HMFRQ,ISWITCH%HMGDD,ISWITCH%HMCUT,
+     &           ISWITCH%HMMOW, ISWITCH%HRSPL, ISWITCH%HMVS
             IF (ERRNUM .NE. 0) CALL ERROR (ERRKEY,ERRNUM,FILEX,LINEXP)
             
 !     ==============================================================
@@ -758,7 +796,7 @@ C-----------------------------------------------------------------------
 !     Check for N model compatible with crop model
       IF (ISWNIT /= 'N') THEN
         SELECT CASE(MODEL(1:5))
-        CASE ('SALUS', 'SCCAN', 'SCCSP', 'SCSAM')
+        CASE ('SALUS', 'SCCSP', 'SCSAM')
 !           N model has NOT been linked for these models
 !           Print a warning message.
             CALL GET_CROPD(CROP, CROPD)
@@ -903,7 +941,8 @@ C-----------------------------------------------------------------------
 !    &        1X,I5,1x,F5.0, 2(1x, F5.3))
   69  FORMAT(I3,11X,3(1X,F5.0),2(1X,A5),1X,F5.0,1X,F5.0,1X,F5.0,1X,F6.0)
   70  FORMAT (3X,I2)
-
+! FO/TF - New reading format for AutomaticMOW
+  71  FORMAT (I3,11X,2(1X,I5),2(1X,F5.0),1X,I5,1X,I5,1X,F5.2,3(1X,I5))
       END SUBROUTINE IPSIM
 
 
@@ -1021,6 +1060,9 @@ C-----------------------------------------------------------------------
 
       USE ModuleDefs
       IMPLICIT NONE
+      EXTERNAL ERROR, FIND, IGNORE, UPCASE, WARNING, IGNORE2, 
+     &  Y4K_DOY, YR_DOY, MODEL_NAME, GETLUN, FIND_IN_FILE, LENSTRING, 
+     &  CHECK_I, CHECK_A, INFO, MSG_TEXT
       SAVE
 
       CHARACTER*1 UPCASE,ISIMI, MEPHO_SAVE, ISWSYM_SAVE
@@ -1688,6 +1730,7 @@ C  KJB, ADDED AL TO THIS, SO N-FIXATION WORKS FOR ALFALFA
 
       SUBROUTINE CHECK_A(LABEL, VALUE, ERRNUM, MSG, NMSG)
       IMPLICIT NONE
+      EXTERNAL MSG_TEXT
 
       CHARACTER*(*) VALUE
       CHARACTER*(*) LABEL
@@ -1712,6 +1755,7 @@ C  KJB, ADDED AL TO THIS, SO N-FIXATION WORKS FOR ALFALFA
 
       SUBROUTINE CHECK_I(LABEL, VALUE, ERRNUM, MSG, NMSG)
       IMPLICIT NONE
+      EXTERNAL MSG_TEXT
 
       INTEGER VALUE
       CHARACTER*(*) LABEL

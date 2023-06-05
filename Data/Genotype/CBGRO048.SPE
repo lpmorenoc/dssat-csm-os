@@ -5,7 +5,7 @@
   80.0  2.09 .0105                         CCMP,CCMAX,CCEFF; CO2 EFFECT ON PGCAN
   1.20  3.50  20.0  20.0   QDR             FNPGN(4),TYPPGN-LEAF N EFFECT ON PG
   0.00  15.0  25.0  45.0   LIN             FNPGT(4),TYPPGT-TEMP EFFECT-CANOPY PG
-   0.0   0.0  35.0  39.0  43.0  55.0       XLMAXT (6 VALUES)
+ -10.0   0.0  35.0  39.0  43.0  55.0       XLMAXT (6 VALUES)
    0.0   0.0   1.0   0.8   0.0   0.0       YLMAXT (6 VALUES)
  -6.00 10.00  50.0  60.0   QDR             FNPGL(4),TYPPGL-TMIN EFFECT-LEAF PG
  .0541  0.15  0.80   2.0                   PGEFF SCV KDIF, LFANGB
@@ -34,7 +34,7 @@
 
 !*CARBON AND NITROGEN MINING PARAMETERS
  0.030  0.75  .140  .074  0.20  0.15   CMOBMX,CADSTF,CADPR1,NMOBMX,NVSMOB,NRCVR
-    PD                                 XPODF
+    PD  0.70                           XPODF, NSTFAC
   0.04  0.08  0.04  0.08               ALPHL,ALPHS,ALPHR,ALPHSH
 
 !*NITROGEN FIXATION PARAMETERS
@@ -54,7 +54,7 @@
 
 !*LEAF GROWTH PARAMETERS
   420.  220.  50.0   5.0   0.0        FINREF,SLAREF,SIZREF,VSSINK,EVMODC
-  680. 200.0 -.048  1.50              SLAMAX,SLAMIN,SLAPAR,TURSLA
+  680. 200.0 -.048  1.50  1.00        SLAMAX,SLAMIN,SLAPAR,TURSLA,NSLA
 
    0.0   1.0   2.0   3.0   4.0   5.0  XVGROW(1-6), VSTAGE VALUES
    0.0  13.0  32.0  59.0  97.0 151.0  YVREF(1-6), LEAF AREA VALUES,CM2
@@ -125,7 +125,9 @@
   0.40  0.40  0.50  1.00  1.00                       YHWTEM(1-5),RELATIVE EXPAN
   0.00  5.00  7.50 10.00 15.00 20.00 30.00 80.00     XHWPAR(1-8),PAR VALUES
   4.00  2.00  1.50  1.25  1.05  1.00  1.00  1.00     YHWPAR(1-8),RELATIVE EXPAN
-
+  1.00                                               NHGT
+  
 !*EVAPOTRANSPIRATION
   0.75   1.0       KEP, EORATIO
-
+  0.50  0.95       SSKC, SKCBmax ASCE short ref (12 cm grass)
+  0.50  0.79       TSKC, TKCBmax ASCE tall ref (50 cm alfalfa)
