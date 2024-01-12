@@ -58,6 +58,18 @@ Character(Len=6),  Dimension(40) :: csvOLAP    !Labels
     
     Integer :: istatcscer                            
 !------------------------------------------------------------------------------
+!   for cscrp
+    Type :: lin_valuecscrp
+       Character(:), Allocatable :: pclinecscrp
+       Type (lin_valuecscrp), Pointer :: pcscrp
+    End Type
+
+    Type (lin_valuecscrp), Pointer :: headcscrp      
+    Type (lin_valuecscrp), Pointer :: tailcscrp      
+    Type (lin_valuecscrp), Pointer :: ptrcscrp       
+    
+    Integer :: istatcscrp                            
+!------------------------------------------------------------------------------
    
 !   for ET
     Type :: lin_valueET
@@ -523,6 +535,7 @@ Contains
     End If
 
  End Subroutine LinklstTemp
+
 !------------------------------------------------------------------------------
 
  Subroutine LinklstCsCer(ptxtlineCsCer)
@@ -550,6 +563,33 @@ Contains
     End If
 
  End Subroutine LinklstCsCer
+!------------------------------------------------------------------------------
+
+ Subroutine LinklstCsCrp(ptxtlineCsCrp)
+
+    Character(:), Allocatable :: ptxtlineCsCrp            
+        
+    If(.Not. Associated(headCsCrp)) Then          
+      Allocate(headCsCrp, Stat=istatCsCrp)        
+      If(istatCsCrp==0) Then                      
+        tailCsCrp => headCsCrp                    
+        Nullify(tailCsCrp%pCsCrp)                 
+        tailCsCrp%pclineCsCrp = ptxtlineCsCrp     
+      Else
+        ! Error message
+      End If
+    Else
+      Allocate(tailCsCrp%pCsCrp, Stat=istatCsCrp)      
+      If(istatCsCrp==0) Then                           
+        tailCsCrp=> tailCsCrp%pCsCrp                   
+        Nullify(tailCsCrp%pCsCrp)                      
+        tailCsCrp%pclineCsCrp = ptxtlineCsCrp           
+      Else
+      ! Error message
+      End If
+    End If
+
+ End Subroutine LinklstCsCrp
 !------------------------------------------------------------------------------
 
  Subroutine LinklstET(ptxtlineET)

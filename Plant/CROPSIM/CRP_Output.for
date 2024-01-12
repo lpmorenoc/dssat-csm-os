@@ -13,6 +13,7 @@
 !     IRRAMT, CO2, EO, RAIN, WINDSP
 
       USE ModuleDefs
+      USE CSVOUTPUT  ! LPM
       USE CRP_First_Trans_m
   
       IMPLICIT NONE
@@ -404,19 +405,20 @@
 
 !     VSH CSV output corresponding to PlantGro.OUT
             IF (FMOPT == 'C') THEN 
-              CALL CsvOut(EXCODE, RUN,TN,RN,SN, ON, REP, CN, YEAR,DOY,
+       CALL CsvOut(EXCODE, RUN,TN,RN,SN, ON, REP, CN, YEAR,DOY,
      &  DAS, DAP, TMEAN, TKILL, GSTAGEC, LNUM, PARIOUT, PARIUE, 
-     &  AMIN1(999.9,CARBOBEG*PLTPOP*10.0), 
+     &  CARBOBEG, 
      &  LAIC, SAID, CAIC, TWAD,SDWADC,RWAD,CWAD,
      &  LLWADOUT,STWADOUT,HWAD,
-     &  HIAD, CHWADOUT,RSWAD, 
+     &  HIAD, CHWADOUT,EWAD, RSWAD, 
      &  SENTOPRETAINEDA,SENTOPLITTERAC,SENROOTC,RSCD,
      &  HNUMAD,HWUDC, TNUMAD,SLAOUT,
      &  RTDEP, PTF, H2OA, WAVR, WUPR, WFT, WFP,
-     &  WFG, NFT, NFP, NFG, NUPR, TFP, TFG, VF, DF,
-     &  vCsvlineCsCer, vpCsvlineCsCer, vlngthCsCer)
+     &  WFG, NFT, NFP, NFG, NUPRATIO, TFP, TFG, VF, DFOUT,
+     &  PLTPOP, 
+     &  vCsvlineCsCrp, vpCsvlineCsCrp, vlngthCsCrp)
 
-              CALL LinklstCsCer(vCsvlineCsCer)
+              CALL LinklstCsCrp(vCsvlineCsCrp)
             END IF
             
             ! PlantGroReductionFactors

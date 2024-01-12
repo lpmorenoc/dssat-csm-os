@@ -19,6 +19,11 @@ Character(:), allocatable, Target :: vCsvlineCsCer
 Character (:), Pointer :: vpCsvlineCsCer
 Integer :: vlngthCsCer
 !------------------------------------------------------------------------------
+! for cscrp
+Character(:), allocatable, Target :: vCsvlineCsCrp
+Character (:), Pointer :: vpCsvlineCsCrp
+Integer :: vlngthCsCrp
+!------------------------------------------------------------------------------
 ! for ET.OUT
 Character(:), allocatable, Target :: vCsvlineET
 Character (:), Pointer :: vpCsvlineET
@@ -179,7 +184,8 @@ Integer :: vlngthN2O
 ! 
 Interface CsvOut
    Module Procedure CsvOut_cscer, &     
-                    CsvOut_crgro
+                    CsvOut_crgro, &
+                    CsvOut_cscrp
 !                    CsvOut_mzcer
 End Interface CsvOut
 !------------------------------------------------------------------------------    
@@ -270,7 +276,103 @@ Subroutine CsvOut_cscer(EXCODE, RUN, TN, RN, SN, ON, REP, CN, YEAR, DOY, &
    Csvline = Trim(Adjustl(tmp))
    pCsvline => Csvline
    Return
-end Subroutine CsvOut_cscer
+   end Subroutine CsvOut_cscer
+
+!------------------------------------------------------------------------------    
+! Sub for plantgro.csv output CSCRP
+Subroutine CsvOut_cscrp(EXCODE, RUN, TN, RN, SN, ON, REP, CN, YEAR, DOY, &
+       DAS, DAP, TMEAN, TKILL, GSTAGEC, LNUM, PARIOUT, PARIUE, &
+       CARBOBEG,                                               &
+       LAIC, SAID, CAIC, TWAD,SDWADC,RWAD,CWAD,                &
+       LLWADOUT,STWADOUT,HWAD,                                 &
+       HIAD, CHWADOUT,EWAD, RSWAD,                             &
+       SENTOPRETAINEDA,SENTOPLITTERAC,SENROOTC,RSCD,           &
+       HNUMAD,HWUDC, TNUMAD,SLAOUT,                            &
+       RTDEP, PTF, H2OA, WAVR, WUPR, WFT, WFP,                 &
+       WFG, NFT, NFP, NFG, NUPRATIO, TFP, TFG, VF, DFOUT,      &
+       PLTPOP,Csvline, pCsvline, lngth)
+
+
+   ! Input vars
+   Character(10),Intent(in):: EXCODE     ! Experiment code/name           text
+!   Character(8),Intent(in) :: RUNRUNI    ! Run+internal run number        text
+   Integer, Intent(IN) :: RUN           ! run number
+   Integer,Intent(in) :: TN, RN, SN, ON, REP, CN, YEAR, DOY, DAS, DAP        
+   Real,Intent(in) :: TMEAN, TKILL, LNUM, PARIOUT, PARIUE, CARBOBEG, &
+      SAID, TWAD, RWAD, CWAD, LLWADOUT, STWADOUT, HIAD, &       
+      CHWADOUT, EWAD, RSWAD,  RSCD, TNUMAD, SLAOUT, RTDEP, PTF, &     
+      H2OA, WAVR, WUPR, WFT, WFP, WFG, NFT, NFP, NFG, NUPRATIO, TFP, TFG, VF, DFOUT, &
+      SENTOPRETAINEDA, HNUMAD, PLTPOP, HWAD
+
+   CHARACTER(6),Intent(in) ::  HWUDC, SENTOPLITTERAC, SENROOTC, &
+      LAIC, CAIC, SDWADC, GSTAGEC
+
+   ! Temp vars
+!  integer :: length
+   ! Recalculated vars
+   REAL :: cCARBOA1,cRSCD1,cRTDEP1, cWAVR1, cWUPR1, cWFT1, cWFP1, cWFG1, &     
+           cNFT1, cNFP1, cNFG1, cNUPR1, cTFP1, cTFG1, cVF1, cDF1, LAISAI
+   Integer :: iLLWADOUT, iTWAD, iSDWAD, iRWAD, iCWAD, iSTWADOUT, iGWAD, & 
+              iCHWADOUT, iEWAD, iRSWAD, iTNUMAD, iSLAOUT, &
+              iSENTOPRETAINEDA, iHNUMAD, iHWAD
+   
+   Character(:), allocatable, Target, Intent(Out) :: Csvline
+   Character(:), Pointer, Intent(Out) :: pCsvline
+   Integer, Intent(Out) :: lngth
+   Integer :: size
+   Character(Len=1000) :: tmp 
+   ! End of vars
+
+   ! Recalculation
+   cCARBOA1 = AMIN1(999.9,CARBOBEG*PLTPOP*10.0)
+!   LAISAI = LAI + SAIDOUT 
+   iHNUMAD = NINT(HNUMAD)
+   iTWAD = NINT(TWAD)
+   iRWAD = NINT(RWAD)
+   iCWAD = NINT(CWAD)
+   iLLWADOUT = NINT(LLWADOUT)
+   iSTWADOUT = NINT(STWADOUT)
+   iHWAD = NINT(HWAD)
+   iCHWADOUT = NINT(CHWADOUT)
+   iEWAD = NINT(EWAD)
+   iRSWAD = NINT(RSWAD)
+   cRSCD1 = RSCD * 100.0
+   iTNUMAD = NINT(TNUMAD)
+   iSLAOUT = NINT(SLAOUT)
+   iSENTOPRETAINEDA = NINT(SENTOPRETAINEDA)
+   cRTDEP1 = RTDEP / 100.0
+   cWAVR1= AMIN1(99.9,WAVR)
+   cWUPR1 = AMIN1(15.0,WUPR)
+   cWFT1 = 1.0 - WFT
+   cWFP1 = 1.0 - WFP
+   cWFG1 = 1.0 - WFG
+   cNFT1 = 1.0 - NFT
+   cNFP1 = 1.0 - NFP
+   cNFG1 = 1.0 - NFG
+   cNUPR1 = AMIN1(2.0,NUPRATIO)
+   cTFP1 = 1.0 - TFP
+   cTFG1 = 1.0 - TFG
+   cVF1 = 1.0 - VF
+   cDF1 = 1.0 - DFOUT 
+     
+   
+!  Unformated outputs  
+   Write(tmp,'(49(g0,","),g0)') RUN, EXCODE, TN, RN, SN, ON, REP, CN, YEAR, &
+      DOY, DAS, DAP, TMEAN, TKILL, GSTAGEC, LNUM, PARIOUT, PARIUE, cCARBOA1, LAIC,& 
+      SAID, CAIC, iTWAD, SDWADC, iRSWAD, iSENTOPRETAINEDA,SENTOPLITTERAC,  &
+      SENROOTC,cRSCD1,iHNUMAD, HWUDC, iTNUMAD, iSLAOUT, cRTDEP1, PTF, &
+      H2OA, cWAVR1, cWUPR1, cWFT1, cWFP1, cWFG1, cNFT1, cNFP1, cNFG1, &
+      cNUPR1,  cTFP1, cTFG1, cVF1, cDF1
+
+   
+   lngth = Len(Trim(Adjustl(tmp)))
+   size = lngth
+   Allocate(Character(Len = size)::Csvline)
+   Csvline = Trim(Adjustl(tmp))
+   pCsvline => Csvline
+   Return
+end Subroutine CsvOut_cscrp
+
 !---------------------------------------------------------------------------------   
 ! Sub for plantgro.csv output CRGRO
 Subroutine CsvOut_crgro(EXCODE, RUN, TN, ROTNUM, REPNO, YEAR, DOY, DAS, DAP, &
