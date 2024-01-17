@@ -32,6 +32,7 @@ C=======================================================================
      &           IVRGRP,PATHGE,PATHEC,ECOTYP,ECONAM,ECONO,CROP,MODEL)
 
       IMPLICIT     NONE
+      EXTERNAL CLEAR, ERROR, IDGEN, INVRCE, INVRLE, IPECO, IPVAR
 
       CHARACTER*1  RNMODE,BLANK
       CHARACTER*2  CROP
@@ -99,7 +100,7 @@ C
 !=======================================================================
       ELSE IF (MENU .EQ. 1) THEN
           CALL IPVAR (FILEG,NSENS,RNMODE,VARNO,
-     &         VARTY,VRNAME,PATHGE,ECONO, MODEL, ATLINE, CROP)
+     &         VARTY,VRNAME,PATHGE,ECONO, MODEL, ATLINE) !, CROP)
           NSENS = 0
           IF (INDEX('GRO,CAS,CSM,CSP,CER,YCA',MODEL(3:5)) .GT. 0) THEN 
                   CALL IPECO (FILEE,NSENS,RNMODE,PATHEC,ECOTYP,ECONAM,
@@ -120,7 +121,7 @@ C
           IF (FEXIST) THEN
              NSENS = 0
              CALL IPVAR (FILEG,NSENS,RNMODE,VARNO,
-     &         VARTY,VRNAME,PATHGE,ECONO, MODEL, ATLINE, CROP)
+     &         VARTY,VRNAME,PATHGE,ECONO, MODEL, ATLINE) !, CROP)
 	       IF (INDEX('GRO,CAS,CSM,CSP,CER,YCA,OIL',MODEL(3:5)) .GT. 0) THEN 
                  CALL IPECO(FILEE,NSENS,RNMODE,PATHEC,ECOTYP,ECONAM,
      &               ECONO,IVRGRP,MODEL)
@@ -222,6 +223,7 @@ C=======================================================================
       SUBROUTINE IDGEN (FILEG,RNMODE,PATHGE)
 
       IMPLICIT     NONE
+      EXTERNAL CLEAR, VERIFY
 
       CHARACTER*1  LINE(80),RNMODE,BLANK
       CHARACTER*12 FILEG,GENTEM

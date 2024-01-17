@@ -285,8 +285,12 @@ C-----------------------------------------------------------------------
       LINIO = LINIO + 1
       WRITE (LUNIO,40)'*FIELDS             '
       LINIO = LINIO + 1
+!     2023-07-14 chp changed order of PMALB and PMWD variables to allow 
+!                    1D and 2D models to use the same file format.
       WRITE (LUNIO,59,IOSTAT=ERRNUM) FLDNAM,FILEW(1:8),SLOPE,FLOB,DFDRN,
-     &       FLDD,SFDRN,FLST,SLTX,SLDP,SLNO,PMWD,PMALB
+     &       FLDD,SFDRN,FLST,SLTX,SLDP,SLNO,PMALB,PMWD
+   59 FORMAT (3X,A8,1X,A8,1X,F5.1,1X,F5.0,1X,A5,1X,F5.0,1X,F5.1,
+     &        2(1X,A5),1X,F5.0,1X,A10,F6.2,2F6.1)
       IF (ERRNUM .NE. 0) CALL ERROR (ERRKEY,ERRNUM,FILEIO,LINIO)
       WRITE (LUNIO,60,IOSTAT=ERRNUM) XCRD,YCRD,ELEV,AREA,SLEN,FLWR,SLAS
      &            , FldHist, FHDur
@@ -586,9 +590,18 @@ C-----------------------------------------------------------------------
      &      EXTFE(I), EXTMN(I), TOTBAS(I), PTERMA(I), PTERMB(I),
      &      EXK(I), EXMG(I), EXNA(I), EXTS(I), SLEC(I), EXCA(I)
   991     FORMAT (1X,F5.0,F6.2,9(1X,F5.1),F6.2,5F6.1)
+
 !         04/21/2008 CHP added SASC - stable organic C (%)
           IF (SASC(I) > 0) THEN
-            WRITE (LUNIO,'(F6.3)',IOSTAT=ERRNUM) SASC(I)
+            WRITE (LUNIO,'(F6.3)',IOSTAT=ERRNUM,ADVANCE='NO') SASC(I)
+          ELSE
+            WRITE (LUNIO,'("  -99.")',IOSTAT=ERRNUM,ADVANCE='NO')
+          ENDIF
+          IF (ERRNUM .NE. 0) CALL ERROR (ERRKEY,ERRNUM,FILEIO,LINIO)
+
+!         2023-01-24 CHP added SAEA - soil alternate electron acceptors (mol Ceq/m3)
+          IF (SAEA(I) > 0) THEN
+            WRITE (LUNIO,'(F6.1)',IOSTAT=ERRNUM) SAEA(I)
           ELSE
             WRITE (LUNIO,'("  -99.")',IOSTAT=ERRNUM)
           ENDIF
@@ -730,8 +743,8 @@ C-GH &               P1,P2O,P2R,P5,G1,G2,PHINT,P3,P4
 !       Pineapple
         CASE ('PIALO')
             WRITE (LUNIO,1970,IOSTAT=ERRNUM) VARNO,VRNAME,ECONO,
-     &            TC,P1,P2,P3,P4,P5,P6,P7,P8,G1,G2,G3,PHINT
- 1970 FORMAT (A6,1X,A16,1X,A6,1X,F6.1,7F6.0,F6.1,3F6.0,2F6.1)  
+     &            P1,P2,P3,P4,P5,P6,G2,G3,PHINT
+ 1970 FORMAT (A6,1X,A16,1X,A6,1X,F6.1,4F6.0,F6.1,F6.0,2F6.1) 
 !B0067 SC-ANGUE         IB0001  60.0   500   500  2195   400  60.0   200  14.0  95.0
 
 !       Aroids taro & tanier
@@ -758,8 +771,6 @@ C-----------------------------------------------------------------------
    50 FORMAT (I3,A8,1X,A2,1X,A60)
    55 FORMAT (I3,I2,2(1X,I1),1X,A25)
    56 FORMAT (3X,A2,1X,A6,1X,A16)
-   59 FORMAT (3X,A8,1X,A8,1X,F5.1,1X,F5.0,1X,A5,1X,F5.0,1X,F5.1,
-     &        2(1X,A5),1X,F5.0,1X,A10,1X,F5.1,F6.2)
    60 FORMAT (3X,2(F15.10,1X),F9.3,1X,F17.1,1X,F5.0,2(1X,F5.1),1X,A5,I6)
    70 FORMAT (3X,I7,1X,I7,2F6.1,2(5X,A1),2(1X,F5.0),1X,F5.1,
      &        2(1X,F5.0),3(1X,F5.1),I6,F6.1,2I6)

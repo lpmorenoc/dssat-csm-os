@@ -19,9 +19,9 @@
 !  07/13/2006 CHP Added P model
 !  04/14/2021 CHP Added CropStatus
 !----------------------------------------------------------------------
-      SUBROUTINE MZ_PHENOL(DYNAMIC,ISWWAT,FILEIO,IDETO,    !C
-     &    CUMDEP,DAYL,DLAYR,LEAFNO,LL,NLAYR,PLTPOP,SDEPTH,  !I
-     &    SI1,SI3,SNOW, SRAD,SUMP,SW,TMAX,TMIN, TWILEN,           !I
+      SUBROUTINE MZ_PHENOL(DYNAMIC,ISWWAT,FILEIO,IDETO,           !C
+     &    CUMDEP,DAYL,DLAYR,LEAFNO,LL,NLAYR,PLTPOP,SDEPTH,        !I
+     &    SNOW, SRAD,SUMP,SW,TMAX,TMIN, TWILEN,                   !I
      &    XN,YRDOY,YRSIM,                                         !I
      &    CUMDTT,DTT,EARS,GPP,ISDATE, ISTAGE,MDATE,STGDOY,SUMDTT, !O
      &    XNTI,TLNO,XSTAGE,YREMRG,RUE,KCAN,KEP, P3, TSEN, CDAY,   !O
@@ -29,6 +29,7 @@
 
       USE ModuleDefs
       IMPLICIT  NONE
+      EXTERNAL GETLUN, FIND, ERROR, IGNORE, DAYLEN, WARNING
       SAVE
 !----------------------------------------------------------------------
 !                             Define Variables
@@ -108,8 +109,8 @@
       REAL            SDEPTH         
       CHARACTER*6     SECTION        
       REAL            S1    
-      REAL            SI1(6)         
-      REAL            SI3(6)         
+!     REAL            SI1(6)         
+!     REAL            SI3(6)         
       REAL            SIND           
       REAL            SNDN           
       REAL            SNOW           
@@ -565,7 +566,7 @@
 
                           WRITE(MESSAGE(1),3500) DSGT
 3500  FORMAT ('Crop failure because of lack of germination ',
-     &           'within',I5,' days of sowing.')
+     &           'within',F7.3,' days of sowing.')
                           CALL WARNING(1,'MZPHEN',MESSAGE)
 !                         WRITE (*,3500)
                           IF (IDETO .EQ. 'Y') THEN
@@ -620,7 +621,7 @@
                       WRITE (NOUTDO,1399)
                   ENDIF
                   MDATE = YRDOY
-                  CropStatus = 12   ! failure to germinate
+                  CropStatus = 13   ! failure to emerge
                   RETURN
               ENDIF
 
@@ -865,10 +866,11 @@
 !             SeedFrac = (SUMDTT - DSGFT) / (P5 - DSGFT)
               SeedFrac = SUMDTT / P5
           
-              IF (SUMDTT .LT. P5*0.95) RETURN  !End of EFP assumed to be 95%
-              !-------------------------------------------------------------
-              !   New Growth Stage Occurred Today. Initialize Some Variables
-              !-------------------------------------------------------------
+!             End of EFP assumed to be 95%
+              IF (SUMDTT .LT. P5*0.95) RETURN  
+!              -------------------------------------------------------------
+!                 New Growth Stage Occurred Today. Initialize Some Variables
+!              -------------------------------------------------------------
               STGDOY (ISTAGE) = YRDOY
               ISTAGE = 6
 

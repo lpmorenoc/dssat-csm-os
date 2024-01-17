@@ -28,6 +28,8 @@ C  08/01/2002 CHP Merged RUNINIT and SEASINIT into INIT section
 !                 FPLACE_C in Century)
 !  07/14/2006 CHP Added OM_Place (replaces RPLACE in NTRANS and 
 !                 RPLACE_C in Century)
+!  01/26/2023 CHP Reduce compile warnings: add EXTERNAL stmts, remove 
+!                 unused variables, shorten lines. 
 C=====================================================================
 
       SUBROUTINE MGMTOPS(CONTROL, ISWITCH, 
@@ -40,6 +42,8 @@ C-----------------------------------------------------------------------
       USE ModuleDefs
       USE FloodModule
       IMPLICIT NONE
+      EXTERNAL AUTHAR, AUTPLT, CHEMICAL, FERT_PLACE, IPAHAR, IRRIG, 
+     &  OM_PLACE, OPMGMT, PADDY_MGMT, SUMVALS, TILLAGE, TIMDIF, YR_DOY
       SAVE
 
       CHARACTER*1  IHARI, IIRRI, IPLTI, ISWCHE, RNMODE
@@ -52,11 +56,11 @@ C-----------------------------------------------------------------------
       INTEGER NAP, NCHEM, NLAYR, TILLNO          
       INTEGER NHAR, NTIL, RUN, TIMDIF
       INTEGER YRDIF, YRDOY, MDATE, YRO, YRPLT, YRS, YRSIM
-      INTEGER HDATE(3)
+      INTEGER HDATE(NAPPL)
       INTEGER STGDOY(20)
 
       REAL IRRAMT, TOTIR, TIL_IRR
-      REAL HPC(3), HBPC(3), HARVFRAC(2)
+      REAL HPC(NAPPL), HBPC(NAPPL), HARVFRAC(2)
       REAL, DIMENSION(NL) :: DLAYR, DUL, DS, LL, ST, SW
 
 !     Variables added for flooded conditions
@@ -64,7 +68,7 @@ C-----------------------------------------------------------------------
       REAL FLOOD, RAIN
 
       !Variables needed to call IPAHAR for sequenced runs:
-      INTEGER HDLAY, HLATE, HSTG(3)
+      INTEGER HDLAY, HLATE, HSTG(NAPPL)
       REAL    SWPLTL, SWPLTH, SWPLTD
 
 !     Arrays which contain data for printing in SUMMARY.OUT file
@@ -349,6 +353,7 @@ C=======================================================================
       USE ModuleData
       USE SumModule
       IMPLICIT NONE
+      EXTERNAL GETLUN, HEADER, NAILUJ, TIMDIF, YR_DOY
       SAVE
 
       CHARACTER*1  ISWCHE, IDETW, ISWTIL, IIRRI, RNMODE

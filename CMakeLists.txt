@@ -4,7 +4,7 @@
 # Define the project and the dependencies that it has
 ##########################################################################################
 
-CMAKE_MINIMUM_REQUIRED(VERSION 2.8.12)
+CMAKE_MINIMUM_REQUIRED(VERSION 3.5.0)
 
 if("${CMAKE_SOURCE_DIR}" STREQUAL "${CMAKE_BINARY_DIR}")
    message(FATAL_ERROR "DSSAT in-source builds are not permitted. \nMake a separate folder"
@@ -21,8 +21,8 @@ PROJECT(DSSAT-CSM Fortran)
 
 SET(MAJOR 4)
 SET(MINOR 8)
-SET(MODEL 1)
-SET(BUILD 2)
+SET(MODEL 2)
+SET(BUILD 1)
 
 # Get the current working branch
 execute_process(
@@ -230,6 +230,8 @@ set(
         "Plant/CANEGRO-Sugarcane/SC_Poplt3.for"
         "Plant/CANEGRO-Sugarcane/SC_ROOTG.for"
         "Plant/CANEGRO-Sugarcane/SC_UM_WSTRESS.for"
+        "Plant/CANEGRO-Sugarcane/SC_NITRO.for"
+        "Plant/CANEGRO-Sugarcane/SC_OPNIT.for"
         "Plant/CASUPRO-Sugarcane/CSP_CANOPY.for"
         "Plant/CASUPRO-Sugarcane/CSP_CASUPRO.for"
         "Plant/CASUPRO-Sugarcane/CSP_DEMAND.for"
@@ -238,7 +240,6 @@ set(
         "Plant/CASUPRO-Sugarcane/CSP_INCOMP.for"
         "Plant/CASUPRO-Sugarcane/CSP_INCOMP_OUT.for"
         "Plant/CASUPRO-Sugarcane/CSP_INPHENOL.for"
-        "Plant/CASUPRO-Sugarcane/CSP_IPDMND_OUT.for"
         "Plant/CASUPRO-Sugarcane/CSP_IPPHENOL.for"
         "Plant/CASUPRO-Sugarcane/CSP_IPPLNT.for"
         "Plant/CASUPRO-Sugarcane/CSP_MOBIL.for"
@@ -503,7 +504,6 @@ set(
         "Plant/NTEF/TF_OPNIT.for"
         "Plant/NTEF/TF_PHENOL.for"
         "Plant/NTEF/TF_ROOTS.for"
-        "Plant/NTEF/TF_SW_SUBS.for"
         "Plant/NTEF/TF_temp.for"
         "Plant/NWHEAT/WH_APSIM.for"
         "Plant/NWHEAT/WH_COLD.for"
@@ -621,6 +621,7 @@ set(
         "Soil/SoilUtilities/SoilNoPoBal.for"
         "Soil/SoilUtilities/SoilPBalSum.for"
         "Soil/SoilUtilities/TextureClass.for"
+        "Soil/SoilWater/CapFringe.f90"
         "Soil/SoilWater/INFIL.for"
         "Soil/SoilWater/OPWBAL.for"
         "Soil/SoilWater/RETC_VG.for"
@@ -628,6 +629,7 @@ set(
         "Soil/SoilWater/SATFLO.for"
         "Soil/SoilWater/TILEDRAIN.for"
         "Soil/SoilWater/WATBAL.for"
+        "Soil/SoilWater/WaterTable.f90"
         "Soil/SoilWater/WBAL.for"
         "Soil/SoilWater/WBSUBS.for"
         "SPAM/ESR_SoilEvap.for"

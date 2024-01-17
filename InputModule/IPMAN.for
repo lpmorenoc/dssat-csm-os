@@ -630,6 +630,7 @@ C  05/28/1993 PWW Header revision and minor changes
 C  06/09/2002 GH  Modified for Y2K
 C  02/03/2005 GH  Corrected error checking for missing levels
 C  05/07/2020 FO  Added new Y4K subroutine call to convert YRDOY
+C  04/01/2021 FO/VSH Update harvest array size for MultiHarvest
 C-----------------------------------------------------------------------
 C  INPUT  : LUNEXP,FILEX,LNHAR,YEAR
 C
@@ -647,25 +648,26 @@ C  HDLAY  :
 C=======================================================================
 
       SUBROUTINE IPHAR (LUNEXP,FILEX,LNHAR,HDATE,HSTG,HCOM,HSIZ,HPC,
-     &                  NHAR,IHARI,YRSIM,CROP,HBPC,FREQ,CUHT)
+     &                  NHAR,IHARI,YRSIM,CROP,HBPC)  !,FREQ,CUHT)
 !NEW FORAGE VARIABLES (DIEGO-2/14/2017)
 
+      USE ModuleDefs
       IMPLICIT     NONE
       EXTERNAL ERROR, FIND, IGNORE, Y4K_DOY
 
       CHARACTER*1  IHARI
       CHARACTER*2  CROP
-      CHARACTER*5  HSTG(3),HCOM(3),HSIZ(3)
+      CHARACTER*5  HSTG(NAPPL),HCOM(NAPPL),HSIZ(NAPPL)
       CHARACTER*6  ERRKEY,FINDCH
       CHARACTER*12 FILEX
       CHARACTER*80 CHARTEST
 
-      INTEGER      LNHAR,LUNEXP,ISECT,LINEXP,HDATE(3),NHAR
+      INTEGER      LNHAR,LUNEXP,ISECT,LINEXP,HDATE(NAPPL),NHAR
       INTEGER      ERRNUM,J,IFIND,LN,YRSIM
 !     INTEGER      HYR, HDAY
 
-!     NEW FORAGE VARIABLES (DIEGO-2/14/2017)
-      REAL         HPC(3),HBPC(3),FREQ,CUHT 
+      REAL         HPC(NAPPL),HBPC(NAPPL)
+!     REAL FREQ,CUHT !NEW FORAGE VARIABLES (DIEGO-2/14/2017)
 
       PARAMETER   (ERRKEY='IPHAR ')
 
@@ -673,7 +675,7 @@ C=======================================================================
 
       NHAR  = 0
 
-      DO J = 1, 3
+      DO J = 1, NHAR         
          HSTG(J)  = '     '
          HCOM(J)  = '     '
          HSIZ(J)  = '     '
@@ -701,16 +703,25 @@ C
 !     &                  FREQ, CUHT !New variables for forages (Diego-2/14/2017)
          IF (ERRNUM .NE. 0) CALL ERROR (ERRKEY,ERRNUM,FILEX,LINEXP)
          IF ((HDATE(NHAR) .LT.  0) .OR.
-     &       (IHARI .EQ. 'R' .AND. MOD(HDATE(NHAR),1000) .GT. 366))
+     &       (IHARI .EQ. 'R' .AND. MOD(HDATE(NHAR),1000) .GT. 366).OR.
+     &       (IHARI .EQ. 'W' .AND. MOD(HDATE(NHAR),1000) .GT. 366).OR.
+     &       (IHARI .EQ. 'X' .AND. MOD(HDATE(NHAR),1000) .GT. 366).OR.
+     &       (IHARI .EQ. 'Y' .AND. MOD(HDATE(NHAR),1000) .GT. 366).OR.
+     &       (IHARI .EQ. 'Z' .AND. MOD(HDATE(NHAR),1000) .GT. 366))
      &       THEN
              CALL ERROR (ERRKEY,10,FILEX,LINEXP)
          ENDIF
-         IF (IHARI .EQ. 'R') THEN
+         IF (IHARI .EQ. 'R' .OR. IHARI .EQ. 'W' .OR.
+     &   IHARI .EQ. 'X' .OR. IHARI .EQ. 'Y' .OR. IHARI .EQ. 'Z') THEN
 C  FO - 05/07/2020 Add new Y4K subroutine call to convert YRDOY
            !CALL Y2K_DOY(HDATE(NHAR))
            CALL Y4K_DOY(HDATE(NHAR),FILEX,LINEXP,ERRKEY,6)
          ENDIF
          IF (IHARI .EQ. 'R' .AND. HDATE(NHAR) .LT. YRSIM) GO TO 50
+         IF (IHARI .EQ. 'W' .AND. HDATE(NHAR) .LT. YRSIM) GO TO 50
+         IF (IHARI .EQ. 'X' .AND. HDATE(NHAR) .LT. YRSIM) GO TO 50
+         IF (IHARI .EQ. 'Y' .AND. HDATE(NHAR) .LT. YRSIM) GO TO 50
+         IF (IHARI .EQ. 'Z' .AND. HDATE(NHAR) .LT. YRSIM) GO TO 50
 
 !        Harvested product defaults to 100%
          IF (HPC(NHAR) .LT. -1.E-4) THEN
@@ -730,7 +741,9 @@ C  FO - 05/07/2020 Add new Y4K subroutine call to convert YRDOY
            HSIZ(NHAR) = '  -99'
          ENDIF
          NHAR = NHAR + 1
-         IF (NHAR .GE. 4) GO TO 120
+
+         IF (NHAR .GE. NAPPL) GO TO 120
+         
        ELSE
          IF (NHAR .EQ. 1) THEN
            CALL ERROR (ERRKEY,2,FILEX,LINEXP)
@@ -758,6 +771,18 @@ C  FO - 05/07/2020 Add new Y4K subroutine call to convert YRDOY
          CALL ERROR (ERRKEY,3,FILEX,LINEXP)
       ENDIF
       IF (IHARI .EQ. 'R' .AND. HDATE(1) .EQ. 0) THEN
+         CALL ERROR (ERRKEY,4,FILEX,LINEXP)
+      ENDIF
+      IF (IHARI .EQ. 'W' .AND. HDATE(1) .EQ. 0) THEN
+         CALL ERROR (ERRKEY,4,FILEX,LINEXP)
+      ENDIF
+      IF (IHARI .EQ. 'X' .AND. HDATE(1) .EQ. 0) THEN
+         CALL ERROR (ERRKEY,4,FILEX,LINEXP)
+      ENDIF
+      IF (IHARI .EQ. 'Y' .AND. HDATE(1) .EQ. 0) THEN
+         CALL ERROR (ERRKEY,4,FILEX,LINEXP)
+      ENDIF
+      IF (IHARI .EQ. 'Z' .AND. HDATE(1) .EQ. 0) THEN
          CALL ERROR (ERRKEY,4,FILEX,LINEXP)
       ENDIF
       IF (IHARI .EQ. 'D' .AND. HDATE(1) .EQ. 0) THEN

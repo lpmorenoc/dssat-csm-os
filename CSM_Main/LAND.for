@@ -1,5 +1,5 @@
 C=======================================================================
-C COPYRIGHT 1998-2022
+C COPYRIGHT 1998-2023
 C                     DSSAT Foundation
 C                     University of Florida, Gainesville, Florida
 C                     International Fertilizer Development Center
@@ -208,7 +208,7 @@ C-----------------------------------------------------------------------
      &    EO, EOP, EOS, EP, ES, FLOODWAT, HARVFRAC,       !Input
      &    IRRAMT, NH4_plant, NO3_plant, SKi_Avail,        !Input
      &    SPi_AVAIL, SNOW, SOILPROP, SRFTEMP, ST, SW,     !Input
-     &    TRWU, TRWUP, WEATHER, YREND, YRPLT,             !Input
+     &    TRWUP, WEATHER, YREND, YRPLT,                   !Input
      &    FLOODN,                                         !I/O
      &    CANHT, EORATIO, HARVRES, KSEVAP, KTRANS,        !Output
      &    KUptake, MDATE, NSTRES, PSTRES1,                !Output
@@ -295,7 +295,7 @@ C-----------------------------------------------------------------------
      &    EO, EOP, EOS, EP, ES, FLOODWAT, HARVFRAC,       !Input
      &    IRRAMT, NH4_plant, NO3_plant, SKi_Avail,        !Input
      &    SPi_AVAIL, SNOW, SOILPROP, SRFTEMP, ST, SW,     !Input
-     &    TRWU, TRWUP, WEATHER, YREND, YRPLT,             !Input
+     &    TRWUP, WEATHER, YREND, YRPLT,                   !Input
      &    FLOODN,                                         !I/O
      &    CANHT, EORATIO, HARVRES, KSEVAP, KTRANS,        !Output
      &    KUptake, MDATE, NSTRES, PSTRES1,                !Output
@@ -372,7 +372,7 @@ C-----------------------------------------------------------------------
      &    EO, EOP, EOS, EP, ES, FLOODWAT, HARVFRAC,       !Input
      &    IRRAMT, NH4_plant, NO3_plant, SKi_Avail,        !Input
      &    SPi_AVAIL, SNOW, SOILPROP, SRFTEMP, ST, SW,     !Input
-     &    TRWU, TRWUP, WEATHER, YREND, YRPLT,             !Input
+     &    TRWUP, WEATHER, YREND, YRPLT,                   !Input
      &    FLOODN,                                         !I/O
      &    CANHT, EORATIO, HARVRES, KSEVAP, KTRANS,        !Output
      &    KUptake, MDATE, NSTRES, PSTRES1,                !Output
@@ -384,7 +384,7 @@ C-----------------------------------------------------------------------
      &    EO, EOP, EOS, EP, ES, FLOODWAT, HARVFRAC,       !Input
      &    IRRAMT, NH4_plant, NO3_plant, SKi_Avail,        !Input
      &    SPi_AVAIL, SNOW, SOILPROP, SRFTEMP, ST, SW,     !Input
-     &    TRWU, TRWUP, WEATHER, YREND, YRPLT,             !Input
+     &    TRWUP, WEATHER, YREND, YRPLT,                   !Input
      &    FLOODN,                                         !I/O
      &    CANHT, EORATIO, HARVRES, KSEVAP, KTRANS,        !Output
      &    KUptake, MDATE, NSTRES, PSTRES1,                !Output
@@ -433,7 +433,7 @@ C-----------------------------------------------------------------------
      &    EO, EOP, EOS, EP, ES, FLOODWAT, HARVFRAC,       !Input
      &    IRRAMT, NH4_plant, NO3_plant, SKi_Avail,        !Input
      &    SPi_AVAIL, SNOW, SOILPROP, SRFTEMP, ST, SW,     !Input
-     &    TRWU, TRWUP, WEATHER, YREND, YRPLT,             !Input
+     &    TRWUP, WEATHER, YREND, YRPLT,                   !Input
      &    FLOODN,                                         !I/O
      &    CANHT, EORATIO, HARVRES, KSEVAP, KTRANS,        !Output
      &    KUptake, MDATE, NSTRES, PSTRES1,                !Output
@@ -445,7 +445,7 @@ C-----------------------------------------------------------------------
      &    EO, EOP, EOS, EP, ES, FLOODWAT, HARVFRAC,       !Input
      &    IRRAMT, NH4_plant, NO3_plant, SKi_Avail,        !Input
      &    SPi_AVAIL, SNOW, SOILPROP, SRFTEMP, ST, SW,     !Input
-     &    TRWU, TRWUP, WEATHER, YREND, YRPLT,             !Input
+     &    TRWUP, WEATHER, YREND, YRPLT,                   !Input
      &    FLOODN,                                         !I/O
      &    CANHT, EORATIO, HARVRES, KSEVAP, KTRANS,        !Output
      &    KUptake, MDATE, NSTRES, PSTRES1,                !Output
@@ -500,7 +500,7 @@ C-----------------------------------------------------------------------
      &    EO, EOP, EOS, EP, ES, FLOODWAT, HARVFRAC,       !Input
      &    IRRAMT, NH4_plant, NO3_plant, SKi_Avail,        !Input
      &    SPi_AVAIL, SNOW, SOILPROP, SRFTEMP, ST, SW,     !Input
-     &    TRWU, TRWUP, WEATHER, YREND, YRPLT,             !Input
+     &    TRWUP, WEATHER, YREND, YRPLT,                   !Input
      &    FLOODN,                                         !I/O
      &    CANHT, EORATIO, HARVRES, KSEVAP, KTRANS,        !Output
      &    KUptake, MDATE, NSTRES, PSTRES1,                !Output
@@ -512,7 +512,7 @@ C-----------------------------------------------------------------------
      &    EO, EOP, EOS, EP, ES, FLOODWAT, HARVFRAC,       !Input
      &    IRRAMT, NH4_plant, NO3_plant, SKi_Avail,        !Input
      &    SPi_AVAIL, SNOW, SOILPROP, SRFTEMP, ST, SW,     !Input
-     &    TRWU, TRWUP, WEATHER, YREND, YRPLT,             !Input
+     &    TRWUP, WEATHER, YREND, YRPLT,                   !Input
      &    FLOODN,                                         !I/O
      &    CANHT, EORATIO, HARVRES, KSEVAP, KTRANS,        !Output
      &    KUptake, MDATE, NSTRES, PSTRES1,                !Output
@@ -561,7 +561,7 @@ C     Print seasonal summaries and close files.
      &    EO, EOP, EOS, EP, ES, FLOODWAT, HARVFRAC,       !Input
      &    IRRAMT, NH4_plant, NO3_plant, SKi_Avail,        !Input
      &    SPi_AVAIL, SNOW, SOILPROP, SRFTEMP, ST, SW,     !Input
-     &    TRWU, TRWUP, WEATHER, YREND, YRPLT,             !Input
+     &    TRWUP, WEATHER, YREND, YRPLT,                   !Input
      &    FLOODN,                                         !I/O
      &    CANHT, EORATIO, HARVRES, KSEVAP, KTRANS,        !Output
      &    KUptake, MDATE, NSTRES, PSTRES1,                !Output
@@ -573,7 +573,7 @@ C     Print seasonal summaries and close files.
      &    EO, EOP, EOS, EP, ES, FLOODWAT, HARVFRAC,       !Input
      &    IRRAMT, NH4_plant, NO3_plant, SKi_Avail,        !Input
      &    SPi_AVAIL, SNOW, SOILPROP, SRFTEMP, ST, SW,     !Input
-     &    TRWU, TRWUP, WEATHER, YREND, YRPLT,             !Input
+     &    TRWUP, WEATHER, YREND, YRPLT,                   !Input
      &    FLOODN,                                         !I/O
      &    CANHT, EORATIO, HARVRES, KSEVAP, KTRANS,        !Output
      &    KUptake, MDATE, NSTRES, PSTRES1,                !Output

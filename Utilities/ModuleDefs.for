@@ -126,6 +126,14 @@ C             CHP Added TRTNUM to CONTROL variable.
         CHARACTER (len=1) METMP !Temperature, EPIC
         CHARACTER (len=1) IFERI, IRESI, ICO2, FMOPT
         INTEGER NSWI
+        LOGICAL ATMOW
+        CHARACTER (len=1) ATTP
+        INTEGER HMFRQ
+        INTEGER HMGDD
+        REAL HMCUT
+        INTEGER HMMOW
+        INTEGER HMVS
+        INTEGER HRSPL
       END TYPE SwitchType
 
 !Other switches and methods used by model:
@@ -183,9 +191,11 @@ C             CHP Added TRTNUM to CONTROL variable.
         REAL, DIMENSION(NL) :: TOTP, TOTBAS, EXCA, EXK, EXNA
 
       !Soil analysis data 
-        REAL, DIMENSION(NL) :: SASC   !stable organic C
+        REAL, DIMENSION(NL) :: SASC  !stable organic C (g[C]/100g[soil])
+!       SAEA = soil alternate electron acceptors (mol Ceq/m3)
+        REAL, DIMENSION(NL) :: SAEA  
 
-      !Variables added with new soil format:
+!      Variables added with new soil format:
         REAL ETDR, PONDMAX, SLDN, SLOPE
 !       REAL, DIMENSION(NL) :: RCLPF, RGIMPF
 
@@ -275,6 +285,7 @@ C             CHP Added TRTNUM to CONTROL variable.
         REAL, DIMENSION(NL) :: ADDSNH4, ADDSNO3, ADDUREA
         REAL, DIMENSION(NL) :: ADDSPi
         REAL, DIMENSION(NL) :: ADDSKi
+        REAL, DIMENSION(NL) :: ADDBuffer
         LOGICAL UNINCO
       END TYPE FertType
 
@@ -449,6 +460,8 @@ C             CHP Added TRTNUM to CONTROL variable.
 !     Data transferred from management routine 
       Type MgmtType
         REAL DEPIR, EFFIRR, FERNIT, IRRAMT, TOTIR, TOTEFFIRR
+        REAL MgmtWTD, ICWD
+
 !       Vectors to save growth stage based irrigation
         REAL V_AVWAT(20)    
         REAL V_IMDEP(20)
@@ -464,7 +477,7 @@ C             CHP Added TRTNUM to CONTROL variable.
 
 !     Data transferred from Soil water routine
       Type WatType
-        REAL DRAIN, RUNOFF, SNOW
+        REAL DRAIN, RUNOFF, SNOW, WTDEP
       End Type WatType
 
 !     Data transferred from Soil Inorganic Nitrogen routine
@@ -495,6 +508,10 @@ C             CHP Added TRTNUM to CONTROL variable.
       TYPE PMDataType
         REAL PMFRACTION
       END TYPE
+      
+      TYPE MHarveType
+        INTEGER HARVF
+      END TYPE 
 
 !     Data which can be transferred between modules
       Type TransferType
@@ -510,8 +527,9 @@ C             CHP Added TRTNUM to CONTROL variable.
         Type (WatType)     WATER
         Type (WeatherType) WEATHER  !Full weather data structure
         Type (WeathType)   WEATH    !Supplemental weather data
-        TYPE (PDLABETATYPE) PDLABETA
-        TYPE (PMDataType) PM
+        TYPE (PDLABETATYPE)PDLABETA
+        TYPE (PMDataType)  PM
+        TYPE (MHarveType)  MHARVEST
       End Type TransferType
 
 !     The variable SAVE_data contains all of the components to be 
@@ -709,6 +727,8 @@ C             CHP Added TRTNUM to CONTROL variable.
         Case ('DEPIR');  Value = SAVE_data % MGMT % DEPIR
         Case ('IRRAMT'); Value = SAVE_data % MGMT % IRRAMT
         Case ('FERNIT'); Value = SAVE_data % MGMT % FERNIT
+        Case ('WATTAB'); Value = SAVE_data % MGMT % MgmtWTD
+        Case ('ICWD'); Value = SAVE_data % MGMT % ICWD
         Case DEFAULT; ERR = .TRUE.
         END SELECT
 
@@ -717,6 +737,7 @@ C             CHP Added TRTNUM to CONTROL variable.
         Case ('DRAIN'); Value = SAVE_data % WATER % DRAIN
         Case ('RUNOFF');Value = SAVE_data % WATER % RUNOFF
         Case ('SNOW');  Value = SAVE_data % WATER % SNOW
+        Case ('WTDEP');  Value = SAVE_data % WATER % WTDEP
         Case DEFAULT; ERR = .TRUE.
         END SELECT
 
@@ -844,6 +865,8 @@ C             CHP Added TRTNUM to CONTROL variable.
         Case ('DEPIR');  SAVE_data % MGMT % DEPIR  = Value
         Case ('IRRAMT'); SAVE_data % MGMT % IRRAMT = Value
         Case ('FERNIT'); SAVE_data % MGMT % FERNIT = Value
+        Case ('WATTAB'); SAVE_data % MGMT % MgmtWTD = Value
+        Case ('ICWD'); SAVE_data % MGMT % ICWD = Value
         Case DEFAULT; ERR = .TRUE.
         END SELECT
 
@@ -852,6 +875,7 @@ C             CHP Added TRTNUM to CONTROL variable.
         Case ('DRAIN'); SAVE_data % WATER % DRAIN  = Value
         Case ('RUNOFF');SAVE_data % WATER % RUNOFF = Value
         Case ('SNOW');  SAVE_data % WATER % SNOW   = Value
+        Case ('WTDEP');  SAVE_data % WATER % WTDEP   = Value
         Case DEFAULT; ERR = .TRUE.
         END SELECT
 
@@ -1088,6 +1112,12 @@ C             CHP Added TRTNUM to CONTROL variable.
         Case DEFAULT; ERR = .TRUE.
         END SELECT
 
+      CASE ('MHARVEST')
+        SELECT CASE(VarName)
+        CASE('HARVF'); Value = SAVE_data % MHARVEST % HARVF
+        CASE DEFAULT; ERR = .TRUE.
+        END SELECT       
+        
       Case Default; ERR = .TRUE.
       END SELECT
 
@@ -1127,6 +1157,12 @@ C             CHP Added TRTNUM to CONTROL variable.
         Case ('WYEAR'); SAVE_data % WEATH % WYEAR = Value
         Case DEFAULT; ERR = .TRUE.
         END SELECT
+        
+      CASE ('MHARVEST')
+        SELECT CASE(VarName)
+        CASE('HARVF'); SAVE_data % MHARVEST % HARVF = Value
+        CASE DEFAULT; ERR = .TRUE.
+        END SELECT            
 
       Case DEFAULT; ERR = .TRUE.
       END SELECT

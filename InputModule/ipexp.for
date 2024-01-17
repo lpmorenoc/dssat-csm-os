@@ -105,7 +105,7 @@ C=======================================================================
       INTEGER NFORC,NDOF,PMTYPE,YR,ROTN
 !     NEW FORAGE VARIABLES (DIEGO-2/14/2017)
       INTEGER TRTNUM, ROTNUM!,FREQ(3),CUHT(3) 
-      REAL    FLAG,EXP,TRT,PLTFOR,FREQ,CUHT 
+      REAL    FLAG,EXP,TRT,PLTFOR !,FREQ,CUHT 
       REAL    PMWD
 
       LOGICAL FEXIST, UseSimCtr, SimLevel
@@ -820,7 +820,7 @@ C     Call IPHAR
 C-----------------------------------------------------------------------
 !     NEW FORAGE VARIABLES (DIEGO-2/14/2017)
       CALL IPHAR (LUNEXP,FILEX,LNHAR,HDATE,HSTG,HCOM,HSIZ,HPC,
-     &     NHAR,IHARI,YRSIM,CROP,HBPC,FREQ,CUHT)
+     &     NHAR,IHARI,YRSIM,CROP,HBPC)    !,FREQ,CUHT
 
 C-----------------------------------------------------------------------
 C     Call IPIRR
@@ -846,8 +846,8 @@ C-----------------------------------------------------------------------
 C-----------------------------------------------------------------------
 C     Call IPCHEM - Chemical applications
 C-----------------------------------------------------------------------
-      CALL IPCHEM (LUNEXP,FILEX,LNCHE,YRSIM,ISWWAT,NCHEM,CDATE,
-     &    CHCOD,CHAMT,CHMET,CHDEP,CHT,ISWCHE,LNSIM,CHEXTR)
+      CALL IPCHEM (LUNEXP,FILEX,LNCHE,YRSIM,NCHEM,CDATE,
+     &    CHCOD,CHAMT,CHMET,CHDEP,CHT,ISWCHE,CHEXTR)
 
 C-----------------------------------------------------------------------
 C     Call IPTILL - Tillage operations
@@ -1163,8 +1163,6 @@ C=======================================================================
       IF (SFDRN .LE. 0.0) THEN
         SFDRN = 100.
       ENDIF
-      Write(msg(1),'("Plastic mulch cover albedo =",F7.2)') PMALB 
-      call info(1,errkey,msg)
 C
 C    New section
 C
@@ -1270,7 +1268,10 @@ C
  71     CALL IGNORE (LUNEXP,LINEXP,ISECT,CHARTEST)
         IF (ISECT .EQ. 1) THEN
            READ (CHARTEST,90,IOSTAT=ERRNUM) LN,
-     &                PMWD,PMALB
+!     2023-07-14 chp changed order of these three variables to allow 
+!                    1D and 2D models to use the same file format.
+!    &                PMWD,PMALB
+     &         PMALB, PMWD
 
            IF (ERRNUM .NE. 0) CALL ERROR (ERRKEY,ERRNUM,FILEX,LINEXP)
          ELSE
@@ -1300,7 +1301,7 @@ C-----------------------------------------------------------------------
 !     chp 7/26/2006
 ! 80   FORMAT (I3,2(F15.0,1X),F9.0,1X,F17.0,3(1X,F5.0))
  80   FORMAT (I3,2(A15,1X),A9,1X,F17.0,3(1X,F5.0),1X,A5,I6)
- 90   FORMAT (I3, F6.0, F6.2)
+ 90   FORMAT (I3, 4F6.0)
 
       END SUBROUTINE IPFLD
 

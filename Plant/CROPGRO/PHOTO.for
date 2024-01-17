@@ -33,6 +33,7 @@ C=======================================================================
                          ! parameters, hourly weather data.
       USE ModuleData
       IMPLICIT NONE
+      EXTERNAL PHOTIP, CURV, TABEX
       SAVE
 
       CHARACTER*3  TYPPGN, TYPPGT
@@ -271,6 +272,7 @@ C=======================================================================
 
 !-----------------------------------------------------------------------
       IMPLICIT NONE
+      EXTERNAL GETLUN, FIND, ERROR, IGNORE
 
       CHARACTER*1  BLANK
       CHARACTER*3  TYPPGN, TYPPGT

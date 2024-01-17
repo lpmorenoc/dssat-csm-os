@@ -1,5 +1,5 @@
 C=======================================================================
-C COPYRIGHT 1998-2022
+C COPYRIGHT 1998-2023
 C                     DSSAT Foundation                      
 C                     University of Florida, Gainesville, Florida
 C                     International Fertilizer Development Center
@@ -54,6 +54,8 @@ C 02/21/2006 GH  Read Crop Module from DSSATPRO
 C 02/01/2007 GH  RNMODE=T option for Gencalc Batch files
 C 02/07/2007 GH  Include path for FileX and rotation number to command
 C                line
+!  01/26/2023 CHP Reduce compile warnings: add EXTERNAL stmts, remove 
+!                 unused variables, shorten lines. 
 C-----------------------------------------------------------------------
 C  INPUT  : None
 C
@@ -207,7 +209,7 @@ C     Call IPVAR
 C-----------------------------------------------------------------------
       IF (CROP .NE. 'FA') THEN
         CALL IPVAR (FILEG,NSENS,RNMODE,VARNO,VARTY,VRNAME,PATHGE,
-     &              ECONO, MODEL, ATLINE, CROP)
+     &              ECONO, MODEL, ATLINE) !, CROP)
       ENDIF
 
 C-----------------------------------------------------------------------
@@ -237,7 +239,7 @@ C-----------------------------------------------------------------------
          IF (ISWNIT .EQ. 'Y') THEN
             CALL IPSLAN (FILEX, FILEX_P,LNSA, BD, DS, EXK, EXTP, OC,
      &            PEDON, PH, PHKCL, SLNO, SMHB, SMKE, SMPX, TOTN, 
-     &            SASC, NLAYR)    !,YRSIM)
+     &            SASC, SAEA, NLAYR)    !, YRSIM)
          ENDIF
 !      ENDIF
       ENDIF
@@ -273,7 +275,7 @@ C-----------------------------------------------------------------------
      &                 ICWD,ICRES,ICREN,ICREP,ICRIP,ICRID)    !,YRSIM) 
                   CALL IPSLAN (FILEX, FILEX_P,LNSA, BD, DS, EXK, EXTP, 
      &            OC, PEDON, PH, PHKCL, SLNO, SMHB, SMKE, SMPX, TOTN, 
-     &            SASC, NLAYR)    !,YRSIM)
+     &            SASC, SAEA, NLAYR)    !, YRSIM)
                   NSENS = 1
                ENDIF
             ENDIF

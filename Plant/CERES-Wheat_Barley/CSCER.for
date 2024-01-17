@@ -21,6 +21,8 @@
 !
 !  The module is used within both the Cropsim and CSM models.
 ! 
+!  2023-01-26 CHP Reduce compile warnings: add EXTERNAL stmts, remove 
+!                 unused variables, shorten lines.                    
 !=======================================================================
 
       ! For Cropsim
@@ -58,8 +60,10 @@
      & SENCALG, SENNALG, SENLGALG,                         !Senescence
      & RESCALG, RESNALG, RESLGALG,                         !Residues
      & STGDOY,                                             !Stage dates
-     & WEATHER, SOILPROP, CONTROL,
      & DYNAMIC)                                            !Control
+
+! 2023-01-25 CHP removed unused variables from argument list
+!    & WEATHER, SOILPROP, CONTROL,
 
       ! Substantive changes as worked on comparison
       !   1. Reserves overflow. Introduced
@@ -179,34 +183,35 @@
       USE CER_First_Trans_m
       
       IMPLICIT NONE
+      EXTERNAL CER_Init, CER_Growth, CER_Integrate, CER_Output
 
-      TYPE (ControlType), intent (in) :: CONTROL ! Defined in ModuleDefs
-      TYPE (WeatherType), intent (in) :: WEATHER ! Defined in ModuleDefs
-      TYPE (SoilType), intent (in) ::   SOILPROP ! Defined in ModuleDefs
+!      TYPE (ControlType), intent (in) :: CONTROL ! Defined in ModuleDefs
+!      TYPE (WeatherType), intent (in) :: WEATHER ! Defined in ModuleDefs
+!      TYPE (SoilType), intent (in) ::   SOILPROP ! Defined in ModuleDefs
     
-      INTEGER ADAT10, CSTIMDIF, CSINCDAT, DAPCALC
+!     INTEGER ADAT10, CSTIMDIF, CSINCDAT, DAPCALC
       INTEGER CN, DOY, DYNAMIC, DYNAMICI, FROP, NLAYR, ON, REP, RN          
       INTEGER RUN, RUNI, SN, STEP, STGDOY(20), TN, YEAR
-      INTEGER TVICOLNM
-      INTEGER CSYDOY, YEARPLTCSM, TVILENT
+!     INTEGER TVICOLNM
+      INTEGER YEARPLTCSM !, CSYDOY, TVILENT
       
       REAL CANHT, EO, EP, EOP, ET, LAI, KCAN, KEP, NFP
       REAL BD(NL), DAYLT, DEPMAX, LL(NL), SAT(NL)
-      REAL DLAYR(20), DUL(20), UNO3ALG(20), SENLGALG(0:20), UNH4ALG(20)
-      REAL RESWALG(0:20), RESWAL(0:20), RESNAL(0:20), RESLGAL(0:20)
+      REAL DLAYR(NL), DUL(NL), UNO3ALG(NL), SENLGALG(0:NL), UNH4ALG(NL)
+      REAL RESWALG(0:NL), RESWAL(0:NL), RESNAL(0:NL), RESLGAL(0:NL)
       REAL HARVFRAC(2)
       REAL RESCALG(0:NL), RESLGALG(0:NL), RESNALG(0:NL), RLV(NL)
       REAL RAIN, RWUPM, RWUMX, SLPF, SHF(NL)
       REAL ST(0:NL), SENNALG(0:NL), SENCALG(0:NL), TRWUP, UH2O(NL)
-      REAL SW(20), NO3LEFT(20), NH4LEFT(NL)
+      REAL SW(NL), NO3LEFT(NL), NH4LEFT(NL)
       REAL CO2, TMAX, TMIN, SRAD, WINDSP, SNOW
-      REAL TFAC4, TOTIR, YVALXY, YVAL1
+      REAL TOTIR !, TFAC4, YVALXY, YVAL1
       REAL  FracIntRadM
 
       CHARACTER*1   IDETG, ISWNIT, ISWWAT, IDETL, IDETO, IDETS
       CHARACTER*1   RNMODE
       CHARACTER*250 FILEIOIN
-      CHARACTER*10  TL10FROMI  
+!     CHARACTER*10  TL10FROMI  
 
 
       YEARDOY = YEAR*1000 + DOY
@@ -214,24 +219,23 @@
       IF (DYNAMIC.EQ.RUNINIT .OR. DYNAMIC.EQ.SEASINIT) THEN
 
         CALL CER_Init (LAI, CANHT,
-     &     CN, DOY, HARVFRAC, ISWNIT,
+     &     CN, DOY, HARVFRAC,
      &     FILEIOIN, FROP, IDETL,
-     &     ISWWAT, KCAN, KEP, NFP, ON,
+     &     KCAN, KEP, NFP, ON,
      &     RESCALG, RESLGALG, RESNALG, RLV, RN, RNMODE,
-     &     RUN, RUNI, RWUMX, RWUPM, SENCALG,
-     &     UH2O, UNH4ALG, UNO3ALG, YEAR, SENNALG, SLPF, SN,
+     &     RUN, RUNI, RWUMX, RWUPM, 
+     &     UH2O, YEAR, SLPF, SN,
      &     STGDOY, TN, TRWUP, DYNAMIC)
 
       ELSEIF (DYNAMIC.EQ.RATE) THEN
 
         CALL CER_Growth (BD, CANHT, CO2, DAYLT,
-     &     DLAYR, DOY, DUL, EO, EOP, ISWNIT, ISWWAT,
-     &     KCAN, KEP, LL, NFP, NH4LEFT, NLAYR , NO3LEFT,
+     &     DLAYR, DUL, EO, EOP, ISWNIT, ISWWAT,
+     &     KEP, LL, NFP, NH4LEFT, NLAYR , NO3LEFT,
      &     RLV, RNMODE, SAT , SENCALG, SENNALG,
      &     SHF, SLPF, SNOW, SRAD, ST, STGDOY, SW,
-     &     TMAX, TMIN, TRWUP, UH2O, UNH4ALG, UNO3ALG, WEATHER,
-     &     SOILPROP, CONTROL, WINDSP, YEAR,
-     &     YEARPLTCSM, LAI, IDETG)
+     &     TMAX, TMIN, TRWUP, UH2O, UNH4ALG, UNO3ALG, 
+     &     WINDSP, YEARPLTCSM, LAI)
 
         IF (YEARDOY.GE.YEARPLT) THEN   
 
@@ -257,7 +261,7 @@
 
       ELSEIF (DYNAMIC.EQ.INTEGR) THEN
 
-        CALL CER_Integrate (BD, LAI, CANHT, CO2,
+        CALL CER_Integrate (LAI, CANHT, CO2,
      &     DAYLT, DEPMAX, DLAYR, DOY, EOP, EP, ET, 
      &    FracIntRadM, KCAN, HARVFRAC, ISWWAT, LL, NFP, 
      &    NLAYR, RAIN, RESCALG, RESLGALG, RESNALG, RLV,
@@ -265,15 +269,14 @@
      &     RNMODE, SRAD, STGDOY, SW, TMAX, TMIN,
      &     YEAR)
 
-
       ELSEIF (DYNAMIC.EQ.OUTPUT .OR. 
      &        DYNAMIC.EQ.SEASEND .AND. SEASENDOUT.NE.'Y') THEN
 
-        CALL CER_Output (LAI, CANHT, CN, CO2, DOY,
+        CALL CER_Output (LAI, CANHT, CN, DOY,
      &     DYNAMIC, EOP, IDETG, IDETL, IDETO, IDETS,
-     &     ISWNIT, ISWWAT, NFP, NLAYR, ON, RAIN, REP,
+     &     ISWNIT, ISWWAT, NFP, ON, REP,
      &     RLV, RN, RNMODE, RUN, RUNI, SN, STEP, STGDOY,
-     &     TOTIR, TN, UNH4ALG, UNO3ALG, YEAR)
+     &     TOTIR, TN, YEAR)
      
       ELSEIF (DYNAMIC.EQ.SEASEND) THEN
 
@@ -282,7 +285,7 @@
         IF (FEXIST) CLOSE (NOUTPN)
         CLOSE (NOUTPG2)
         CLOSE (NOUTPGF)
-        CLOSE (FNUMWRK)
+!        CLOSE (FNUMWRK)
 
       ENDIF   ! Tasks
 
@@ -314,6 +317,7 @@
      & DYNAMICI)                                          !Control
 
       IMPLICIT NONE
+      EXTERNAL VPSLOP
       SAVE
 
       REAL          BLRESD        ! Boundary layer resistance      s/m
@@ -468,6 +472,7 @@
      & DYNAMICI)                                           !Control
 
       IMPLICIT NONE
+      EXTERNAL GETLUN
       SAVE
 
       INTEGER       NL            ! Maximum number soil layers,20
@@ -477,7 +482,7 @@
       INTEGER       DYNAMICI      ! Module control,internal        code
       REAL          DLAYR(20)     ! Depth of soil layers           cm
       REAL          EOP           ! Potential evaporation,plants   mm/d
-      INTEGER       FNUMWRK       ! File number,work file          #
+      !INTEGER       FNUMWRK       ! File number,work file          #
       CHARACTER*1   ISWWAT        ! Soil water balance switch Y/N  code
       INTEGER       L             ! Loop counter                   #
       REAL          LL(NL)        ! Lower limit,soil h2o           #
@@ -511,7 +516,7 @@
 
       IF (DYNAMICI.EQ.RUNINIT) THEN
 
-        CALL Getlun('WORK.OUT',fnumwrk)
+        !CALL Getlun('WORK.OUT',fnumwrk)
 
         ! Compute SWCON2 for each soil layer.  Adjust SWCON2 for very
         ! high LL to avoid water uptake limitations.
@@ -610,6 +615,7 @@
      X LAIL)                      ! Leaf area indices by layer
 
       IMPLICIT NONE
+      EXTERNAL YVALXY
       SAVE
 
       INTEGER       clx           ! Canopy layers,maximum          #
