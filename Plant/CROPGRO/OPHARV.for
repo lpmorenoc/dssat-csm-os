@@ -270,7 +270,7 @@ C-----------------------------------------------------------------------
 
 !     Set ACTIVE variable to indicate that current phase is active
       SELECT CASE (CROP)
-      CASE ('BC','BG','BN','CH','CI','CN','CO','CP','CU', 'CV'.
+      CASE ('BC','BG','BN','CH','CI','CN','CO','CP','CU', 'CV',
      &      'FB','GB','GY','LT','PE','PN','PP','PR','QU',
      &      'SB','SF','SR','SU','TM','VB')
         IF (YRDOY > STGDOY(1) .AND. YRDOY <= STGDOY(5)) THEN
