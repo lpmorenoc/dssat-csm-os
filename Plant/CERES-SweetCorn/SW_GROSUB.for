@@ -1407,7 +1407,9 @@
                           CALL YR_DOY(YRDOY, YR, DOY)
                           WRITE(MESSAGE(1),2700) DOY                  !
                           CALL WARNING(1,ERRKEY, MESSAGE)             !
-                          WRITE (     *,2700) DOY                     !
+                          IF (ISWITCH % IDETL .NE. '0') THEN          !
+                            WRITE (     *,2700) DOY                   !
+                          ENDIF                                       !
                           IF (IDETO .EQ. 'Y') THEN                    !
                               WRITE (NOUTDO,2700) DOY                 !
                           ENDIF                                       !
@@ -1422,7 +1424,9 @@
                   CALL YR_DOY(YRDOY, YR, DOY)
                   WRITE(MESSAGE(1),2700) DOY                          !
                   CALL WARNING(1,ERRKEY, MESSAGE)                     !
-                  WRITE (     *,2700) DOY                             !
+                  IF (ISWITCH % IDETL .NE. '0') THEN                  !
+                    WRITE (     *,2700) DOY                           !
+                  ENDIF                                               !
                   IF (IDETO .EQ. 'Y') THEN                            !
                       WRITE (NOUTDO,2700) DOY                         !
                   ENDIF                                               !
@@ -1583,7 +1587,9 @@
      &                  .AND. ICOLD .GT. 6) THEN
               WRITE(MESSAGE(1),2800)
               CALL WARNING(1,ERRKEY, MESSAGE)
-              WRITE (*,2800)
+              IF (ISWITCH % IDETL .NE. '0') THEN                     !
+                WRITE (*,2800)
+              ENDIF                                                  !
               IF (IDETO .EQ. 'Y') THEN
                   WRITE (NOUTDO,2800)
               ENDIF
