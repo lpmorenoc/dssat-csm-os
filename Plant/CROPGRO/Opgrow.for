@@ -399,10 +399,10 @@ C-----------------------------------------------------------------------
 
           IF (FMOPT == 'A' .OR. FMOPT == ' ') THEN   ! VSH
           WRITE (NOUTDG,300, ADVANCE='NO')
-     &        YEAR, DOY, DAS, DAP, VSTAGE, RSTAGE, XLAI,
+     &        YEAR, DOY, DAS, DAP, CROP, VSTAGE, RSTAGE, XLAI,
      &        NINT(WTLF*10.), NINT(STMWT*10.), NINT(SDWT*10.)
      
-  300     FORMAT (1X,I4,1X,I3.3,2(1X,I5),
+  300     FORMAT (1X,I4,1X,I3.3,2(1X,I5),4X, A2,
      &        1X,F6.1,1X,I6,1X,F6.3,3(1X,I6))
 
           IF(CROP .EQ. 'CO') THEN
@@ -412,8 +412,6 @@ C-----------------------------------------------------------------------
           ENDIF
 
           WRITE (NOUTDG,310, ADVANCE='NO')
-     &        YEAR, DOY, DAS, DAP, CROP,VSTAGE, RSTAGE, XLAI,
-     &        NINT(WTLF*10.), NINT(STMWT*10.), NINT(SDWT*10.),
      &        NINT(RTWT*10.), VWAD, NINT(TOPWT*10.), NINT(SEEDNO), 
      &        SDSIZE, HI, NINT(PODWT*10.), NINT(PODNO), SWF_AV, TUR_AV,
      &        NST_AV
