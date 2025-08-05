@@ -50,7 +50,7 @@ C=======================================================================
       IMPLICIT NONE
       EXTERNAL ETPHOT, STEMP_EPIC, STEMP, ROOTWU, SOILEV, TRANS
       EXTERNAL MULCH_EVAP, OPSPAM, PET, PSE, FLOOD_EVAP, ESR_SOILEVAP
-      EXTERNAL XTRACT
+      EXTERNAL XTRACT, TRANS_Inter
       SAVE
 
       CHARACTER*1  IDETW, ISWWAT

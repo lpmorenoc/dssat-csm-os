@@ -277,7 +277,7 @@ C-----------------------------------------------------------------------
 !     Set ACTIVE variable to indicate that current phase is active
       SELECT CASE (CROP)
       CASE ('AM','BC','BG','BN','CH','CI','CN','CO','CP',
-     &      'CU','CV','FB','GB','GY',,'HM','LT','PE','PN','PP',
+     &      'CU','CV','FB','GB','GY','HM','LT','PE','PN','PP',
      &      'PR','QU','SB','SF','SR','SU','TM','VB')
         IF (YRDOY > STGDOY(1) .AND. YRDOY <= STGDOY(5)) THEN
           PlantStres % ACTIVE(1) = .TRUE.
@@ -300,7 +300,7 @@ C-----------------------------------------------------------------------
           PlantStres % ACTIVE(1) = .TRUE.
         ENDIF
 
-      CASE ('BM','BH','BR','NP','CV')
+      CASE ('BM','BH','BR','NP')
         IF (YRDOY > STGDOY(1) .AND. YRDOY <= STGDOY(16)) THEN
           PlantStres % ACTIVE(1) = .TRUE.
         ENDIF
@@ -784,7 +784,7 @@ C-----------------------------------------------------------------------
         STNAME(15) = 'Sowing    '
         STNAME(16) = 'Harvest   '
 
-      CASE ('BM','BH','BR','NP','CV')
+      CASE ('BM','BH','BR','NP')
          STNAME( 1) = 'Emergence '
          STNAME( 2) = 'First Leaf'
          STNAME( 3) = 'End Juven.'

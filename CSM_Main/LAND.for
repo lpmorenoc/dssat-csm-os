@@ -32,7 +32,7 @@ C-----------------------------------------------------------------------
 
       IMPLICIT NONE
       EXTERNAL INFO, ERROR, WARNING, IPIBS, WEATHR, SOIL, SPAM, PLANT, 
-     &  OPSUM, MGMTOPS
+     &  OPSUM, MGMTOPS, INTERCROP
       SAVE
 C-----------------------------------------------------------------------
 C     Crop, Experiment, Command line Variables

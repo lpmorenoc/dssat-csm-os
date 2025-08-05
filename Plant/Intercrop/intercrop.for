@@ -41,7 +41,8 @@ C-----------------------------------------------------------------------
       USE FloodModule
 
       IMPLICIT NONE
-      EXTERNAL WARNING
+      EXTERNAL WARNING, CROPGRO,CSCERES_Interface, MZ_CERES,
+     &  PHOTOINTER, NUPTAKINTER
       SAVE
 
       CHARACTER*1  MEEVP, RNMODE, ISWNIT, ISWWAT

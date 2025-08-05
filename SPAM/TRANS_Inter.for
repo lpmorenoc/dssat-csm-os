@@ -26,6 +26,7 @@ C=======================================================================
       USE ModuleData
       USE YCA_Growth_VPD
       IMPLICIT NONE
+      EXTERNAL TRATIO, WARNING
       
       TYPE (WeatherType) WEATHER
       TYPE (ControlType) CONTROL

@@ -44,7 +44,6 @@
         CHARACTER*12 X(EvaluateNum), FILEA_NAME
         CHARACTER*80 PATHEX
         
-        TYPE (ControlType) CONTROL
         
         OLAP = OLAB
         
