@@ -77,7 +77,7 @@ C                 unused variables, shorten lines.
 C=======================================================================
       PROGRAM CSM
 
-      USE ModuleDefs 
+      USE ModuleDefs
       USE ModuleData
       USE HeaderMod
 

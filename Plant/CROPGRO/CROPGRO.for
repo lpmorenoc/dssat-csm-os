@@ -37,6 +37,7 @@ C  07/08/2003 CHP Added KSEVAP for export to soil evaporation routines.
 !  06/15/2022 CHP Added CropStatus
 !  01/26/2023 CHP Reduce compile warnings: add EXTERNAL stmts, remove 
 !                 unused variables, shorten lines.
+!  10/24/2024 CHP Added TRLV to PlantGro.OUT
 !  11/08/2023  FO Added parameters for lint growth rate in GROW.
 !  21/06/2024  FO Added Lint Yield to OPHARV. 
 !  27/06/2024  FO Added Percent Lint to OPHARV. 
@@ -131,6 +132,7 @@ C=======================================================================
       REAL SRDOT, SLAAD, SLNDOT, SSDOT, SSNDOT
       REAL TDAY, TDUMX, TDUMX2, TGROAV, TMIN, TURFAC, TAVG, TURADD,
      &    TRNH4U, TRNO3U, TRNU, TNLEAK, TRWUP, TTFIX, TOPWT, TOTWT
+      REAL TRLV
       REAL VSTAGE
       REAL WLFDOT, WSIDOT, WRIDOT
       REAL WTNCAN, WTNFX, WTNLA, WTNLO, WTNNA, WTNNAG
@@ -372,7 +374,7 @@ C-----------------------------------------------------------------------
      &    AGRRT, CROP, DLAYR, DS, DTX, DUL, FILECC, FRRT, !Input
      &    ISWWAT, LL, NLAYR, PG, PLTPOP, RO, RP, RTWT,    !Input
      &    SAT, SW, SWFAC, VSTAGE, WR, WRDOTN, WTNEW,      !Input
-     &    RLV, RTDEP, SATFAC, SENRT, SRDOT)               !Output
+     &    RLV, RTDEP, SATFAC, SENRT, SRDOT, TRLV)         !Output
         ENDIF
 
 !-----------------------------------------------------------------------
@@ -414,7 +416,7 @@ C-----------------------------------------------------------------------
      &    RLV, RSTAGE, RTDEP, RTWT, SATFAC, SDWT, SEEDNO, 
      &    SENESCE, SLA, STMWT, SWFAC, TGRO, TGROAV, TOPWT, 
      &    TOTWT, TURFAC, VSTAGE, WTLF, WTNCAN, WTNLF, WTNST, 
-     &    WTNSD, WTNUP, WTNFX, XLAI, YRPLT, LINTW, LINTP)
+     &    WTNSD, WTNUP, WTNFX, XLAI, YRPLT, TRLV, LINTW, LINTP) 
 
 !     Initialize Overview.out file.
       CALL OPHARV(CONTROL, ISWITCH, 
@@ -641,7 +643,7 @@ C-----------------------------------------------------------------------
      &    AGRRT, CROP, DLAYR, DS, DTX, DUL, FILECC, FRRT, !Input
      &    ISWWAT, LL, NLAYR, PG, PLTPOP, RO, RP, RTWT,    !Input
      &    SAT, SW, SWFAC, VSTAGE, WR, WRDOTN, WTNEW,      !Input
-     &    RLV, RTDEP, SATFAC, SENRT, SRDOT)               !Output
+     &    RLV, RTDEP, SATFAC, SENRT, SRDOT, TRLV)         !Output
 
 !-----------------------------------------------------------------------
 !     Write headings to output file GROWTH.OUT
@@ -654,7 +656,7 @@ C-----------------------------------------------------------------------
      &    RLV, RSTAGE, RTDEP, RTWT, SATFAC, SDWT, SEEDNO, 
      &    SENESCE, SLA, STMWT, SWFAC, TGRO, TGROAV, TOPWT, 
      &    TOTWT, TURFAC, VSTAGE, WTLF, WTNCAN, WTNLF, WTNST, 
-     &    WTNSD, WTNUP, WTNFX, XLAI, YRPLT, LINTW, LINTP)
+     &    WTNSD, WTNUP, WTNFX, XLAI, YRPLT, TRLV, LINTW, LINTP)
 
       CALL OPHARV (CONTROL, ISWITCH, 
      &    AGEFAC, CANHT, CANNAA, CANWAA, CROP,            !Input
@@ -800,7 +802,7 @@ C-----------------------------------------------------------------------
      &    AGRRT, CROP, DLAYR, DS, DTX, DUL, FILECC, FRRT, !Input
      &    ISWWAT, LL, NLAYR, PG, PLTPOP, RO, RP, RTWT,    !Input
      &    SAT, SW, SWFAC, VSTAGE, WR, WRDOTN, WTNEW,      !Input
-     &    RLV, RTDEP, SATFAC, SENRT, SRDOT)               !Output
+     &    RLV, RTDEP, SATFAC, SENRT, SRDOT, TRLV)         !Output
 
 !-----------------------------------------------------------------------
 !       DYNAMIC = EMERG (not INTEGR) here
@@ -1195,7 +1197,7 @@ C     Call to root growth and rooting depth routine
      &    AGRRT, CROP, DLAYR, DS, DTX, DUL, FILECC, FRRT, !Input
      &    ISWWAT, LL, NLAYR, PG, PLTPOP, RO, RP, RTWT,    !Input
      &    SAT, SW, SWFAC, VSTAGE, WR, WRDOTN, WTNEW,      !Input
-     &    RLV, RTDEP, SATFAC, SENRT, SRDOT)               !Output
+     &    RLV, RTDEP, SATFAC, SENRT, SRDOT, TRLV)         !Output
 
 C-----------------------------------------------------------------------
 C     Compute total C cost for growing seed, shell, and vegetative tissue
@@ -1311,7 +1313,7 @@ C-----------------------------------------------------------------------
      &    RLV, RSTAGE, RTDEP, RTWT, SATFAC, SDWT, SEEDNO, 
      &    SENESCE, SLA, STMWT, SWFAC, TGRO, TGROAV, TOPWT, 
      &    TOTWT, TURFAC, VSTAGE, WTLF, WTNCAN, WTNLF, WTNST, 
-     &    WTNSD, WTNUP, WTNFX, XLAI, YRPLT, LINTW, LINTP)
+     &    WTNSD, WTNUP, WTNFX, XLAI, YRPLT, TRLV, LINTW, LINTP)
 
         IF (ISWPHO .EQ. 'Y' .OR. ISWPHO .EQ. 'H') THEN
           CALL P_CGRO (DYNAMIC, ISWITCH, 
