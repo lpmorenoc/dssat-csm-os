@@ -493,6 +493,19 @@ C         Variables to run CASUPRO from Alt_PLANT.  FSR 07-23-03
         ELSEIF (DYNAMIC .EQ. INTEGR) THEN
           XHLAIM(I) = XLAIM(I)
         ENDIF
+     
+!-----------------------------------------------------------------------
+!     Forage model
+      CASE('PRFRM')
+        CALL FORAGE(CONTROL, ISWITCH,
+     &    EOPM(I), NH4, NO3, SOILPROP,                        !Input
+     &    ST, SW, TRWUPM(I), WEATHER, YREND, YRPLT,           !Input
+     &    CANHTM(I), EORATIOM(I), HARVRESM(I), MDATEM(I),     !Output
+     &    NSTRESM(I), PSTRES1M(I), CropStatus,                !Output
+     &    PORMINM(I), RLVM(:,I), RWUMXM(I), SENESCEM(I),      !Output
+     &    STGDOYM(:,I), UNH4M(:,I), UNO3M(:,I),               !Output 
+     &    XHLAIM(I), XLAIM(I))                                !Output    
+        
         
       END SELECT
        XLAI = XLAI + XLAIM(I) 

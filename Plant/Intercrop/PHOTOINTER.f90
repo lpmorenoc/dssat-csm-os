@@ -86,7 +86,7 @@
 !C-----------------------------------------------------------------------
 !C     Calculate intercepted radiation by 10 cm layers?
 !C-----------------------------------------------------------------------
-      CANHTM(2) = CANHTM(1) !To test same height
+      !CANHTM(2) = CANHTM(1) !To test same height
       CANHTMAX = MAX(0.0,MAXVAL(CANHTM))
       Canopylayers = MIN(20, MAX(1,(INT(CANHTMAX * 10.0)+1)))
       LAIByLayer = 0.0
