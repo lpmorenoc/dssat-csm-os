@@ -147,7 +147,9 @@ C=======================================================================
       REAL XPOD, XFRT, XHLAI, XLAI
 
       REAL DLAYR(NL), DS(NL), DUL(NL), KG2PPM(NL), LL(NL), 
-     &    SAT(NL), SW(NL), ST(NL), RLV(NL), WR(NL)
+     &    SAT(NL), SW(NL), ST(NL), RLV(NL), WR(NL), BD(NL),
+     &    CLAY(NL), SILT(NL), STONES(NL), TOTBAS(NL), EXTAL(NL),
+     &    EXCA(NL)
       REAL NH4(NL), NO3(NL), UNH4(NL), UNO3(NL)
       REAL PHTHRS(20)
       REAL TGRO(TS)
@@ -199,14 +201,21 @@ C=======================================================================
       RUN     = CONTROL % RUN
       RNMODE  = CONTROL % RNMODE
 
+      BD     = SOILPROP % BD
+      CLAY   = SOILPROP % CLAY
       DLAYR  = SOILPROP % DLAYR  
       DS     = SOILPROP % DS     
-      DUL    = SOILPROP % DUL    
+      DUL    = SOILPROP % DUL 
+      EXTAL  = SOILPROP % EXTAL
+      EXCA   = SOILPROP % EXCA	  
       KG2PPM = SOILPROP % KG2PPM  
       LL     = SOILPROP % LL     
       NLAYR  = SOILPROP % NLAYR  
       SAT    = SOILPROP % SAT    
-      SLPF   = SOILPROP % SLPF  
+      SILT   = SOILPROP % SILT
+      SLPF   = SOILPROP % SLPF 
+      STONES = SOILPROP % STONES
+      TOTBAS = SOILPROP % TOTBAS  
       WR     = SOILPROP % WR     
 
       IDETO  = ISWITCH % IDETO
@@ -370,11 +379,18 @@ C-----------------------------------------------------------------------
 C-----------------------------------------------------------------------
 C     Call to root growth and rooting depth routine
 C-----------------------------------------------------------------------
-        CALL ROOTS(RUNINIT,
+!        CALL ROOTS(RUNINIT,
+!     &    AGRRT, CROP, DLAYR, DS, DTX, DUL, FILECC, FRRT, !Input
+!     &    ISWWAT, LL, NLAYR, PG, PLTPOP, RO, RP, RTWT,    !Input
+!     &    SAT, SW, SWFAC, VSTAGE, WR, WRDOTN, WTNEW,      !Input
+!     &    RLV, RTDEP, SATFAC, SENRT, SRDOT, TRLV)         !Output
+!        ENDIF
+		CALL ROOTS_D(RUNINIT,
      &    AGRRT, CROP, DLAYR, DS, DTX, DUL, FILECC, FRRT, !Input
+     &    BD,CLAY,SILT,STONES,TOTBAS, EXTAL, EXCA,        !Input
      &    ISWWAT, LL, NLAYR, PG, PLTPOP, RO, RP, RTWT,    !Input
-     &    SAT, SW, SWFAC, VSTAGE, WR, WRDOTN, WTNEW,      !Input
-     &    RLV, RTDEP, SATFAC, SENRT, SRDOT, TRLV)         !Output
+     &    SAT, SW, SWFAC, VSTAGE, WR, WRDOTN, WTNEW,DAS,  !Input
+     &    ST, RLV, RTDEP, SATFAC, SENRT, SRDOT, TRLV)     !Output
         ENDIF
 
 !-----------------------------------------------------------------------
@@ -640,11 +656,18 @@ C-----------------------------------------------------------------------
 C-----------------------------------------------------------------------
 C     Call to root growth and rooting depth routine
 C-----------------------------------------------------------------------
-      CALL ROOTS(SEASINIT,
+!      CALL ROOTS(SEASINIT,
+!     &    AGRRT, CROP, DLAYR, DS, DTX, DUL, FILECC, FRRT, !Input
+!     &    ISWWAT, LL, NLAYR, PG, PLTPOP, RO, RP, RTWT,    !Input
+!     &    SAT, SW, SWFAC, VSTAGE, WR, WRDOTN, WTNEW,      !Input
+!     &    RLV, RTDEP, SATFAC, SENRT, SRDOT, TRLV)         !Output
+	 
+	  CALL ROOTS_D(RUNINIT,
      &    AGRRT, CROP, DLAYR, DS, DTX, DUL, FILECC, FRRT, !Input
+     &    BD,CLAY,SILT,STONES,TOTBAS, EXTAL, EXCA,        !Input
      &    ISWWAT, LL, NLAYR, PG, PLTPOP, RO, RP, RTWT,    !Input
-     &    SAT, SW, SWFAC, VSTAGE, WR, WRDOTN, WTNEW,      !Input
-     &    RLV, RTDEP, SATFAC, SENRT, SRDOT, TRLV)         !Output
+     &    SAT, SW, SWFAC, VSTAGE, WR, WRDOTN, WTNEW,DAS,  !Input
+     &    ST, RLV, RTDEP, SATFAC, SENRT, SRDOT, TRLV)     !Output
 
 !-----------------------------------------------------------------------
 !     Write headings to output file GROWTH.OUT
@@ -800,11 +823,19 @@ C-----------------------------------------------------------------------
 C-----------------------------------------------------------------------
 C     Call to root growth and rooting depth routine
 C-----------------------------------------------------------------------
-      CALL ROOTS(EMERG,
+!      CALL ROOTS(EMERG,
+!     &    AGRRT, CROP, DLAYR, DS, DTX, DUL, FILECC, FRRT, !Input
+!     &    ISWWAT, LL, NLAYR, PG, PLTPOP, RO, RP, RTWT,    !Input
+!     &    SAT, SW, SWFAC, VSTAGE, WR, WRDOTN, WTNEW,      !Input
+!     &    RLV, RTDEP, SATFAC, SENRT, SRDOT, TRLV)         !Output
+
+	CALL ROOTS_D(RUNINIT,
      &    AGRRT, CROP, DLAYR, DS, DTX, DUL, FILECC, FRRT, !Input
+     &    BD,CLAY,SILT,STONES,TOTBAS, EXTAL, EXCA,        !Input
      &    ISWWAT, LL, NLAYR, PG, PLTPOP, RO, RP, RTWT,    !Input
-     &    SAT, SW, SWFAC, VSTAGE, WR, WRDOTN, WTNEW,      !Input
-     &    RLV, RTDEP, SATFAC, SENRT, SRDOT, TRLV)         !Output
+     &    SAT, SW, SWFAC, VSTAGE, WR, WRDOTN, WTNEW,DAS,  !Input
+     &    ST, RLV, RTDEP, SATFAC, SENRT, SRDOT, TRLV)     !Output
+
 
 !-----------------------------------------------------------------------
 !       DYNAMIC = EMERG (not INTEGR) here
@@ -1195,11 +1226,18 @@ C-----------------------------------------------------------------------
 C-----------------------------------------------------------------------
 C     Call to root growth and rooting depth routine
 !-----------------------------------------------------------------------
-      CALL ROOTS(INTEGR,
+!      CALL ROOTS(INTEGR,
+!     &    AGRRT, CROP, DLAYR, DS, DTX, DUL, FILECC, FRRT, !Input
+!     &    ISWWAT, LL, NLAYR, PG, PLTPOP, RO, RP, RTWT,    !Input
+!     &    SAT, SW, SWFAC, VSTAGE, WR, WRDOTN, WTNEW,      !Input
+!     &    RLV, RTDEP, SATFAC, SENRT, SRDOT, TRLV)         !Output
+
+	  CALL ROOTS_D(RUNINIT,
      &    AGRRT, CROP, DLAYR, DS, DTX, DUL, FILECC, FRRT, !Input
+     &    BD,CLAY,SILT,STONES,TOTBAS, EXTAL, EXCA,        !Input
      &    ISWWAT, LL, NLAYR, PG, PLTPOP, RO, RP, RTWT,    !Input
-     &    SAT, SW, SWFAC, VSTAGE, WR, WRDOTN, WTNEW,      !Input
-     &    RLV, RTDEP, SATFAC, SENRT, SRDOT, TRLV)         !Output
+     &    SAT, SW, SWFAC, VSTAGE, WR, WRDOTN, WTNEW,DAS,  !Input
+     &    ST, RLV, RTDEP, SATFAC, SENRT, SRDOT, TRLV)     !Output
 
 C-----------------------------------------------------------------------
 C     Compute total C cost for growing seed, shell, and vegetative tissue

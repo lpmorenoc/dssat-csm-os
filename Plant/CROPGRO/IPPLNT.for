@@ -58,6 +58,7 @@ C-----------------------------------------------------------------------
 
       REAL
      &  CADPR1, CMOBMX, FRCNOD, FREEZ1, FREEZ2,
+     &  GSR, LWM, LWS, WCG, SFT, CAA, CAX, ALA, ALX,
      &  PCARSH, PCH2O, PLIPSH, PLIGSD,
      &  PLIGSH, PMINSD, PMINSH, POASD, POASH,
      &  PROLFI, PRORTI, PROSHI, PROSTI, R30C2,
@@ -296,6 +297,10 @@ C         Read ROOT parameters
             IF (ISECT .EQ. 0) CALL ERROR(ERRKEY,ERR,FILECC,LNUM)
             READ(CHAR,'(12X,F6.0)',IOSTAT=ERR) PORMIN
             IF (ERR .NE. 0) CALL ERROR(ERRKEY,ERR,FILECC,LNUM)
+          CALL IGNORE(LUNCRP,LNUM,ISECT,CHAR)
+            READ(CHAR,'(5F6.0)',IOSTAT=ERR) GSR, LWM, LWS, WCG, SFT
+          CALL IGNORE(LUNCRP,LNUM,ISECT,CHAR)
+            READ(CHAR,'(4F6.0)',IOSTAT=ERR) CAA, CAX, ALA, ALX
         ENDIF
 
 C-----------------------------------------------------------------------

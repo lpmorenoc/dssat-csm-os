@@ -180,7 +180,7 @@ C             CHP Added TRTNUM to CONTROL variable.
         REAL CMSALB, MSALB, SWALB, SALB      !Albedo 
         REAL, DIMENSION(NL) :: BD, CEC, CLAY, DLAYR, DS, DUL
         REAL, DIMENSION(NL) :: KG2PPM, LL, OC, PH, PHKCL, POROS
-        REAL, DIMENSION(NL) :: SAND, SAT, SILT, STONES, SWCN
+        REAL, DIMENSION(NL) :: SAND, SAT, SILT, STONES, SWCN, EXTAL
 
       !Residual water content
         REAL, DIMENSION(NL) :: WCR

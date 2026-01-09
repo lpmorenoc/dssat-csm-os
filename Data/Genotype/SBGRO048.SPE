@@ -84,6 +84,9 @@
   20.0 7500. 0.020   0.1  .015  1.50  0.04  RTDEPI,RFAC1,RTSEN,RLDSM,RTSDF,RWUEP1,RWUMX
    0.0  2.50   3.0  2.50   6.0  2.60  30.0  2.60   XRTFAC,YRTFAC
  0.006 0.006  0.02  0.10                    RTNO3,RTNH4,PORMIN,RTEXF
+  19.0 100.0 200.0   2.0   0.0                  GSR, LWM, LWS, WCG, SFT
+  15.0   0.0  43.0  90.0                        CAA, CAX, ALA, ALX
+   8.0  25.0  35.0  50.0   QDR         FNRDT(1-4),TYPRDT-TEMP EFFECT ON ROOT GROWTH
 
 !*SEED AND SHELL GROWTH PARAMETERS
   0.60   0.3  0.00  100.               SETMAX,SRMAX,RFLWAB,XMPAGE
@@ -171,4 +174,7 @@
     0.20          FracPMobil - max fraction of P which can be mobilized from leaf & stem / day
   0.0020          ROOTRAD - radius of cylinder around roots from which soil P can be extracted (m)
 
-
+*NITROGEN STRESS PARAMETERS
+  0.70  1.00    NSTR_FAC, NSTR_EXP  !Operate on NSTRES (VEGGR 235)
+  1.00          NRAT_FAC            !Operate on NRATIO (VEGGR 297)
+  0.20  0.50    EXCS_FAC, EXCS_EXP  !Operate on EXCESS (VEGGR 366)

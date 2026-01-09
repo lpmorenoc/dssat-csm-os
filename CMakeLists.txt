@@ -353,6 +353,7 @@ set(
         "Plant/CROPGRO/PODS.for"
         "Plant/CROPGRO/RESPIR.for"
         "Plant/CROPGRO/ROOTS.for"
+		"Plant/CROPGRO/ROOTS_D.for"
         "Plant/CROPGRO/RStages.for"
         "Plant/CROPGRO/SDCOMP.for"
         "Plant/CROPGRO/SENES.for"

@@ -543,7 +543,19 @@ C     Initialize curve number (according to J.T. Ritchie) 1-JUL-97 BDB
             ENDIF
           ENDIF
         ENDIF
-         
+                
+        IF (EXTAL(L) .LE. 0.0) THEN
+          EXTAL(L) = 0.0
+          Length = LEN(TRIM(MSG(3)))
+          IF (Length < 2) THEN
+            MSG(3) = '  EXTAL'
+          ELSE
+            IF (INDEX(MSG(3),'EXTAL') < 1) THEN
+              MSG(3) = TRIM(MSG(3)) // ', EXTAL'
+            ENDIF
+          ENDIF
+        ENDIF
+
         IF (STONES(L) .GT. 100.0 .OR. STONES(L) .LT. 0.0) THEN
           STONES(L) = 0.0
           Length = LEN(TRIM(MSG(3)))
@@ -855,7 +867,8 @@ C     Initialize curve number (according to J.T. Ritchie) 1-JUL-97 BDB
       SOILPROP % DS     = DS     
       SOILPROP % DUL    = DUL    
       SOILPROP % ETDR   = 0.2     !tile drainage rate   
-      SOILPROP % EXTP   = EXTP          
+      SOILPROP % EXTP   = EXTP
+      SOILPROP % EXTAL  = EXTAL	  
       SOILPROP % KG2PPM = KG2PPM  !conversion factor 
       SOILPROP % LL     = LL     
       SOILPROP % NLAYR  = NLAYR
