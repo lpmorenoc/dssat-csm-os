@@ -315,8 +315,9 @@ C KJB    TA = TAV - SIGN(1.0,XLAT) * TAMP * COS((DOY-20.0)*RAD)
 !        ALX= (FLOAT(DOY)-20)*0.0174
 !        TA = TAV - SIGN(1.0,XLAT) * TAMP * COS(ALX)/2.
 
-C-GH  TA = TAV - SIGN(1.0,XLAT) * TAMP * COS((DOY-20.0)*RAD)
-      TA = TAV - SIGN(1.0,XLAT) * (TAMP/2) * COS((DOY-20.0)*RAD)
+C-GH,KJB  TA = TAV - SIGN(1.0,XLAT) * TAMP * COS((DOY-20.0)*RAD)
+      ALX= (FLOAT(DOY)-60)*RAD
+      TA = TAV - SIGN(1.0,XLAT) * (TAMP/2) * COS(ALX)
 
       CALL OpWeath(CONTROL, ISWITCH, 
      &    CLOUDS, CO2, DAYL, FYRDOY, OZON7, PAR, RAIN,    !Daily values
@@ -453,8 +454,11 @@ C     Calculate hourly weather data.
      &    TGROAV, TGRODY, WINDHR)                         !Output
 
 C     Compute daily normal temperature.
-C-GH  TA = TAV - SIGN(1.0,XLAT) * TAMP * COS((DOY-20.0)*RAD)
-      TA = TAV - SIGN(1.0,XLAT) * (TAMP/2) * COS((DOY-20.0)*RAD)
+! 08/15/2022 SC - Energy Balance Model
+C-GH,KJB  TA = TAV - SIGN(1.0,XLAT) * TAMP * COS((DOY-20.0)*RAD)
+
+      ALX= (FLOAT(DOY)-60)*RAD
+      TA = TAV - SIGN(1.0,XLAT) * (TAMP/2) * COS(ALX)
 
 !     CALL OPSTRESS(CONTROL, WEATHER=WEATHER)
 
