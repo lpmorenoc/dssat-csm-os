@@ -1,5 +1,5 @@
 C=======================================================================
-C COPYRIGHT 1998-2024
+C COPYRIGHT 1998-2026
 C                     DSSAT Foundation
 C                     University of Florida, Gainesville, Florida
 C                     International Fertilizer Development Center
@@ -110,12 +110,13 @@ C-----------------------------------------------------------------------
       USE ModuleDefs
       USE ModuleData
       USE FloodModule
+      USE SumModule
 
       IMPLICIT NONE
       EXTERNAL ALOHA_PINEAPPLE,BS_CERES,CROPGRO,CSCAS_INTERFACE,
      &  CSCERES_INTERFACE,CSCRP_INTERFACE,CSP_CASUPRO,CSYCA_INTERFACE,
      &  FIND,FORAGE,GETLUN,ML_CERES,MZ_CERES,PT_SUBSTOR,READ_ASCE_KT,
-     &  RICE,SAMUCA,SC_CNGRO,SG_CERES,SU_CERES,SUMVALS,TEFF,TF_APSIM,
+     &  RICE,SAMUCA,SC_CNGRO,SG_CERES,SU_CERES,TEFF,TF_APSIM,
      &  TR_SUBSTOR,WARNING,WH_APSIM
       EXTERNAL INCDAT, ERROR
 

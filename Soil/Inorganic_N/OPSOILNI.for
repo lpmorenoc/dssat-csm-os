@@ -28,8 +28,10 @@ C  08/20/2002 GH  Modified for Y2K
 !     VSH
       USE CsvOutput 
       USE Linklist
+      USE SumModule
+
       IMPLICIT NONE
-      EXTERNAL GETLUN, HEADER, INCDAT, SUMVALS, YR_DOY
+      EXTERNAL GETLUN, HEADER, INCDAT, YR_DOY
       SAVE
 !-----------------------------------------------------------------------
 
@@ -136,7 +138,7 @@ C-----------------------------------------------------------------------
             WRITE(NOUTDN, FRMT1, ADVANCE='NO')
 
             WRITE(FRMT2,'(A,I2.2,A)') 
-     &       '(T',SPACES,'X,"Total Inorganic N @dep(ppm):")'
+     &       '(',SPACES,'X,"Total Inorganic N @dep(ppm):")'
             WRITE(NOUTDN, FRMT2)
 
             WRITE(NOUTDN,'("!",T132,30A8)')

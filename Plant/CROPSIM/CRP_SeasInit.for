@@ -21,10 +21,10 @@
         EXTERNAL YR_DOY, GETLUN, Y4K_DOY, TVILENT, LTRIM, XREADC, 
      &    XREADT, SPREADRA, XREADI, XREADR, UCASE, XREADIA, XREADRA, 
      &    FVCHECK, FINDDIR, CUREADC, CUREADR, ECREADR, SPREADR, 
-     &    CRP_SeasInit_VarInit, XREADCA, LTRIM2, CSUCASE, SPREADC,
-     &    SPREADCA, WARNING
+     &    CRP_VarInit, XREADCA, LTRIM2, CSUCASE, SPREADC,
+     &    SPREADCA, WARNING, CSENDYR
       
-      INTEGER TVILENT
+      INTEGER TVILENT, CSENDYR
       INTEGER STGYEARDOY(20), CN, DOY, ON, RN, RUN, RUNI        
       INTEGER SN, TN, YEAR
       
@@ -40,7 +40,7 @@
 !       Initialize both state and rate variables                       
 !-----------------------------------------------------------------------
         
-      CALL CRP_SeasInit_VarInit (GSTAGE, LAI, CANHT, DEWDUR, LAIL,
+      CALL CRP_VarInit (GSTAGE, LAI, CANHT, DEWDUR, LAIL,
      &   LAILA, NFP, PARIP, PARIPA, RESCALG, RESLGALG, RESNALG, RLV,
      &   SENCALG, SENLALG, SENNALG, STGYEARDOY, TRWUP, UH2O,
      &   UNH4, UNO3)
@@ -334,9 +334,19 @@ C  FO - 05/07/2020 Add new Y4K subroutine call to convert YRDOY
         ! Check final harvest date for seasonal runs        
 !        CALL CSYR_DOY(YEARDOYHARF,HYEAR,HDAY)
         CALL YR_DOY(YEARDOYHARF,HYEAR,HDAY)
-        PLTOHARYR = HYEAR - PLYEARREAD
-        ! Upgrade harvest date for seasonal and sequential runs
-        yeardoyharf = (plyear+pltoharyr)*1000 +hday
+        !TF - Added function to read fix harvest in DAP format
+        IF(IHARI .EQ. 'D') THEN
+          IF(PLDAY+hday .GT. CSENDYR(PLYEAR)) THEN
+            yeardoyharf = (YEAR + 1)*1000 + 
+     &       (PLDAY+hday - CSENDYR(PLYEAR))
+          ELSE
+            yeardoyharf = PDATE + hday
+          ENDIF
+        ELSE
+          PLTOHARYR = HYEAR - PLYEARREAD
+          ! Upgrade harvest date for seasonal and sequential runs
+          yeardoyharf = (plyear+pltoharyr)*1000 +hday
+        ENDIF
 
 !       IF (IPLTI.NE.'A') THEN
         IF (IPLTI.NE.'A' .AND. IPLTI.NE.'F') THEN

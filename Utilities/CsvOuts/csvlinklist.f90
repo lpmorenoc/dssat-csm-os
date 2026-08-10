@@ -85,6 +85,19 @@ Character(Len=6),  Dimension(40) :: csvOLAP    !Labels
     Integer :: istatMZCER                            
 !------------------------------------------------------------------------------
 
+!   for PTSUB
+    Type :: lin_valuePTSUB
+       Character(:), Allocatable :: pclinePTSUB
+       Type (lin_valuePTSUB), Pointer :: pPTSUB
+    End Type
+
+    Type (lin_valuePTSUB), Pointer :: headPTSUB      
+    Type (lin_valuePTSUB), Pointer :: tailPTSUB      
+    Type (lin_valuePTSUB), Pointer :: ptrPTSUB      
+    
+    Integer :: istatPTSUB                            
+!------------------------------------------------------------------------------
+
 !   for RICER
     Type :: lin_valueRICER
        Character(:), Allocatable :: pclineRICER
@@ -205,7 +218,7 @@ Character(Len=6),  Dimension(40) :: csvOLAP    !Labels
 !    Integer :: istatPlNRICer                            
 !------------------------------------------------------------------------------
 
-!   for PlNMzCer
+!   for PlNWth
     Type :: lin_valueWth
        Character(:), Allocatable :: pclineWth
        Type (lin_valueWth), Pointer :: pWth
@@ -276,6 +289,18 @@ Character(Len=6),  Dimension(40) :: csvOLAP    !Labels
     Type (lin_valueSumOpsum), Pointer :: ptrSumOpsum     
     
     Integer :: istatSumOpsum                             
+!------------------------------------------------------------------------------ 
+!   for EnvSum.csv
+    Type :: lin_valueEnvSum
+       Character(:), Allocatable :: pclineEnvSum
+       Type (lin_valueEnvSum), Pointer :: pEnvSum
+    End Type
+
+    Type (lin_valueEnvSum), Pointer :: headEnvSum    
+    Type (lin_valueEnvSum), Pointer :: tailEnvSum    
+    Type (lin_valueEnvSum), Pointer :: ptrEnvSum     
+    
+    Integer :: istatEnvSum                            
 !------------------------------------------------------------------------------ 
     Type :: lin_valuePlCCrGro
        Character(:), Allocatable :: pclinePlCCrGro
@@ -604,6 +629,33 @@ Contains
     End If
 
  End Subroutine LinklstMZCER
+!------------------------------------------------------------------------------
+
+ Subroutine LinklstPTSUB(ptxtlinePTSUB)
+
+    Character(:), Allocatable :: ptxtlinePTSUB            
+        
+    If(.Not. Associated(headPTSUB)) Then          
+      Allocate(headPTSUB, Stat=istatPTSUB)        
+      If(istatPTSUB==0) Then                      
+        tailPTSUB => headPTSUB                    
+        Nullify(tailPTSUB%pPTSUB)                 
+        tailPTSUB%pclinePTSUB = ptxtlinePTSUB     
+      Else
+        ! Error message
+      End If
+    Else
+      Allocate(tailPTSUB%pPTSUB, Stat=istatPTSUB)      
+      If(istatPTSUB==0) Then                           
+        tailPTSUB=> tailPTSUB%pPTSUB                   
+        Nullify(tailPTSUB%pPTSUB)                      
+        tailPTSUB%pclinePTSUB = ptxtlinePTSUB          
+      Else
+      ! Error message
+      End If
+    End If
+
+ End Subroutine LinklstPTSUB
 !------------------------------------------------------------------------------
 
  Subroutine LinklstRICER(ptxtlineRICER)
@@ -978,6 +1030,32 @@ End Subroutine LinklstSUOIL
 
  End Subroutine LinklstEvOpsum
 !------------------------------------------------------------------------------
+ Subroutine LinklstEnvSum(ptxtlineEnvSum)
+
+    Character(:), Allocatable :: ptxtlineEnvSum            
+        
+    If(.Not. Associated(headEnvSum)) Then            
+      Allocate(headEnvSum, Stat=istatEnvSum)        
+      If(istatEnvSum==0) Then                        
+        tailEnvSum => headEnvSum                    
+        Nullify(tailEnvSum%pEnvSum)                 
+        tailEnvSum%pclineEnvSum = ptxtlineEnvSum   
+      Else
+        ! Error message
+      End If
+    Else
+      Allocate(tailEnvSum%pEnvSum, Stat=istatEnvSum)      
+      If(istatEnvSum==0) Then                               
+        tailEnvSum=> tailEnvSum%pEnvSum                   
+        Nullify(tailEnvSum%pEnvSum)                        
+        tailEnvSum%pclineEnvSum = ptxtlineEnvSum          
+      Else
+      ! Error message
+      End If
+    End If
+
+ End Subroutine LinklstEnvSum
+!------------------------------------------------------------------------------
  Subroutine LinklstSumOpsum(ptxtlineSumOpsum)
 
     Character(:), Allocatable :: ptxtlineSumOpsum            
@@ -1031,7 +1109,7 @@ End Subroutine LinklstSUOIL
   length= Len('RUN,EXP,TRTNUM,ROTNUM,REPNO,YEAR,DOY,DAS,DAP,L#SD,GSTD,LAID,' &
   //'LWAD,SWAD,GWAD,LIWAM,LINTP,' &
   //'RWAD,VWAD,CWAD,G#AD,GWGD,HIAD,PWAD,P#AD,WSPD,WSGD,NSTD,' &
-  //'PST1A,PST2A,KSTD,EWSD,LN%D,SH%D,HIPD,PWDD,PWTD,SLAD,CHTD,CWID,NWAD,RDPD,')&
+  //'PST1A,PST2A,KSTD,EWSD,LN%D,SH%D,HIPD,PWDD,PWTD,SLAD,CHTD,CWID,NWAD,RDPD,RLAD,')&
   + Len('SNW0C,SNW1C,') + Len(Trim(Adjustl(tmp)))
 
       Allocate(character(LEN=length) :: Header)
@@ -1039,7 +1117,7 @@ End Subroutine LinklstSUOIL
   Header = 'RUN,EXP,TRTNUM,ROTNUM,REPNO,YEAR,DOY,DAS,DAP,L#SD,GSTD,LAID,' &
   //'LWAD,SWAD,GWAD,LIWAM,LINTP,' &
   //'RWAD,VWAD,CWAD,G#AD,GWGD,HIAD,PWAD,P#AD,WSPD,WSGD,NSTD,' &
-  //'PST1A,PST2A,KSTD,EWSD,LN%D,SH%D,HIPD,PWDD,PWTD,SLAD,CHTD,CWID,NWAD,RDPD,'&
+  //'PST1A,PST2A,KSTD,EWSD,LN%D,SH%D,HIPD,PWDD,PWTD,SLAD,CHTD,CWID,NWAD,RDPD,RLAD,'&
   // 'SNW0C,SNW1C,' // Trim(Adjustl(tmp))
          
       fn = 'plantgro.csv'
@@ -1302,7 +1380,7 @@ End Subroutine LinklstSUOIL
   //'PST2A,KSTD,LN%D,SH%D,HIPD,PWDD,PWTD,SLAD,CHTD,CWID,RDPD,'&   
   //'CDAD,LDAD,SDAD,SNW0C,SNW1C,DTTD,')+ Len(Trim(Adjustl(tmp)))
 
-      Allocate(character(LEN=length) :: Header)
+  Allocate(character(LEN=length) :: Header)
 
   Header = 'RUN,EXP,TRTNUM,ROTNUM,REPNO,YEAR,DOY,DAS,DAP,L#SD,GSTD,LAID,LWAD,SWAD,' &
   //'GWAD,RWAD,VWAD,CWAD,G#AD,GWGD,HIAD,PWAD,P#AD,WSPD,WSGD,NSTD,EWSD,PST1A,' &
@@ -1328,6 +1406,48 @@ End Subroutine LinklstSUOIL
       Nullify(ptrMZCER, headMZCER, tailMZCER)
       Close(nf)
   End Subroutine ListtofileMZCER
+!------------------------------------------------------------------------------
+
+  Subroutine ListtofilePTSUB()
+      EXTERNAL GETLUN
+      Integer          :: nf, ErrNum, length       
+      Character(Len=12):: fn 
+      Character(:),Allocatable :: Header 
+      
+      If(.Not. Associated(headPTSUB)) Return
+
+  length= Len('RUN,EXP,TRTNUM,ROTNUM,REPNO,YEAR,DOY,DAS,DAP,'                      //  &
+              'GSTD,LAID,UYAD,LWAD,'                                               //  &
+              'SWAD,UWAD,RWAD,TWAD,CWAD,DWAD,HIAD,EWAD,E#AD,WSPD,WSGD,'            //  &
+              'NSTD,LN%D,SH%D,SLAD,CHTD,CWID,EWSD,RDPD,RL1D,RL2D,RL3D,'            //  &
+              'RL4D,RL5D,SNW0C,SNW1C')
+
+  Allocate(character(LEN=length) :: Header)
+
+  Header = 'RUN,EXP,TRTNUM,ROTNUM,REPNO,YEAR,DOY,DAS,DAP,GSTD,LAID,UYAD,LWAD,'  //  &
+           'SWAD,UWAD,RWAD,TWAD,CWAD,DWAD,HIAD,EWAD,E#AD,WSPD,WSGD,'            //  &
+           'NSTD,LN%D,SH%D,SLAD,CHTD,CWID,EWSD,RDPD,RL1D,RL2D,RL3D,'            //  &
+           'RL4D,RL5D,SNW0C,SNW1C' 
+        
+      fn = 'plantgro.csv'
+      Call GETLUN (fn,nf)
+   
+      Open (UNIT = nf, FILE = fn, FORM='FORMATTED', STATUS = 'REPLACE', &
+          Action='Write', IOSTAT = ErrNum)
+        
+      Write(nf,'(A)')Header
+      Deallocate(Header)
+
+      ptrPTSUB => headPTSUB
+      Do
+        If(.Not. Associated(ptrPTSUB)) Exit                
+        Write(nf,'(A)') ptrPTSUB % pclinePTSUB            
+        ptrPTSUB => ptrPTSUB % pPTSUB                      
+      End Do
+
+      Nullify(ptrPTSUB, headPTSUB, tailPTSUB)
+      Close(nf)
+  End Subroutine ListtofilePTSUB
 !------------------------------------------------------------------------------
 
   Subroutine ListtofileRICER(nlayers)
@@ -1715,12 +1835,12 @@ End Subroutine LinklstSUOIL
       
       If(.Not. Associated(headWth)) Return
       
-  length= Len('RUN,EXP,TRTNUM,ROTNUM,REPNO,YEAR,DOY,DAS,PRED,DAYLD,TWLD,SRAD,' &
+  length= Len('RUN,EXP,TRTNUM,ROTNUM,REPNO,YEAR,DOY,DAS,PRED,CPRED,DAYLD,TWLD,SRAD,' &
   //'PARD,CLDD,TMXD,TMND,TAVD,TDYD,TDWD,TGAD,TGRD,WDSD,CO2D,VPDF,VPD') 
 
       Allocate(character(LEN=length) :: Header)
 
-  Header = 'RUN,EXP,TRTNUM,ROTNUM,REPNO,YEAR,DOY,DAS,PRED,DAYLD,TWLD,SRAD,' &
+  Header = 'RUN,EXP,TRTNUM,ROTNUM,REPNO,YEAR,DOY,DAS,PRED,CPRED,DAYLD,TWLD,SRAD,' &
   //'PARD,CLDD,TMXD,TMND,TAVD,TDYD,TDWD,TGAD,TGRD,WDSD,CO2D,VPDF,VPD' 
   
       fn = 'weather.csv'
@@ -1951,6 +2071,56 @@ End Subroutine LinklstSUOIL
       Nullify(ptrSumOpsum, headSumOpsum, tailSumOpsum)
       Close(nf)
    End Subroutine ListtofileSumOpsum
+!------------------------------------------------------------------------------
+
+   Subroutine ListtofileEnvSum
+      EXTERNAL GETLUN
+      Integer          :: nf, ErrNum, length       
+      Character(Len=12):: fn  
+      Character(:),Allocatable :: Header        
+      
+      If(.Not. Associated(headEnvSum)) Return
+      
+   length= Len('RUNNO,TRNO,R#,O#,P#,CR,MODEL,EXNAME,HDAT,N2OEM,CO2EM,CH4EM,TCEQM,'  &
+  // 'NDCH,DAYLA,CO2A,TMINA,TAVGA,TMAXA,SRADA,PRCP,PETP,ETCP,ESCP,EPCP,WSGA,NSTA,'  &
+  // 'NDCH1,TMIN1,TAVG1,TMAX1,SRAD1,PRCP1,PETP1,ETCP1,ESCP1,EPCP1,WSGA1,NSTA1,'       &
+  // 'NDCH2,TMIN2,TAVG2,TMAX2,SRAD2,PRCP2,PETP2,ETCP2,ESCP2,EPCP2,WSGA2,NSTA2,'       &
+  // 'NDCH3,TMIN3,TAVG3,TMAX3,SRAD3,PRCP3,PETP3,ETCP3,ESCP3,EPCP3,WSGA3,NSTA3,'       &
+  // 'NDCH4,TMIN4,TAVG4,TMAX4,SRAD4,PRCP4,PETP4,ETCP4,ESCP4,EPCP4,WSGA4,NSTA4,'       &
+  // 'NDCH5,TMIN5,TAVG5,TMAX5,SRAD5,PRCP5,PETP5,ETCP5,ESCP5,EPCP5,WSGA5,NSTA5,'       &
+  // 'Phase0,Phase1,Phase2,Phase3,Phase4,Phase5')
+
+      Allocate(character(LEN=length) :: Header)
+
+! Header = 'RUNNO,TRNO,R#,O#,C#,CR,MODEL,EXNAME,TNAM,FNAM,WSTA,SOIL_ID,' &
+  Header = 'RUNNO,TRNO,R#,O#,P#,CR,MODEL,EXNAME,HDAT,N2OEM,CO2EM,CH4EM,TCEQM,'      &
+  // 'NDCH,DAYLA,CO2A,TMINA,TAVGA,TMAXA,SRADA,PRCP,PETP,ETCP,ESCP,EPCP,WSGA,NSTA,'  &
+  // 'NDCH1,TMIN1,TAVG1,TMAX1,SRAD1,PRCP1,PETP1,ETCP1,ESCP1,EPCP1,WSGA1,NSTA1,'       &
+  // 'NDCH2,TMIN2,TAVG2,TMAX2,SRAD2,PRCP2,PETP2,ETCP2,ESCP2,EPCP2,WSGA2,NSTA2,'       &
+  // 'NDCH3,TMIN3,TAVG3,TMAX3,SRAD3,PRCP3,PETP3,ETCP3,ESCP3,EPCP3,WSGA3,NSTA3,'       &
+  // 'NDCH4,TMIN4,TAVG4,TMAX4,SRAD4,PRCP4,PETP4,ETCP4,ESCP4,EPCP4,WSGA4,NSTA4,'       &
+  // 'NDCH5,TMIN5,TAVG5,TMAX5,SRAD5,PRCP5,PETP5,ETCP5,ESCP5,EPCP5,WSGA5,NSTA5,'       &
+  // 'Phase0,Phase1,Phase2,Phase3,Phase4,Phase5'
+      
+      fn = 'EnvSum.csv'
+      Call GETLUN (fn,nf)
+   
+      Open (UNIT = nf, FILE = fn, FORM='FORMATTED', STATUS = 'REPLACE', &
+          Action='Write', IOSTAT = ErrNum)
+        
+      Write(nf,'(A)')Header
+      Deallocate(Header)
+       
+      ptrEnvSum => headEnvSum
+      Do
+        If(.Not. Associated(ptrEnvSum)) Exit                 
+        Write(nf,'(A)') ptrEnvSum % pclineEnvSum           
+        ptrEnvSum => ptrEnvSum % pEnvSum                 
+      End Do
+
+      Nullify(ptrEnvSum, headEnvSum, tailEnvSum)
+      Close(nf)
+   End Subroutine ListtofileEnvSum
 !------------------------------------------------------------------------------
 
    Subroutine ListtofilePlCCrGro
@@ -2771,30 +2941,30 @@ End Subroutine LinklstSomN
       
       If(.Not. Associated(headSomC)) Return
       
-      length= Len('RUN,EXP,TR,RN,REP,YEAR,DOY,DAS,'   &
-       //'SCS20D,C%20D,SCS40D,SC%40D'                 &
-       //'SLC20D,L%20D,SLC40D,SL%40D,SOCD'            &
-       //'SC0D,SCTD,SC1D,SC2D,SC3D,SC4D,SC5D'         &
-       //'S1C0D,S1CTD,S1C1D,S1C2D,S1C3D,S1C4D,S1C5D'  &
-       //',S2CTD,S2C1D,S2C2D,S2C3D,S2C4D,S2C5D'       &
-       //',S3CTD,S3C1D,S3C2D,S3C3D,S3C4D,S3C5D'       &
-       //'LC0D,LCTD,LC1D,LC2D,LC3D,LC4D,LC5D'         &
-       //'MEC0D,MECTD,MEC1D,MEC2D,MEC3D,MEC4D,MEC5D'  &
-       //'STC0D,STCTD,STC1D,STC2D,STC3D,STC4D,STC5D'  &
+      length= Len('RUN,EXP,TR,RN,REP,YEAR,DOY,DAS,'    &
+       //'SCS20D,C%20D,SCS40D,SC%40D,'                 &
+       //'SLC20D,L%20D,SLC40D,SL%40D,SOCD,'            &
+       //'SC0D,SCTD,SC1D,SC2D,SC3D,SC4D,SC5D,'         &
+       //'S1C0D,S1CTD,S1C1D,S1C2D,S1C3D,S1C4D,S1C5D,'  &
+       //'S2CTD,S2C1D,S2C2D,S2C3D,S2C4D,S2C5D,'        &
+       //'S3CTD,S3C1D,S3C2D,S3C3D,S3C4D,S3C5D,'        &
+       //'LC0D,LCTD,LC1D,LC2D,LC3D,LC4D,LC5D,'         &
+       //'MEC0D,MECTD,MEC1D,MEC2D,MEC3D,MEC4D,MEC5D,'  &
+       //'STC0D,STCTD,STC1D,STC2D,STC3D,STC4D,STC5D,'  &
        //'RESC,CO20C,CO2SC')                          
 
       Allocate(character(LEN=length) :: Header)
 
-      Header = 'RUN,EXP,TR,RN,REP,YEAR,DOY,DAS,'      &
-       //'SCS20D,C%20D,SCS40D,SC%40D'                 &
-       //'SLC20D,L%20D,SLC40D,SL%40D,SOCD'            &
-       //'SC0D,SCTD,SC1D,SC2D,SC3D,SC4D,SC5D'         &
-       //'S1C0D,S1CTD,S1C1D,S1C2D,S1C3D,S1C4D,S1C5D'  &
-       //',S2CTD,S2C1D,S2C2D,S2C3D,S2C4D,S2C5D'       &
-       //',S3CTD,S3C1D,S3C2D,S3C3D,S3C4D,S3C5D'       &
-       //'LC0D,LCTD,LC1D,LC2D,LC3D,LC4D,LC5D'         &
-       //'MEC0D,MECTD,MEC1D,MEC2D,MEC3D,MEC4D,MEC5D'  &
-       //'STC0D,STCTD,STC1D,STC2D,STC3D,STC4D,STC5D'  &
+      Header = 'RUN,EXP,TR,RN,REP,YEAR,DOY,DAS,'       &
+       //'SCS20D,C%20D,SCS40D,SC%40D,'                 &
+       //'SLC20D,L%20D,SLC40D,SL%40D,SOCD,'            &
+       //'SC0D,SCTD,SC1D,SC2D,SC3D,SC4D,SC5D,'         &
+       //'S1C0D,S1CTD,S1C1D,S1C2D,S1C3D,S1C4D,S1C5D,'  &
+       //'S2CTD,S2C1D,S2C2D,S2C3D,S2C4D,S2C5D,'        &
+       //'S3CTD,S3C1D,S3C2D,S3C3D,S3C4D,S3C5D,'        &
+       //'LC0D,LCTD,LC1D,LC2D,LC3D,LC4D,LC5D,'         &
+       //'MEC0D,MECTD,MEC1D,MEC2D,MEC3D,MEC4D,MEC5D,'  &
+       //'STC0D,STCTD,STC1D,STC2D,STC3D,STC4D,STC5D,'  &
        //'RESC,CO20C,CO2SC'                           
   
       fn = 'somlitc.csv'

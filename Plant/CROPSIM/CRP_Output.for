@@ -14,9 +14,10 @@
 
       USE ModuleDefs
       USE CRP_First_Trans_m
+      USE SumModule
   
       IMPLICIT NONE
-      EXTERNAL YR_DOY, GETLUN, SUMVALS, HEADER, TVILENT, TVICOLNM, 
+      EXTERNAL YR_DOY, GETLUN, HEADER, TVILENT, TVICOLNM, 
      &    TL10FROMI, LTRIM, CSTIMDIF, CSOPLINE, CALENDAR, DAPCALC, 
      &    LTRIM2, AREADR, AREADI, CSYDOY, GETSTRI, CSCLEAR5, GETSTR, 
      &    GETSTRR, WARNING, CSUCASE
@@ -56,7 +57,8 @@
 !             A switches ALL outputs on  
 
         ! If model failure so that cycle not completed
-        IF (DYNAMIC.EQ.SEASEND .AND. SEASENDOUT.NE.'Y') THEN
+        IF (DYNAMIC.EQ.SEASEND .AND. SEASENDOUT.NE.'Y' 
+     &     .AND. IHARI .EQ. 'M') THEN
           laix = -99.0
           cwahc = -99.0
           nupac = -99.0

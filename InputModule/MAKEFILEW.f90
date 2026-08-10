@@ -18,6 +18,7 @@
 !       This mode needs to keep FILEW (WTH file) and potentially also 
 !       FILEWC (CLI) file and FILEWG (WTG file).
 !  10/21/2021 FO  Updated GETLUN for weather file unit
+!  01/24/2026 FO  Added ERROR call to ensure 4-digit year format
 !-----------------------------------------------------------------------
 !  INPUT  : DSSATP, PATHEX, FILEX
 !
@@ -36,9 +37,10 @@
       CHARACTER*3   PROCOD
       CHARACTER*6   ERRKEY,SECTION
       CHARACTER*5   FINDH
+      CHARACTER*7   SYEARDOY
       CHARACTER*8   WSTA,FILEW4,FILEX
       CHARACTER*12  FILEW,NAMEF, LastFileW
-      CHARACTER*78  MSG(4)
+      CHARACTER*78  MSG(6)
       CHARACTER*80  PATHWT,PATHEX,CHARTEST
       CHARACTER*92  FILEWW,FILETMP
       CHARACTER*102 DSSATP
@@ -356,8 +358,21 @@
             !FO - Look for header lines beginning with '@'  
             IF(LINE(1:1) .EQ. '@' .AND. INDEX(LINE, 'DATE') .GT. 0) THEN
                 !FO - Read 7-digit First Weather YEAR
-                READ (UNIT,'(I7)', IOSTAT=ERRNUM) YEARDOY
+                READ (UNIT,'(A7)', IOSTAT=ERRNUM) SYEARDOY
                 IF (ERRNUM .NE. 0) CALL ERROR (ERRKEY,17,FILEW,0)
+
+                IF(INDEX(SYEARDOY, ' ') .EQ. 0) THEN
+                  READ (SYEARDOY,'(I7)', IOSTAT=ERRNUM) YEARDOY
+                ELSE
+                  MSG(1) = "Error in weather DATE input."
+                  MSG(2) = "Please check your weather input file."
+                  MSG(3) = "The DATE field must use a 4-digit year format (YYYYDDD)."
+                  MSG(4) = "The $WEATHER keyword was detected in the file header."
+                  MSG(5) = "Ensure that the DATE values are correctly formatted."
+                  MSG(6) = "Simulation ended."
+                  CALL WARNING(6,ERRKEY,MSG)
+                  CALL ERROR (ERRKEY,20,FILEW,0)
+                ENDIF
                 
                 EXIT
             ELSE IF(LINE(1:1) .EQ. '@' .AND. INDEX(LINE, 'YEAR') .GT. 0) THEN

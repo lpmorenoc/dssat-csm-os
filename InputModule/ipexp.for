@@ -1099,9 +1099,10 @@ C=======================================================================
      &           XCRD,YCRD,ELEV,AREA,SLEN,FLWR,SLAS,FldHist,FHDUR,PMALB)
 
       USE ModuleData
+      USE SumModule
+
       IMPLICIT NONE
-      EXTERNAL ERROR, FIND, UPCASE, WARNING, INFO, IGNORE, HFIND, 
-     &  SUMVALS
+      EXTERNAL ERROR, FIND, UPCASE, WARNING, INFO, IGNORE, HFIND
 
       CHARACTER*1  UPCASE
       CHARACTER*4  WSTA,WSTA1,HFNDCH

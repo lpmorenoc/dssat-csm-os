@@ -18,12 +18,12 @@ c         WFAC, TOPWT, TURFAC,       !Input
 
 !-----------------------------------------------------------------------
       USE ModuleDefs 
+      USE SumModule
 c     Define CANEGRO composite variables:
       USE CNG_ModuleDefs
 
       IMPLICIT NONE
-      EXTERNAL GETDESC, OPVIEW, READA, SUMVALS, EvaluateDat, 
-     &  ERROR, TIMDIF, READA_Y4K
+      EXTERNAL GETDESC, OPVIEW, READA, ERROR, TIMDIF, READA_Y4K
       SAVE
 
       CHARACTER*1  RNMODE,IDETO,IPLTI
@@ -200,11 +200,12 @@ c      PlantStres % StageName(1) = 'Emergence -Harvest     '
 c      PlantStres % StageName(2) = 'Emergence -stalk emerg.'
 c      PlantStres % StageName(3) = 'Stalk emerg. -Harvest  '
 
-      PlantStres % StageName(1) = 'Planting to Emergence  '
+      PlantStres % StageName(1) = 'Planting to Emergence .'
       PlantStres % StageName(2) = 'Emergence->Stk Elongatn'
-      PlantStres % StageName(3) = 'Stk Elong to Peak Popn.'
-      PlantStres % StageName(4) = 'Peak Popn. to Harvest  '
-      PlantStres % StageName(0) = 'Emergence to Harvest   '
+      PlantStres % StageName(3) = 'Stk Elong to Peak Popn '
+      PlantStres % StageName(4) = 'Peak Popn. to Harvest .'
+      PlantStres % StageName(5) = '.......................'
+      PlantStres % StageName(0) = 'Emergence to Harvest ..'
 
 
       CALL OPVIEW(CONTROL, 
@@ -412,7 +413,7 @@ c     Green Leaf area index at harvest
                                    WRITE(Measured(10),'(A8)')TRIM(X(10))
 c       MJ, Feb 2012: add fresh stalk mass at harvest to output file
         WRITE(Simulated(13),'(F8.1)')  Part%STKWM
-                                   WRITE(Measured(10),'(A8)')TRIM(X(11))
+                                   WRITE(Measured(13),'(A8)')TRIM(X(13))
       ENDIF  
 
 

@@ -1,5 +1,6 @@
 C=======================================================================
-C  COPYRIGHT 1998-2024 DSSAT Foundation
+C  COPYRIGHT 1998-2026 
+C                      DSSAT Foundation
 C                      University of Florida, Gainesville, Florida
 C                      International Fertilizer Development Center
 C                     
@@ -39,6 +40,7 @@ C  02/13/2006 JIL Export AMTRH (R/R0) for leaf rolling calculation
 !  08/15/2022 SC/FO Added Energy-Balance source code  
 !  01/26/2023 CHP Reduce compile warnings: add EXTERNAL stmts, remove 
 !                 unused variables, shorten lines. 
+C  03/27/2026 GH Fixed calculation of TA for TAMP as TAMP/2
 C-----------------------------------------------------------------------
 C  Called by: Main
 c  Calls:     DAYLEN, ERROR, HMET, IPWTH, SOLAR, WGEN, WTHMDB, WTHMOD
@@ -144,6 +146,10 @@ C=======================================================================
 !     Seasonal initialization - run once per season
 !***********************************************************************
       ELSEIF (DYNAMIC .EQ. SEASINIT) THEN
+
+        ! Initialize variables
+        WEATHER % CPRED = 0.0
+!-----------------------------------------------------------------------        
         YYDDD = YRSIM
         CALL YR_DOY(YYDDD, WYEAR, DOY)
         FYRDOY = 0
@@ -306,8 +312,11 @@ C     Calculate hourly weather data.
 C     Compute daily normal temperature.
 ! 08/15/2022 SC - Energy Balance Model
 C KJB    TA = TAV - SIGN(1.0,XLAT) * TAMP * COS((DOY-20.0)*RAD)
-        ALX= (FLOAT(DOY)-20)*0.0174
-        TA = TAV - SIGN(1.0,XLAT) * TAMP * COS(ALX)/2.
+!        ALX= (FLOAT(DOY)-20)*0.0174
+!        TA = TAV - SIGN(1.0,XLAT) * TAMP * COS(ALX)/2.
+
+C-GH  TA = TAV - SIGN(1.0,XLAT) * TAMP * COS((DOY-20.0)*RAD)
+      TA = TAV - SIGN(1.0,XLAT) * (TAMP/2) * COS((DOY-20.0)*RAD)
 
       CALL OpWeath(CONTROL, ISWITCH, 
      &    CLOUDS, CO2, DAYL, FYRDOY, OZON7, PAR, RAIN,    !Daily values
@@ -431,6 +440,9 @@ c                   available.
           NOTDEW = .FALSE.
       ENDIF      
       
+!     Cumulative weather data
+      WEATHER % CPRED  = WEATHER % CPRED + RAIN
+            
 C     Calculate hourly weather data.
       CALL HMET(
      &    CLOUDS, DAYL, DEC, ISINB, PAR, REFHT,           !Input
@@ -441,11 +453,9 @@ C     Calculate hourly weather data.
      &    TGROAV, TGRODY, WINDHR)                         !Output
 
 C     Compute daily normal temperature.
-! 08/15/2022 SC - Energy Balance Model
-C KJB    TA = TAV - SIGN(1.0,XLAT) * TAMP * COS((DOY-20.0)*RAD)
-        ALX= (FLOAT(DOY)-20)*0.0174
-        TA = TAV - SIGN(1.0,XLAT) * TAMP * COS(ALX)/2.
-        
+C-GH  TA = TAV - SIGN(1.0,XLAT) * TAMP * COS((DOY-20.0)*RAD)
+      TA = TAV - SIGN(1.0,XLAT) * (TAMP/2) * COS((DOY-20.0)*RAD)
+
 !     CALL OPSTRESS(CONTROL, WEATHER=WEATHER)
 
 !***********************************************************************
@@ -594,7 +604,8 @@ C-----------------------------------------------------------------------
 ! SRAD       Solar radiation (MJ/m2-d)
 ! TAIRHR(TS) Hourly air temperature (in some routines called TGRO) (°C)
 ! TAMP       Amplitude of temperature function used to calculate soil 
-!              temperatures (°C)
+!              temperatures (range between longterm warmest and coldest
+!              month (°C)
 ! TAV        Average annual soil temperature, used with TAMP to calculate 
 !              soil temperature. (°C)
 ! TAVG       Average daily temperature (°C)
