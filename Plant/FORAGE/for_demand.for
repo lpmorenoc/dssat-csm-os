@@ -163,7 +163,8 @@ C Variables for apportioning NDMVEG and NDMOLD
 !    &   STSCMOB, STSNMOB
       REAL WTNLF, WTNRT, WTNSR, WTNST
       REAL PROLFR, PROSTR, PRORTR, PROSRR
-      REAL LFDELT
+      CHARACTER LFDELT*6
+      REAL LFDEL
 
       INTEGER LUNECO, LUNIO
 
@@ -224,7 +225,7 @@ C Variables for apportioning NDMVEG and NDMOLD
       CUMNSF = 1.0
       
       FNINSR=0.0
-      LFDELT=0.0
+      LFDEL=0.0
 
 !-----------------------------------------------------------------------
       CALL GETLUN('FILEIO', LUNIO)
@@ -265,11 +266,12 @@ C-----------------------------------------------------------------------
         IF (ERR .NE. 0) CALL ERROR(ERRKEY,ERR,FILEGC,0)
         IF ((ISECT .EQ. 1) .AND. (C255(1:1) .NE. ' ') .AND.
      &    (C255(1:1) .NE. '*')) THEN
-        READ (C255,'(A6,145X,F6.0)',IOSTAT=ERR)
+        READ (C255,'(A6,145X,A6)',IOSTAT=ERR)
      &          ECOTYP, LFDELT
         IF (ERR .NE. 0) CALL ERROR(ERRKEY,ERR,FILEGC,LNUM)
-
-        LFDELT = MAX(-0.05,MIN(0.05,LFDELT))
+        IF (LEN_TRIM(LFDELT).EQ.0) CALL ERROR("IPECO",4,FILEGC,LNUM)
+        READ(LFDELT, '(F6.0)', IOSTAT=ERR) LFDEL
+        LFDEL = MAX(-0.05,MIN(0.05,LFDEL))
         IF (ECOTYP .EQ. ECONO) EXIT
         
         ELSE IF (ISECT .EQ. 0) THEN
@@ -303,8 +305,8 @@ C-----------------------------------------------------------------------
         FRSTM = TABEX(YSTEM,XLEAF,0.0,8)
         FRSTR = TABEX(YSTOR,XLEAF,0.0,8)
 
-        FRLF = FRLF + LFDELT
-        FRSTM = FRSTM - LFDELT
+        FRLF = FRLF + LFDEL
+        FRSTM = FRSTM - LFDEL
 !     Cap negative values
         FRLF = MAX(0.001,FRLF)
         FRSTM = MAX(0.001,FRSTM)

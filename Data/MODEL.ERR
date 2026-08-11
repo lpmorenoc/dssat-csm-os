@@ -181,6 +181,9 @@ Error in Automatic Management section. Correct residual veg. stage after mowing.
 FRHARV    9
 Missing AutoMOW section in the species file.
 
+FRSURV    1
+Section SURVIVING WINTER COLD AND DROUGHT not found. Fix the Species file.
+
 FRSHWT    1
 Pod/Fruit harvest age (XMAGE) is not properly defined. Fix the Ecotype file.
 
@@ -507,6 +510,9 @@ Automatic harvest date is defined prior to the start of simulation.
 
 IPSIM    11
 Harvest at maturity option not available for this crop.  Correct input file.
+
+IPSIM    12
+Automatic first planting date is set earlier than the last planting date.
 
 SIMCTR    1
 Error in start simulation date input.  Check format.
@@ -999,6 +1005,9 @@ Weather file not found.  Please check file name or create file.
 
 MAKEFW   19
 Start simulation date is lower than first weather date.
+
+MAKEFW   20
+Error in weather DATE input. Please see WARNING.OUT file.
 
 Y4KDOY    1
 Input date is greather than 99 years after start simulation date.

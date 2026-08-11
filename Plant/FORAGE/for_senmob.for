@@ -344,7 +344,7 @@ C    Find and Read Surviving section  Added by Diego
         SECTION = '!*SURVIVI'
         CALL FIND(LUNCRP, SECTION, LNUM, FOUND)
         IF (FOUND .EQ. 0) THEN
-         CALL ERROR(ERRKEY, 1, FILECC, LNUM)
+         CALL ERROR("FRSURV", 1, FILECC, LNUM)
         ELSE
          CALL IGNORE(LUNCRP,LNUM,ISECT,CHAR)
          READ(CHAR,'(6F6.0)',IOSTAT=ERR) (XMOTEM(I),I=1,6)
@@ -908,9 +908,6 @@ C-----------------------------------------------------------------------
 !      MOBTEM = MAX(0.1,MOBTEM)
 !      MOBSWF = MAX(0.1,MOBSWF)
 
-      WRITE(8500,'(I8,2F6.3,1X,F6.3,1X,F6.3,1X,F6.3)') YRDOY,NMOBSR,
-     & MOBTEM, TGRO(TS), MOBSWF,SWFAC
-
 C-----------------------------------------------------------------------
 C      Set C mobilization rate from storage
 C      Default to CMOBSRN under most conditions
@@ -934,9 +931,6 @@ C-----------------------------------------------------------------------
 !      MOBTEM = MAX(0.1,MOBTEM)
 !      MOBSWF = MAX(0.1,MOBSWF)
 
-
-      WRITE(8560,'(I8,8F6.3)') YRDOY,CMOBSR,CMOBSRN,LAIMOBR,CMOBSRX,
-     & CMOBSRN,PPMFAC,MOBTEM,MOBSWF
 C-----------------------------------------------------------------------
 C      Calculate potential N mobilization for the day
 C-----------------------------------------------------------------------
