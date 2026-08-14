@@ -62,7 +62,8 @@ C======================================================================
       REAL            CANWAA   
       REAL            CANWH   
       REAL            CARBO      
-      INTEGER         CDAY   
+      INTEGER         CDAY
+      REAL            CHTPT
 !     REAL            CNSD1    
 !     REAL            CNSD2    
       REAL            CO2      

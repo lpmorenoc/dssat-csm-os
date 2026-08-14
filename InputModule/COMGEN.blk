@@ -1,6 +1,6 @@
 
       REAL          P1,P1V,P1D,P2,P2O,P2R,P3,P4,P5,G1,G2,G3,G4,G5,G0
-      REAL          PHINT,PD,TC,O1,GPROT,LT50H,AX,LX,PANTH
+      REAL          PHINT,PD,TC,O1,GPROT,LT50H,AX,LX,PANTH,CHTPT
 
 !CHP 2019-04-25 Rice changes
 	  REAL          THOT, TCLDP, TCLDF
@@ -97,6 +97,8 @@
      &        , LNSLP, NODWT, NODLT
 !WDB Add new sugarbeet coefficients
      &        , PHYL1, PHYL2, FRSUG, DRCER
+!LPM Add new maize coefficient
+     &        , CHTPT
 
       COMMON /GEN02/PD,TC,GPROT,LT50H
       COMMON /GEN03/CSDVAR,PHTHRS,SDPDVR,SLAVAR,LFMAX,XFRUIT,WTPSD,

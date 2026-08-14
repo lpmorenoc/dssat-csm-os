@@ -669,7 +669,8 @@ C-----------------------------------------------------------------------
 !       Ceres Maize, sweetcorn
         CASE('MZCER','SWCER')
 		  WRITE (LUNIO,1800,IOSTAT=ERRNUM) VARNO,VRNAME,ECONO,
-     &                    P1,P2,P5,G2,G3,PHINT
+     &                    P1,P2,P5,G2,G3,PHINT, CHTPT
+      
 !WDB 7/2016 Added new coefficients for sugar beets
         CASE('BSCER')
 		  WRITE (LUNIO,1802,IOSTAT=ERRNUM) VARNO,VRNAME,ECONO,
@@ -824,7 +825,7 @@ C-----------------------------------------------------------------------
  1600 FORMAT (A6,1X,A16,1X,A6,2(F6.1),F6.2,2(F6.1),F6.2,F6.0,
      &        F6.3,F6.2,6(F6.0))
  1700 FORMAT (A6,1X,A16,1X,A6,1X,5(F6.1),F6.2, F6.1)
- 1800 FORMAT (A6,1X,A16,1X,A6,1X,F6.1,F6.3,2(F6.1),2(F6.2))
+ 1800 FORMAT (A6,1X,A16,1X,A6,1X,F6.1,F6.3,2(F6.1),3(F6.2))
 ! JG modified to move CUL parameters to ECO file
  1850 FORMAT (A6,1X,A16,1X,A6,1X,
  !             1     2     3     4     5     6     7     8     9     0

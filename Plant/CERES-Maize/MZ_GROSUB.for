@@ -88,7 +88,8 @@
       REAL        CANWH     
       REAL        CARBO       
       REAL        CARBOT       
-      INTEGER     CDAY     
+      INTEGER     CDAY  
+      REAL        CHTPT
       INTEGER     CMAT
       REAL        CNSD1       
       REAL        CNSD2        
@@ -421,9 +422,9 @@ C-GH 60     FORMAT(25X,F5.2,13X,F5.2,7X,F5.2)
               CALL ERROR(SECTION, 42, FILEIO, LNUM)
           ELSE
             READ (LUNIO,1800,IOSTAT=ERR) VARNO,VRNAME,ECONO,
-     %                 P1,P2,P5,G2,G3,PHINT  
+     %                 P1,P2,P5,G2,G3,PHINT,CHTPT  
 !CHP 1800        FORMAT (A6,1X,A16,1X,A6,1X,F6.1,F6.3,2(F6.1),2(F6.2))    
-1800        FORMAT (A6,1X,A16,1X,A6,1X,6F6.0)    
+1800        FORMAT (A6,1X,A16,1X,A6,1X,7F6.0)    
             IF (ERR .NE. 0) CALL ERROR(ERRKEY,ERR,FILEIO,LNUM)
           ENDIF
 
@@ -661,8 +662,9 @@ C-GH 60     FORMAT(25X,F5.2,13X,F5.2,7X,F5.2)
           BIOMAS = 0.0
           CANHT  = 0                
 !**
-!         set to 1.6 m, need to become user-input; RS 26May04   
-          CANHT_POT = 1.6              
+!         set to 1.6 m, need to become user-input; RS 26May04
+!         LPM 14Aug26 Modify maximum canopy height to be cultivar specific 
+          CANHT_POT = CHTPT              
 !**
           CANNAA = 0.0
           CANWAA = 0.0

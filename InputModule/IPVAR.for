@@ -236,10 +236,15 @@ C-LPM  Add CIAT cassava model
      &            STMMX,SLAP1
 
 !     Ceres Maize: maize, sweet corn **
-      CASE ('MZCER','SWCER')
+      CASE ('MZCER')
+        READ (C360,'(A6,1X,A16,7X,A6,7F6.0)',IOSTAT=ERRNUM)
+     &            VARTY,VRNAME,ECONO,P1,P2,P5,G2,G3,PHINT, 
+     &            CHTPT
+        
+      CASE ('SWCER')
         READ (C360,'(A6,1X,A16,7X,A6,6F6.0)',IOSTAT=ERRNUM)
      &            VARTY,VRNAME,ECONO,P1,P2,P5,G2,G3,PHINT
-
+        
 !WDB 7/2016 Added cultivar coefficients for sugar beet model
       CASE ('BSCER')       
         READ (C360,'(A6,1X,A16,7X,A6,9F6.0)',IOSTAT=ERRNUM)         

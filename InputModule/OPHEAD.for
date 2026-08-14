@@ -781,6 +781,7 @@ c          WRITE (HEADER(I),'(2F6.0,F6.2)') PHINT, LLIFA, STFR
       CASE ('MZCER')
             WRITE (HEADER(I),900) P1,P2,P5; I=I+1
             WRITE (HEADER(I),901) G2,G3,PHINT; I=I+1
+            WRITE (HEADER(I),910) CHTPT ; I=I+1
 
 !-----------------------------------------------------------------------
 !     IXIM-Maize
@@ -965,6 +966,7 @@ C-----------------------------------------------------------------------
      &         '  P5     :',F7.2)
   909 FORMAT (1X,'P2     :',F6.1,'  P3     :',F6.1,
      &         '  P4     :',F6.0)
+  910 FORMAT (1X,'CHTPT  :',F6.1)
   911 FORMAT (1X,'P1     :',F7.1,' P3     :',F7.2,
      &          ' P4     :',F7.1,' P5     :',F7.2)
   912 FORMAT (1X,'SCPB   :',F7.1,' RESPC  :',F7.3,

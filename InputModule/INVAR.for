@@ -311,7 +311,7 @@ C        Branch to menu choice
 !     Maize, sweet corn
       CASE ('MZCER', 'SWCER')
 
-        WRITE (*,5400) P1,P2,P5,G2,G3,PHINT
+        WRITE (*,5400) P1,P2,P5,G2,G3,PHINT,CHTPT
 5400    FORMAT (12X,'0. End of changes',//,
      1  12X,'1. P1 (Growing degree days from emergence to',/,
      2  12X,'       end of juvenile phase)...................[',F7.1,/,
@@ -320,7 +320,8 @@ C        Branch to menu choice
      5  12X,'       silking to maturity).....................[',F7.1,/,
      6  12X,'4. G2 (Potential kernel number).................[',F7.1,/,
      7  12X,'5. G3 (Potential kernel growth rate)............[',F7.1,/,
-     8  12X,'6. PHINT (Phyllochron interval).................[',F7.1,/)
+     8  12X,'6. PHINT (Phyllochron interval).................[',F7.1,/,
+     9  12X,'7. CHTPT (Potential canopy height) .............[',F7.1,/)    
 
          WRITE (*,5100)
 C
@@ -337,7 +338,9 @@ C        Branch to menu choice
          CASE (3); CALL GETREAL (P5,'P5   ',100.0,2000.0)
          CASE (4); CALL GETREAL (G2,'G2   ',100.0,2000.0)
          CASE (5); CALL GETREAL (G3,'G3   ',  1.0,  15.0)
-         CASE (6); CALL GETREAL (PHINT,'PHINT',1.0,200.0)
+         CASE (6); CALL GETREAL (PHINT,'PHINT',1.0, 75.0)
+         CASE (7); CALL GETREAL (CHTPT,'CHTPT',1.0, 5.0)
+             
          END SELECT
 
 !=======================================================================
